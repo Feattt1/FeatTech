@@ -1,0 +1,199 @@
+#!/bin/bash
+
+# Funciones de Usuarios y Grupos
+agregar_usuario() {
+    username=$1
+    password=$2
+    if id "$username" &>/dev/null; then
+        echo "El usuario $username ya existe en el sistema."
+        return
+    fi
+
+    sudo useradd -m "$username"
+    echo "$username:$password" | sudo chpasswd
+    echo "Usuario $username agregado con éxito."
+}
+
+eliminar_usuario() {
+    username=$1
+    sudo userdel -r $username
+    echo "Usuario $username eliminado con éxito."
+}
+
+agregar_grupo() {
+    groupname=$1
+    sudo groupadd $groupname
+    echo "Grupo $groupname agregado con éxito."
+}
+
+eliminar_grupo() {
+    groupname=$1
+    sudo groupdel $groupname
+    echo "Grupo $groupname eliminado con éxito."
+}
+
+aplicar_politicas() {
+    usuarios=$(getent passwd | grep '/bin/bash' | cut -d: -f1)
+    for usuario in $usuarios; do
+        sudo chage -M 90 $usuario
+    done
+
+    sudo sed -i 's/minlen = [0-9]*/minlen = 8/' /etc/security/pwquality.conf
+    sudo sed -i 's/ucredit = -1/ucredit = 1/' /etc/security/pwquality.conf
+    sudo sed -i 's/lcredit = -1/lcredit = 1/' /etc/security/pwquality.conf
+    echo "Políticas de contraseñas aplicadas con éxito."
+}
+
+agregar_usuario_a_grupo() {
+    username=$1
+    groupname=$2
+    sudo usermod -a -G $groupname $username
+    echo "Usuario $username agregado al grupo $groupname con éxito."
+}
+
+# Logs
+mostrar_exitosos() {
+    echo "Intentos de login exitosos:"
+    echo "-------------------------------------"
+    sudo grep "Accepted" /var/log/secure
+    echo "-------------------------------------"
+}
+
+mostrar_fallidos() {
+    echo "Intentos de login fallidos:"
+    echo "-------------------------------------"
+    sudo grep "FAILED LOGIN" /var/log/secure
+    echo "-------------------------------------"
+}
+
+# Servicios
+manejar_servicios() {
+    echo "1) Iniciar servicio"
+    echo "2) Detener servicio"
+    echo "3) Reiniciar servicio"
+    echo "4) Estado del servicio"
+    read -p "Seleccione una opción: " opcion_service
+    read -p "Nombre del servicio: " servicio
+
+    case $opcion_service in
+        1) sudo systemctl start $servicio ;;
+        2) sudo systemctl stop $servicio ;;
+        3) sudo systemctl restart $servicio ;;
+        4) sudo systemctl status $servicio ;;
+        *) echo "Opción inválida" ;;
+    esac
+}
+
+# Red
+informacion_red() {
+    echo "Información de red:"
+    ip addr
+}
+
+# Procesos
+ver_procesos() {
+    echo "Procesos en ejecución:"
+    top -n 1
+}
+
+# Respaldos
+respaldar_directorio() {
+    read -p "Directorio a respaldar: " dir
+    read -p "Destino del respaldo (incluyendo el nombre del archivo.tar.gz): " destino
+    sudo tar -czvf $destino $dir
+    echo "Respaldo realizado con éxito en $destino"
+}
+configurar_iptables() {
+    # Bloquear un IP específico
+    iptables -A INPUT -s [IP_A_BLOQUEAR] -j DROP
+
+    # Permitir conexiones en un puerto específico (ej. HTTP)
+    iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+    # Bloquear todo el tráfico excepto SSH
+    iptables -P INPUT DROP
+    iptables -P FORWARD DROP
+    iptables -P OUTPUT DROP
+    iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+    iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+}
+mostrar_menu() {
+    clear
+    echo "Operador de Centro de Cómputos"
+    echo "-------------------------------------"
+    echo "1) Usuarios y Grupos"
+    echo "2) Logs"
+    echo "3) Servicios"
+    echo "4) Información de Red"
+    echo "5) Procesos"
+    echo "6) Respaldo de Directorio"
+    echo "7) Salir"
+    echo "-------------------------------------"
+}
+
+while true; do
+    mostrar_menu
+    read -p "Seleccione una opción: " opcion
+
+    case $opcion in
+        1)
+            # Menú de usuarios y grupos
+            echo "1) Agregar Usuario"
+            echo "2) Eliminar Usuario"
+            echo "3) Agregar Grupo"
+            echo "4) Eliminar Grupo"
+            echo "5) Agregar Usuario a Grupo"
+            echo "6) Aplicar Políticas de Contraseñas"
+            read -p "Seleccione una opción: " opcion_ug
+
+            case $opcion_ug in
+                1)
+                    read -p "Nombre de usuario: " username
+                    read -p "Contraseña: " password
+                    agregar_usuario $username $password
+                    ;;
+                2)
+                    read -p "Nombre de usuario a eliminar: " username
+                    eliminar_usuario $username
+                    ;;
+                3)
+                    read -p "Nombre del grupo: " groupname
+                    agregar_grupo $groupname
+                    ;;
+                4)
+                    read -p "Nombre del grupo a eliminar: " groupname
+                    eliminar_grupo $groupname
+                    ;;
+                5)
+                    read -p "Nombre de usuario: " username
+                    read -p "Nombre del grupo: " groupname
+                    agregar_usuario_a_grupo $username $groupname
+                    ;;
+                6)
+                    aplicar_politicas
+                    ;;
+                *) echo "Opción inválida" ;;
+            esac
+            ;;
+        2)
+            echo "1) Intentos exitosos"
+            echo "2) Intentos fallidos"
+            read -p "Seleccione una opción: " opcion_log
+
+            case $opcion_log in
+                1) mostrar_exitosos ;;
+                2) mostrar_fallidos ;;
+                *) echo "Opción inválida" ;;
+            esac
+            ;;
+        3) manejar_servicios ;;
+        4) informacion_red ;;
+        5) ver_procesos ;;
+        6) respaldar_directorio ;;
+        7) exit ;;
+        *) echo "Opción inválida" ;;
+    esac
+    read -p "Presiona Enter para continuar..."
+done
+
+

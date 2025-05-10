@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Configuración
+DIR_A_RESPALDAR="../Proyecto"  # Ruta del directorio a respaldar
+DESTINO_BACKUP="../Backup/Almacenar"       # Ruta donde se almacenará el backup
+NOMBRE_BACKUP="backup_$(date +%Y%m%d_%H%M%S).tar.gz"  # Nombre del archivo de backup
+
+# Crear el Backup
+tar -czvf "$DESTINO_BACKUP/$NOMBRE_BACKUP" "$DIR_A_RESPALDAR"
+
+# Mensaje de finalización
+echo "Backup realizado con éxito en: $DESTINO_BACKUP/$NOMBRE_BACKUP"
+
+

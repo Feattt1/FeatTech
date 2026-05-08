@@ -309,12 +309,13 @@ function BracketMatchCard({ partido }) {
     const scores = partido.sets?.length > 0
       ? partido.sets.map((s) => (side === 'local' ? s.gamesLocal : s.gamesVisitante))
       : [];
+    // bg-lime-100 es seguro para html2canvas en lugar de bg-padel/15 que usa rgb(var)
     return (
-      <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-padel/15' : 'bg-white'}`}>
-        <span className={`text-xs truncate flex-1 ${isWin ? 'text-slate-900 font-bold' : 'text-slate-500 font-medium'}`} style={{ maxWidth: 138 }}>
+      <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-lime-100' : 'bg-white'}`}>
+        <span className={`text-xs inline-block overflow-hidden ${isWin ? 'text-slate-900 font-bold' : 'text-slate-500 font-medium'}`} style={{ width: 138, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
           {parejaLabel(pareja)}
         </span>
-        <div className="flex gap-1.5 shrink-0">
+        <div className="flex gap-1.5 shrink-0 ml-auto">
           {scores.map((s, i) => (
             <span key={i} className={`text-xs w-4 text-center ${isWin ? 'text-slate-900 font-black' : 'text-slate-400 font-semibold'}`}>{s}</span>
           ))}

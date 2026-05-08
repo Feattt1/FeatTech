@@ -226,10 +226,12 @@ export default function Layout() {
               🏠 Inicio
             </Link>
             <Link to="/campeonatos" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 font-medium text-sm transition">
-              🏆 Torneos
+              <span className="w-5 text-center mr-3 font-bold opacity-50">T</span>
+              Torneos
             </Link>
             <Link to="/ranking" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 font-medium text-sm transition">
-              🥇 Ranking
+              <span className="w-5 text-center mr-3 font-bold opacity-50">R</span>
+              Ranking
             </Link>
 
             {user ? (

@@ -3,7 +3,11 @@ import { useClub } from '../context/ClubContext';
 import { clubsApi } from '../services/api';
 import ExportExcelButton from '../components/ExportExcelButton';
 
-const MEDALLAS = ['🥇', '🥈', '🥉'];
+const MEDALLAS = [
+  <span className="text-yellow-600 dark:text-yellow-400 font-black">1º</span>,
+  <span className="text-slate-500 dark:text-slate-300 font-black">2º</span>,
+  <span className="text-orange-600 dark:text-orange-400 font-black">3º</span>
+];
 const ROW_BG = ['bg-yellow-50', 'bg-slate-50 dark:bg-slate-900', 'bg-orange-50/40'];
 const MODALIDAD_LABEL = { MASCULINO: 'Masc.', FEMENINO: 'Fem.', MIXTO: 'Mixto' };
 
@@ -131,8 +135,7 @@ export default function Ranking() {
         </div>
       ) : ranking.length === 0 ? (
         <div className="py-20 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
-          <p className="text-4xl mb-3">🏆</p>
-          <p className="text-slate-500 font-medium">Sin datos para {year}</p>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">Sin datos para {year}</p>
           <p className="text-slate-400 text-sm mt-1">
             El ranking se construye a partir de los torneos jugados en el año.
           </p>
@@ -147,16 +150,16 @@ export default function Ranking() {
                 const realIdx = visualIdx === 0 ? 1 : visualIdx === 1 ? 0 : 2;
                 const minHeights = ['min-h-28', 'min-h-36', 'min-h-24'];
                 const colors = [
-                  'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900',
-                  'border-yellow-300 bg-yellow-50',
-                  'border-orange-200 bg-orange-50/60',
+                  'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800',
+                  'border-yellow-300 dark:border-yellow-600/50 bg-yellow-50 dark:bg-yellow-900/20',
+                  'border-orange-200 dark:border-orange-700/50 bg-orange-50/60 dark:bg-orange-900/20',
                 ];
                 return (
                   <div
                     key={r.parejaId}
-                    className={`flex flex-col items-center justify-end ${minHeights[visualIdx]} rounded-xl border-2 ${colors[visualIdx]} p-3 text-center`}
+                    className={`flex flex-col items-center justify-end ${minHeights[visualIdx]} rounded-xl border-2 ${colors[visualIdx]} p-3 text-center transition-colors`}
                   >
-                    <span className="text-2xl mb-1">{MEDALLAS[realIdx]}</span>
+                    <span className="text-3xl mb-2">{MEDALLAS[realIdx]}</span>
                     <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug">
                       {parejaLabel(r.pareja)}
                     </p>

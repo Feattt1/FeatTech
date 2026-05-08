@@ -470,7 +470,7 @@ export default function AdminCampeonatoEditar() {
                 type="button" onClick={handleFinalizar} disabled={finalizando}
                 className="px-6 py-2.5 rounded-xl bg-green-600 text-white font-semibold text-sm hover:bg-green-500 disabled:opacity-50 transition"
               >
-                {finalizando ? 'Finalizando...' : '🏆 Finalizar torneo'}
+                {finalizando ? 'Finalizando...' : 'Finalizar torneo'}
               </button>
             )}
 

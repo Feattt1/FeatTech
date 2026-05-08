@@ -79,7 +79,7 @@ function PartidoCard({ p }) {
     }`}>
       {fecha && (
         <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
-          <span>🕐</span> {fecha}{p.pista ? ` · ${p.pista}` : ''}
+          {fecha}{p.pista ? ` · ${p.pista}` : ''}
         </p>
       )}
       <div className="flex items-center gap-2 flex-wrap">
@@ -104,7 +104,6 @@ function BracketCategoria({ partidos, grupos }) {
   const fases = [...new Set(partidos.map((p) => p.fase))].sort((a, b) => FASE_ORDER[a] - FASE_ORDER[b]);
   if (fases.length === 0) return (
     <div className="py-16 text-center">
-      <p className="text-4xl mb-3">🎾</p>
       <p className="text-slate-400">Los partidos aparecerán aquí una vez generados.</p>
     </div>
   );
@@ -222,7 +221,11 @@ function RankingCategoria({ grupos }) {
     (a, b) => b.puntos - a.puntos || b.setsGanados - a.setsGanados || b.gamesGanados - a.gamesGanados
   );
 
-  const medalas = ['🥇', '🥈', '🥉'];
+  const medalas = [
+    <span className="text-yellow-600 dark:text-yellow-400 font-black">1º</span>,
+    <span className="text-slate-500 dark:text-slate-300 font-black">2º</span>,
+    <span className="text-orange-600 dark:text-orange-400 font-black">3º</span>
+  ];
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
@@ -559,9 +562,9 @@ export default function CampeonatoDetalle() {
                 <p className="text-white/70 mt-2 text-sm sm:text-base max-w-2xl">{campeonato.descripcion}</p>
               )}
               <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-white/60 text-sm">
-                <span>📅 {formatDateShort(campeonato.fechaInicio)} — {formatDateShort(campeonato.fechaFin)}</span>
-                {inscripciones.length > 0 && <span>👥 {inscripciones.length} pareja{inscripciones.length !== 1 ? 's' : ''}</span>}
-                {categorias.length > 0 && <span>🏷 {categorias.length} categoría{categorias.length !== 1 ? 's' : ''}</span>}
+                <span>{formatDateShort(campeonato.fechaInicio)} — {formatDateShort(campeonato.fechaFin)}</span>
+                {inscripciones.length > 0 && <span>{inscripciones.length} pareja{inscripciones.length !== 1 ? 's' : ''}</span>}
+                {categorias.length > 0 && <span>{categorias.length} categoría{categorias.length !== 1 ? 's' : ''}</span>}
               </div>
             </div>
 
@@ -704,7 +707,6 @@ export default function CampeonatoDetalle() {
 
                 {inscripciones.length === 0 ? (
                   <div className="py-12 text-center">
-                    <p className="text-3xl mb-2">📋</p>
                     <p className="text-slate-400">No hay inscripciones aún.</p>
                   </div>
                 ) : (

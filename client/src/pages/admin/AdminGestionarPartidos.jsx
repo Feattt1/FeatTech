@@ -281,7 +281,7 @@ export default function AdminGestionarPartidos() {
                         {p.parejaLocal?.nombre || 'TBD'} vs {p.parejaVisitante?.nombre || 'TBD'}
                       </p>
                       <p className="text-sm text-slate-500">
-                        🕐 {formatearFecha(p.fechaHora)} {formatearHora(p.fechaHora)} | 🏀 Cancha {p.pista}
+                        {formatearFecha(p.fechaHora)} {formatearHora(p.fechaHora)} | Cancha {p.pista}
                       </p>
                     </div>
                     <div className="flex gap-2">

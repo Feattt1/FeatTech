@@ -90,7 +90,6 @@ export default function AdminCampeonatos() {
         </div>
       ) : campeonatos.length === 0 ? (
         <div className="bg-white dark:bg-slate-800 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 p-12 text-center">
-          <p className="text-slate-400 text-4xl mb-4">🏆</p>
           <h2 className="text-lg font-semibold text-slate-700 dark:text-slate-300 mb-1">No hay torneos todavía</h2>
           <p className="text-slate-500 text-sm mb-6">Creá el primer torneo para este club.</p>
           <Link

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useClub } from '../context/ClubContext';
 import { clubsApi } from '../services/api';
+import ExportExcelButton from '../components/ExportExcelButton';
 
 const MEDALLAS = ['🥇', '🥈', '🥉'];
 const ROW_BG = ['bg-yellow-50', 'bg-slate-50', 'bg-orange-50/40'];
@@ -51,11 +52,31 @@ export default function Ranking() {
           {club?.nombre}
         </p>
         <div className="flex flex-col sm:flex-row sm:items-end gap-3 justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Ranking anual</h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Acumulado de puntos en todos los torneos del club.
-            </p>
+          <div className="flex flex-col gap-3">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Ranking anual</h1>
+              <p className="text-slate-500 text-sm mt-1">
+                Acumulado de puntos en todos los torneos del club.
+              </p>
+            </div>
+            {ranking.length > 0 && (
+              <ExportExcelButton 
+                fileName={`Ranking_${club?.nombre}_${year}${catSel ? '_'+catLabel(catSel) : ''}.xlsx`}
+                sheetName={`Ranking ${year}`}
+                data={ranking.map((r, i) => ({
+                  Posición: i + 1,
+                  Pareja: parejaLabel(r.pareja),
+                  Torneos: r.torneos,
+                  Puntos: r.puntos,
+                  'Partidos Jugados': r.partidosJugados,
+                  'Partidos Ganados': r.partidosGanados,
+                  'Sets a favor': r.setsGanados,
+                  'Sets en contra': r.setsPerdidos,
+                  'Games a favor': r.gamesGanados,
+                  'Games en contra': r.gamesPerdidos
+                }))}
+              />
+            )}
           </div>
           {/* Selector de año */}
           <div className="flex gap-1 flex-wrap">

@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { campeonatosApi, gruposApi, partidosApi, inscripcionesApi, parejasApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useClub } from '../context/ClubContext';
+import ExportPDFButton from '../components/ExportPDFButton';
+import ExportExcelButton from '../components/ExportExcelButton';
 
 const MODALIDAD_LABEL = { MASCULINO: 'Masculino', FEMENINO: 'Femenino', MIXTO: 'Mixto' };
 const FASE_LABEL = { 
@@ -144,7 +146,26 @@ function ClasificacionCategoria({ grupos }) {
     <div className="space-y-6">
       {grupos.map((g) => (
         <div key={g.id} className="card overflow-hidden">
-          <h3 className="font-bold px-5 py-4 bg-slate-900 text-white text-sm border-b border-slate-800">{g.nombre}</h3>
+          <div className="flex justify-between items-center bg-slate-900 border-b border-slate-800 px-5 py-3">
+            <h3 className="font-bold text-white text-sm">{g.nombre}</h3>
+            <ExportExcelButton 
+              fileName={`Clasificacion_${g.nombre}.xlsx`}
+              sheetName={g.nombre}
+              data={(g.clasificaciones ?? [])
+                  .sort((a, b) => b.puntos - a.puntos || b.setsGanados - a.setsGanados || b.gamesGanados - a.gamesGanados)
+                  .map((cl, i) => ({
+                    Posición: i + 1,
+                    Pareja: `${cl.pareja?.jugador1?.usuario?.nombre} / ${cl.pareja?.jugador2?.usuario?.nombre}`,
+                    Puntos: cl.puntos,
+                    'Partidos Jugados': cl.partidosJugados,
+                    'Partidos Ganados': cl.partidosGanados,
+                    'Sets a favor': cl.setsGanados,
+                    'Sets en contra': cl.setsPerdidos,
+                    'Games a favor': cl.gamesGanados,
+                    'Games en contra': cl.gamesPerdidos
+                  }))}
+            />
+          </div>
           <div className="overflow-x-auto">
             <table className="table-premium">
               <thead>
@@ -204,6 +225,25 @@ function RankingCategoria({ grupos }) {
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+      <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+        <h4 className="font-semibold text-slate-800">Ranking Global</h4>
+        <ExportExcelButton 
+          fileName="Ranking_Torneo.xlsx"
+          sheetName="Ranking"
+          data={sorted.map((cl, i) => ({
+            Posición: i + 1,
+            Pareja: `${cl.pareja?.jugador1?.usuario?.nombre} / ${cl.pareja?.jugador2?.usuario?.nombre}`,
+            Grupo: cl.grupoNombre,
+            Puntos: cl.puntos,
+            'Partidos Jugados': cl.partidosJugados,
+            'Partidos Ganados': cl.partidosGanados,
+            'Sets a favor': cl.setsGanados,
+            'Sets en contra': cl.setsPerdidos,
+            'Games a favor': cl.gamesGanados,
+            'Games en contra': cl.gamesPerdidos
+          }))}
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -586,8 +626,13 @@ export default function CampeonatoDetalle() {
             </div>
             {partidosFiltrados.some((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase)) && (
               <div>
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Bracket eliminatorio</h3>
-                <BracketVisual partidos={partidosFiltrados} />
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bracket eliminatorio</h3>
+                  <ExportPDFButton targetId="bracket-visual-container" fileName="Bracket_Torneo.pdf" />
+                </div>
+                <div id="bracket-visual-container" className="bg-slate-950 p-4 rounded-xl shadow-glass overflow-hidden">
+                  <BracketVisual partidos={partidosFiltrados} />
+                </div>
               </div>
             )}
           </div>

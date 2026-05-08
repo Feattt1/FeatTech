@@ -645,7 +645,7 @@ export default function CampeonatoDetalle() {
                       }))}
                   />
                 </div>
-                <div id="bracket-visual-container" className="bg-slate-950 p-4 rounded-xl shadow-glass overflow-hidden">
+                <div>
                   <BracketVisual partidos={partidosFiltrados} />
                 </div>
               </div>

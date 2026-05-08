@@ -12,7 +12,14 @@ async function fetchClubs() {
 }
 
 export function ClubProvider({ children }) {
-  const [club, setClub] = useState(null);
+  const [club, setClub] = useState(() => {
+    try {
+      const saved = localStorage.getItem(CLUB_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [clubs, setClubs] = useState([]);
   const [clubsLoading, setClubsLoading] = useState(true);
   const [clubsError, setClubsError] = useState(null);
@@ -34,9 +41,11 @@ export function ClubProvider({ children }) {
             if (stillExists) {
               setClub(stillExists); // usa datos frescos
             } else {
+              setClub(null);
               localStorage.removeItem(CLUB_KEY); // stale → re-selección
             }
           } catch {
+            setClub(null);
             localStorage.removeItem(CLUB_KEY);
           }
         }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useClub } from '../context/ClubContext';
 
@@ -58,12 +59,14 @@ export default function Layout() {
               {/* Club selector — desktop */}
               {clubs.length > 1 && (
                 <div className="relative" ref={clubRef}>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setClubAbierto(!clubAbierto)}
                     className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 font-medium text-sm text-white border border-slate-600 transition"
                   >
                     {club?.nombre || 'Club'} ▾
-                  </button>
+                  </motion.button>
                   {clubAbierto && (
                     <div className="absolute top-full left-0 mt-2 py-2 bg-white rounded-xl shadow-2xl text-slate-900 min-w-[200px] z-50 border border-slate-100 animate-fade-in origin-top-left">
                       {clubs.map((c) => (
@@ -106,12 +109,14 @@ export default function Layout() {
 
                   {esAdminClub && (
                     <div className="relative" ref={adminRef}>
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => setAdminAbierto(!adminAbierto)}
-                        className="px-3 py-2 rounded-lg bg-padel-dark hover:bg-padel text-slate-900 font-bold text-sm transition-all"
+                        className="px-3 py-2 rounded-lg bg-padel-dark hover:bg-padel text-slate-900 font-bold text-sm transition-colors"
                       >
                         Admin ▾
-                      </button>
+                      </motion.button>
                       {adminAbierto && (
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl py-2 border border-slate-100 z-50 animate-fade-in origin-top-right">
                           <Link to="/admin/campeonatos" onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 font-medium transition-colors hover:pl-5">Campeonatos</Link>
@@ -123,21 +128,25 @@ export default function Layout() {
                     </div>
                   )}
 
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleLogout}
-                    className="px-4 py-2 rounded-lg font-bold text-sm bg-slate-800 hover:bg-red-500 text-white transition-all"
+                    className="px-4 py-2 rounded-lg font-bold text-sm bg-slate-800 hover:bg-red-500 text-white transition-colors"
                   >
                     Salir
-                  </button>
+                  </motion.button>
                 </>
               ) : (
                 <>
                   <Link to="/login" className="text-white hover:text-padel transition-colors font-medium text-sm">
                     Entrar
                   </Link>
-                  <Link to="/register" className="px-5 py-2 rounded-xl font-bold text-sm bg-padel hover:bg-padel-light text-slate-900 transition-all hover:shadow-neon transform hover:-translate-y-0.5">
-                    Registrarse
-                  </Link>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Link to="/register" className="px-5 py-2 block rounded-xl font-bold text-sm bg-padel hover:bg-padel-light text-slate-900 transition-colors hover:shadow-neon">
+                      Registrarse
+                    </Link>
+                  </motion.div>
                 </>
               )}
             </div>
@@ -245,7 +254,17 @@ export default function Layout() {
 
       {/* ── Contenido principal ─────────────────────────────────────────────── */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* ── Footer ─────────────────────────────────────────────────────────── */}

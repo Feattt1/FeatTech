@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useClub } from '../context/ClubContext';
 import { clubsApi } from '../services/api';
+import { motion } from 'framer-motion';
 
 function FormularioPrimerClub({ onCreado }) {
   const [nombre, setNombre] = useState('');
@@ -35,13 +36,15 @@ function FormularioPrimerClub({ onCreado }) {
           className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-yellow-400 focus:outline-none font-medium"
         />
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
+        <motion.button
           type="submit"
           disabled={creando}
+          whileHover={!creando ? { scale: 1.02 } : {}}
+          whileTap={!creando ? { scale: 0.98 } : {}}
           className="w-full px-4 py-3 rounded-lg text-slate-900 font-bold bg-yellow-400 hover:bg-yellow-500 disabled:opacity-50 transition"
         >
           {creando ? 'Creando...' : 'Crear club'}
-        </button>
+        </motion.button>
       </form>
     </div>
   );
@@ -73,12 +76,14 @@ export default function SelectorClub() {
             <p className="text-sm text-slate-600 mb-6">
               Asegurate de que el servidor esté corriendo con <code className="bg-slate-100 px-2 py-1 rounded font-mono">npm run dev</code>
             </p>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={loadClubs}
               className="px-6 py-3 rounded-lg bg-slate-900 hover:bg-slate-700 text-white font-bold transition"
             >
               Reintentar
-            </button>
+            </motion.button>
           </div>
         ) : clubs.length === 0 ? (
           <div className="flex justify-center">
@@ -87,14 +92,16 @@ export default function SelectorClub() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {clubs.map((c) => (
-              <button
+              <motion.button
                 key={c.id}
                 onClick={() => selectClub(c)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
                 className="bg-white border border-slate-200 rounded-xl p-8 text-center font-bold text-lg hover:border-yellow-400 hover:shadow-md transition-all duration-200 group"
               >
                 <p className="text-xs text-slate-400 uppercase tracking-widest mb-2 font-medium">Club</p>
                 <p className="text-2xl font-bold text-slate-900 group-hover:text-yellow-600 transition">{c.nombre}</p>
-              </button>
+              </motion.button>
             ))}
           </div>
         )}

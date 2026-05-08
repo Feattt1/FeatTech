@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { campeonatosApi } from '../services/api';
 import { useClub } from '../context/ClubContext';
 
@@ -63,11 +64,15 @@ export default function Home() {
         
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {campeonatos.map((c) => (
-            <Link
+            <motion.div
               key={c.id}
-              to={`/campeonatos/${c.id}`}
-              className="group card card-hover block overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
+              <Link
+                to={`/campeonatos/${c.id}`}
+                className="group card card-hover block overflow-hidden h-full"
+              >
               <div className="h-2 bg-gradient-to-r from-padel to-padel-dark group-hover:from-padel-light group-hover:to-padel transition-colors" />
               <div className="p-6">
                 <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold mb-3 ${config.tagBg}`}>
@@ -86,7 +91,8 @@ export default function Home() {
                   <span>{c._count?.inscripciones ?? 0} inscriptos</span>
                 </div>
               </div>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -117,12 +123,14 @@ export default function Home() {
               Inscripciones, cruces, partidos y horarios en un solo lugar.
             </p>
             <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
-              <Link 
-                to="/campeonatos"
-                className="btn-primary w-full sm:w-auto"
-              >
-                Explorar Torneos →
-              </Link>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+                <Link 
+                  to="/campeonatos"
+                  className="btn-primary w-full block"
+                >
+                  Explorar Torneos →
+                </Link>
+              </motion.div>
               <a 
                 href="#campeonatos"
                 className="px-8 py-3 text-white font-medium hover:text-padel transition-colors"
@@ -166,12 +174,14 @@ export default function Home() {
           <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-12 text-center border-2 border-dashed border-slate-300 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-900 mb-2">No hay campeonatos disponibles</h2>
             <p className="text-slate-600 mb-6">Vuelve pronto para ver emocionantes torneos de pádel</p>
-            <Link 
-              to="/campeonatos"
-              className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
-            >
-              Explorar todas las secciones →
-            </Link>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
+              <Link 
+                to="/campeonatos"
+                className="block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
+              >
+                Explorar todas las secciones →
+              </Link>
+            </motion.div>
           </div>
         ) : (
           <>

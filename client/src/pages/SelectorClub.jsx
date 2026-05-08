@@ -23,9 +23,9 @@ function FormularioPrimerClub({ onCreado }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-8 text-center max-w-md shadow-sm">
-      <h2 className="text-2xl font-bold text-slate-900 mb-2">Crear primer club</h2>
-      <p className="text-sm text-slate-500 mb-6">No hay clubes registrados. Creá uno para comenzar.</p>
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center max-w-md shadow-sm">
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Crear primer club</h2>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">No hay clubes registrados. Creá uno para comenzar.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -33,7 +33,7 @@ function FormularioPrimerClub({ onCreado }) {
           onChange={(e) => setNombre(e.target.value)}
           placeholder="Nombre del club"
           required
-          className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-yellow-400 focus:outline-none font-medium"
+          className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-900 dark:text-white focus:border-yellow-400 focus:outline-none font-medium"
         />
         {error && <p className="text-sm text-red-600">{error}</p>}
         <motion.button
@@ -56,7 +56,7 @@ export default function SelectorClub() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-12 bg-slate-50">
       <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-3 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">
           Championship Padel
         </h1>
         <p className="text-lg text-slate-500 max-w-xl mx-auto">
@@ -70,11 +70,11 @@ export default function SelectorClub() {
             <p className="text-slate-500 font-medium">Cargando clubes...</p>
           </div>
         ) : clubsError ? (
-          <div className="bg-white border border-red-200 rounded-xl p-8 text-center shadow-sm">
-            <h2 className="text-xl font-bold text-red-900 mb-2">Error de conexión</h2>
-            <p className="text-red-700 mb-4">{clubsError}</p>
-            <p className="text-sm text-slate-600 mb-6">
-              Asegurate de que el servidor esté corriendo con <code className="bg-slate-100 px-2 py-1 rounded font-mono">npm run dev</code>
+          <div className="bg-white dark:bg-slate-800 border border-red-200 dark:border-red-900 rounded-xl p-8 text-center shadow-sm">
+            <h2 className="text-xl font-bold text-red-900 dark:text-red-400 mb-2">Error de conexión</h2>
+            <p className="text-red-700 dark:text-red-500 mb-4">{clubsError}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
+              Asegurate de que el servidor esté corriendo con <code className="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded font-mono">npm run dev</code>
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -97,10 +97,10 @@ export default function SelectorClub() {
                 onClick={() => selectClub(c)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="bg-white border border-slate-200 rounded-xl p-8 text-center font-bold text-lg hover:border-yellow-400 hover:shadow-md transition-all duration-200 group"
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center font-bold text-lg hover:border-yellow-400 dark:hover:border-yellow-400 hover:shadow-md transition-all duration-200 group"
               >
                 <p className="text-xs text-slate-400 uppercase tracking-widest mb-2 font-medium">Club</p>
-                <p className="text-2xl font-bold text-slate-900 group-hover:text-yellow-600 transition">{c.nombre}</p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-yellow-600 transition">{c.nombre}</p>
               </motion.button>
             ))}
           </div>

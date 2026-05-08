@@ -225,9 +225,9 @@ function RankingCategoria({ grupos }) {
   const medalas = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-      <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-        <h4 className="font-semibold text-slate-800">Ranking Global</h4>
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+      <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900">
+        <h4 className="font-semibold text-slate-800 dark:text-white">Ranking Global</h4>
         <ExportExcelButton 
           fileName="Ranking_Torneo.xlsx"
           sheetName="Ranking"
@@ -248,7 +248,7 @@ function RankingCategoria({ grupos }) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-50 text-left text-xs text-slate-500 uppercase tracking-wide border-b border-slate-200">
+            <tr className="bg-slate-50 dark:bg-slate-900 text-left text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700">
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Pareja</th>
               <th className="px-4 py-3 hidden sm:table-cell">Grupo</th>
@@ -263,14 +263,14 @@ function RankingCategoria({ grupos }) {
           </thead>
           <tbody>
             {sorted.map((cl, idx) => (
-              <tr key={cl.id || idx} className={`border-t border-slate-100 transition-colors ${
-                idx === 0 ? 'bg-yellow-50' : idx === 1 ? 'bg-slate-50' : idx === 2 ? 'bg-orange-50/40' : 'hover:bg-slate-50'
+              <tr key={cl.id || idx} className={`border-t border-slate-100 dark:border-slate-700 transition-colors ${
+                idx === 0 ? 'bg-yellow-50 dark:bg-yellow-900/20' : idx === 1 ? 'bg-slate-50 dark:bg-slate-800/50' : idx === 2 ? 'bg-orange-50/40 dark:bg-orange-900/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
               }`}>
                 <td className="px-4 py-3 text-center font-bold text-lg leading-none">
                   {idx < 3 ? medalas[idx] : <span className="text-slate-400 text-sm font-normal">{idx + 1}</span>}
                 </td>
                 <td className="px-4 py-3">
-                  <span className="font-semibold text-slate-800">
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">
                     {cl.pareja?.jugador1?.usuario?.nombre} / {cl.pareja?.jugador2?.usuario?.nombre}
                   </span>
                 </td>
@@ -312,22 +312,22 @@ function BracketMatchCard({ partido }) {
       : [];
     // bg-lime-100 es seguro para html2canvas en lugar de bg-padel/15 que usa rgb(var)
     return (
-      <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-lime-100' : 'bg-white'}`}>
-        <span className={`text-xs inline-block overflow-hidden ${isWin ? 'text-slate-900 font-bold' : 'text-slate-500 font-medium'}`} style={{ width: 138, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+      <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-lime-100 dark:bg-lime-900/30' : 'bg-white dark:bg-slate-800'}`}>
+        <span className={`text-xs inline-block overflow-hidden ${isWin ? 'text-slate-900 dark:text-white font-bold' : 'text-slate-500 dark:text-slate-400 font-medium'}`} style={{ width: 138, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
           {parejaLabel(pareja)}
         </span>
         <div className="flex gap-1.5 shrink-0 ml-auto">
           {scores.map((s, i) => (
-            <span key={i} className={`text-xs w-4 text-center ${isWin ? 'text-slate-900 font-black' : 'text-slate-400 font-semibold'}`}>{s}</span>
+            <span key={i} className={`text-xs w-4 text-center ${isWin ? 'text-slate-900 dark:text-white font-black' : 'text-slate-400 dark:text-slate-500 font-semibold'}`}>{s}</span>
           ))}
         </div>
       </div>
     );
   };
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:border-padel hover:shadow-glass transition-all" style={{ width: 216 }}>
+    <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-padel hover:shadow-glass transition-all" style={{ width: 216 }}>
       {renderRow(partido.parejaLocal, 'local')}
-      <div className="h-px bg-slate-100" />
+      <div className="h-px bg-slate-100 dark:bg-slate-700" />
       {renderRow(partido.parejaVisitante, 'visitante')}
     </div>
   );
@@ -337,8 +337,8 @@ function BracketVisual({ partidos }) {
   const fasesEliminatorias = ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS', 'SEMIS', 'FINAL'];
   const eliPartidos = partidos.filter((p) => fasesEliminatorias.includes(p.fase));
   if (eliPartidos.length === 0) return (
-    <div className="py-12 text-center card bg-slate-50/50 border-dashed border-2 border-slate-200">
-      <p className="text-slate-500 font-medium">El bracket se generará cuando finalicen los grupos.</p>
+    <div className="py-12 text-center card bg-slate-50/50 dark:bg-slate-800/50 border-dashed border-2 border-slate-200 dark:border-slate-700">
+      <p className="text-slate-500 dark:text-slate-400 font-medium">El bracket se generará cuando finalicen los grupos.</p>
     </div>
   );
 
@@ -594,8 +594,8 @@ export default function CampeonatoDetalle() {
                 onClick={() => { setCategoriaActiva(cat.id); setCategoriaInscripcion(cat.id); }}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${
                   categoriaActiva === cat.id
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 {categoriaLabel(cat)}
@@ -605,7 +605,7 @@ export default function CampeonatoDetalle() {
         )}
 
         {/* Tabs de sección */}
-        <div className="flex gap-0 mb-6 border-b border-slate-200 overflow-x-auto scrollbar-none">
+        <div className="flex gap-0 mb-6 border-b border-slate-200 dark:border-slate-700 overflow-x-auto scrollbar-none">
           {tabs.map((t) => (
             <motion.button
               key={t.key}
@@ -613,8 +613,8 @@ export default function CampeonatoDetalle() {
               onClick={() => setTab(t.key)}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
                 tab === t.key
-                  ? 'border-slate-900 text-slate-900'
-                  : 'border-transparent text-slate-400 hover:text-slate-700'
+                  ? 'border-slate-900 dark:border-white text-slate-900 dark:text-white'
+                  : 'border-transparent text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
               }`}
             >
               {t.label}
@@ -674,17 +674,17 @@ export default function CampeonatoDetalle() {
             {tab === 'inscripciones' && (
               <div className="space-y-4 max-w-2xl">
                 {(puedeInscribirseAdmin || puedeInscribirseJugador) && (
-                  <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
-                    <p className="font-medium text-slate-800 mb-3 text-sm">{esAdminClub ? 'Agregar pareja' : 'Inscribir mi pareja'}</p>
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-200 dark:border-blue-900/50">
+                    <p className="font-medium text-slate-800 dark:text-slate-200 mb-3 text-sm">{esAdminClub ? 'Agregar pareja' : 'Inscribir mi pareja'}</p>
                     <div className="flex flex-wrap gap-2">
                       {categorias.length > 1 && (
                         <select value={categoriaInscripcion} onChange={(e) => setCategoriaInscripcion(e.target.value)}
-                          className="px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                          className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-sm bg-white">
                           {categorias.map((cat) => <option key={cat.id} value={cat.id}>{categoriaLabel(cat)}</option>)}
                         </select>
                       )}
                       <select value={parejaSeleccionada} onChange={(e) => setParejaSeleccionada(e.target.value)}
-                        className="px-3 py-2 rounded-lg border border-slate-300 text-sm flex-1 bg-white">
+                        className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-sm flex-1 bg-white">
                         <option value="">Seleccionar pareja...</option>
                         {parejasDisponibles
                           .filter((p) => !parejasInscritas.includes(p.id))
@@ -710,9 +710,9 @@ export default function CampeonatoDetalle() {
                 ) : (
                   <div className="space-y-2">
                     {inscripciones.map((i) => (
-                      <div key={i.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-200 hover:shadow-sm transition">
+                      <div key={i.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-sm transition">
                         <div>
-                          <span className="font-medium text-sm text-slate-800">
+                          <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
                             {i.pareja?.jugador1?.usuario?.nombre} / {i.pareja?.jugador2?.usuario?.nombre}
                           </span>
                           {i.categoria && (

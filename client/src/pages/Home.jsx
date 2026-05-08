@@ -53,7 +53,7 @@ export default function Home() {
       <section key={estado} className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
               {config.label}
             </h2>
             <p className="text-slate-500 text-sm mt-1">
@@ -78,7 +78,7 @@ export default function Home() {
                 <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold mb-3 ${config.tagBg}`}>
                   {config.label}
                 </span>
-                <h3 className="font-bold text-slate-900 text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
+                <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
                   {c.nombre}
                 </h3>
                 {c.categorias?.length > 0 && (
@@ -86,7 +86,7 @@ export default function Home() {
                     {c.categorias.map((cat) => cat.nombre || `${cat.categoria}ta ${cat.modalidad.charAt(0) + cat.modalidad.slice(1).toLowerCase()}`).join(' · ')}
                   </p>
                 )}
-                <div className="flex items-center justify-between text-xs text-slate-400 border-t border-slate-100 pt-3 mt-3">
+                <div className="flex items-center justify-between text-xs text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-3 mt-3">
                   <span>{formatDate(c.fechaInicio)} — {formatDate(c.fechaFin)}</span>
                   <span>{c._count?.inscripciones ?? 0} inscriptos</span>
                 </div>
@@ -146,7 +146,7 @@ export default function Home() {
       {!loading && campeonatos.length > 0 && (
         <section className="mb-20 grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="card p-8 text-center group">
-            <div className="text-4xl font-black text-slate-900 group-hover:text-padel-dark transition-colors">{campeonatos.length}</div>
+            <div className="text-4xl font-black text-slate-900 dark:text-white group-hover:text-padel-dark transition-colors">{campeonatos.length}</div>
             <p className="text-slate-500 text-sm mt-3 font-medium uppercase tracking-wider">Torneos Totales</p>
           </div>
           <div className="card p-8 text-center group">
@@ -171,9 +171,9 @@ export default function Home() {
             <p>Cargando campeonatos...</p>
           </div>
         ) : campeonatos.length === 0 ? (
-          <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-12 text-center border-2 border-dashed border-slate-300 shadow-sm">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">No hay campeonatos disponibles</h2>
-            <p className="text-slate-600 mb-6">Vuelve pronto para ver emocionantes torneos de pádel</p>
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-12 text-center border-2 border-dashed border-slate-300 dark:border-slate-700 shadow-sm">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No hay campeonatos disponibles</h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">Vuelve pronto para ver emocionantes torneos de pádel</p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
               <Link 
                 to="/campeonatos"

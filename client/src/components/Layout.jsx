@@ -3,6 +3,7 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useClub } from '../context/ClubContext';
+import { useTheme } from '../context/ThemeContext';
 
 function isAdminOfClub(user, club) {
   if (!user || !club) return false;
@@ -12,6 +13,7 @@ function isAdminOfClub(user, club) {
 export default function Layout() {
   const { club, clubs, selectClub } = useClub();
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const esAdminClub = isAdminOfClub(user, club);
@@ -42,7 +44,7 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header className="text-white shadow-lg border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,6 +97,10 @@ export default function Layout() {
                 Ranking
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
               </Link>
+
+              <button onClick={toggleTheme} className="text-lg p-1.5 rounded-full hover:bg-slate-800 transition-colors ml-2" title="Cambiar tema">
+                {theme === 'dark' ? '☀️' : '🌙'}
+              </button>
 
               {user ? (
                 <>
@@ -184,6 +190,14 @@ export default function Layout() {
                 </div>
               </div>
             )}
+
+            {/* Theme Toggle Mobile */}
+            <div className="flex items-center justify-between px-3 py-3 border-b border-slate-700 mb-2">
+              <span className="text-sm font-medium text-slate-300">Modo visual</span>
+              <button onClick={toggleTheme} className="text-xl p-1 rounded-md hover:bg-slate-800 transition-colors">
+                {theme === 'dark' ? '☀️' : '🌙'}
+              </button>
+            </div>
 
             {/* Nav links */}
             <Link to="/" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 font-medium text-sm transition">

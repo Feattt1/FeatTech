@@ -44,7 +44,29 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen flex flex-col relative">
+      {/* ── Decoración lateral (Solo Desktop > 2xl) ───────────────────────── */}
+      <div className="hidden 2xl:block fixed top-0 left-0 bottom-0 w-[500px] pointer-events-none z-0">
+        <motion.div
+          animate={{ y: [0, 15, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 opacity-10 dark:opacity-20"
+          style={{ WebkitMaskImage: 'radial-gradient(circle at left 40%, black 20%, transparent 80%)' }}
+        >
+          <img src="/images/bg-left.png" className="w-full h-full object-cover" alt="" />
+        </motion.div>
+      </div>
+
+      <div className="hidden 2xl:block fixed top-0 right-0 bottom-0 w-[500px] pointer-events-none z-0">
+        <motion.div
+          animate={{ y: [0, -15, 0] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute inset-0 opacity-10 dark:opacity-20"
+          style={{ WebkitMaskImage: 'radial-gradient(circle at right 40%, black 20%, transparent 80%)' }}
+        >
+          <img src="/images/bg-right.png" className="w-full h-full object-cover" alt="" />
+        </motion.div>
+      </div>
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <header className="text-white shadow-lg border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -267,7 +289,7 @@ export default function Layout() {
       </header>
 
       {/* ── Contenido principal ─────────────────────────────────────────────── */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 relative z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

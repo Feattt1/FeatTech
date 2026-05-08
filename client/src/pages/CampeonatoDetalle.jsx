@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { campeonatosApi, gruposApi, partidosApi, inscripcionesApi, parejasApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useClub } from '../context/ClubContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import ExportExcelButton from '../components/ExportExcelButton';
 
@@ -587,8 +588,9 @@ export default function CampeonatoDetalle() {
         {categorias.length > 1 && (
           <div className="flex gap-2 mb-6 overflow-x-auto pb-1 scrollbar-none flex-wrap">
             {categorias.map((cat) => (
-              <button
+              <motion.button
                 key={cat.id}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => { setCategoriaActiva(cat.id); setCategoriaInscripcion(cat.id); }}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${
                   categoriaActiva === cat.id
@@ -597,7 +599,7 @@ export default function CampeonatoDetalle() {
                 }`}
               >
                 {categoriaLabel(cat)}
-              </button>
+              </motion.button>
             ))}
           </div>
         )}
@@ -605,8 +607,9 @@ export default function CampeonatoDetalle() {
         {/* Tabs de sección */}
         <div className="flex gap-0 mb-6 border-b border-slate-200 overflow-x-auto scrollbar-none">
           {tabs.map((t) => (
-            <button
+            <motion.button
               key={t.key}
+              whileTap={{ scale: 0.95 }}
               onClick={() => setTab(t.key)}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
                 tab === t.key
@@ -615,120 +618,130 @@ export default function CampeonatoDetalle() {
               }`}
             >
               {t.label}
-            </button>
+            </motion.button>
           ))}
         </div>
 
-        {/* Partidos / Bracket */}
-        {tab === 'bracket' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <BracketCategoria partidos={partidosFiltrados} grupos={gruposFiltrados} />
-            </div>
-            {partidosFiltrados.some((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase)) && (
-              <div>
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bracket eliminatorio</h3>
-                  <ExportExcelButton 
-                    fileName="Bracket_Torneo.xlsx"
-                    sheetName="Eliminatorias"
-                    data={partidosFiltrados
-                      .filter((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase))
-                      .sort((a, b) => FASE_ORDER[a.fase] - FASE_ORDER[b.fase] || (a.ordenRonda || 0) - (b.ordenRonda || 0))
-                      .map((p, i) => ({
-                        'Fase': FASE_LABEL[p.fase] || p.fase,
-                        'Partido #': i + 1,
-                        'Pareja Local': parejaLabel(p.parejaLocal),
-                        'Pareja Visitante': parejaLabel(p.parejaVisitante),
-                        'Resultado': p.estado === 'FINALIZADO' ? setsLabel(p) : p.estado,
-                        'Ganador': getWinner(p) === 'local' ? parejaLabel(p.parejaLocal) : getWinner(p) === 'visitante' ? parejaLabel(p.parejaVisitante) : ''
-                      }))}
-                  />
-                </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`${tab}-${categoriaActiva}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Partidos / Bracket */}
+            {tab === 'bracket' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div>
-                  <BracketVisual partidos={partidosFiltrados} />
+                  <BracketCategoria partidos={partidosFiltrados} grupos={gruposFiltrados} />
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Posiciones por grupo */}
-        {tab === 'clasificacion' && <ClasificacionCategoria grupos={gruposFiltrados} />}
-
-        {/* Ranking global de categoría */}
-        {tab === 'ranking' && <RankingCategoria grupos={gruposFiltrados} />}
-
-        {/* Inscripciones */}
-        {tab === 'inscripciones' && (
-          <div className="space-y-4 max-w-2xl">
-            {(puedeInscribirseAdmin || puedeInscribirseJugador) && (
-              <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
-                <p className="font-medium text-slate-800 mb-3 text-sm">{esAdminClub ? 'Agregar pareja' : 'Inscribir mi pareja'}</p>
-                <div className="flex flex-wrap gap-2">
-                  {categorias.length > 1 && (
-                    <select value={categoriaInscripcion} onChange={(e) => setCategoriaInscripcion(e.target.value)}
-                      className="px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
-                      {categorias.map((cat) => <option key={cat.id} value={cat.id}>{categoriaLabel(cat)}</option>)}
-                    </select>
-                  )}
-                  <select value={parejaSeleccionada} onChange={(e) => setParejaSeleccionada(e.target.value)}
-                    className="px-3 py-2 rounded-lg border border-slate-300 text-sm flex-1 bg-white">
-                    <option value="">Seleccionar pareja...</option>
-                    {parejasDisponibles
-                      .filter((p) => !parejasInscritas.includes(p.id))
-                      .map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
-                        </option>
-                      ))}
-                  </select>
-                  <button onClick={handleInscribir} disabled={inscribiendo || !parejaSeleccionada}
-                    className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 disabled:opacity-50">
-                    {inscribiendo ? 'Agregando...' : 'Inscribir'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {inscripciones.length === 0 ? (
-              <div className="py-12 text-center">
-                <p className="text-3xl mb-2">📋</p>
-                <p className="text-slate-400">No hay inscripciones aún.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {inscripciones.map((i) => (
-                  <div key={i.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-200 hover:shadow-sm transition">
-                    <div>
-                      <span className="font-medium text-sm text-slate-800">
-                        {i.pareja?.jugador1?.usuario?.nombre} / {i.pareja?.jugador2?.usuario?.nombre}
-                      </span>
-                      {i.categoria && (
-                        <span className="ml-2 text-xs text-slate-400">{categoriaLabel(i.categoria)}</span>
-                      )}
+                {partidosFiltrados.some((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase)) && (
+                  <div>
+                    <div className="flex justify-between items-center mb-3">
+                      <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bracket eliminatorio</h3>
+                      <ExportExcelButton 
+                        fileName="Bracket_Torneo.xlsx"
+                        sheetName="Eliminatorias"
+                        data={partidosFiltrados
+                          .filter((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase))
+                          .sort((a, b) => FASE_ORDER[a.fase] - FASE_ORDER[b.fase] || (a.ordenRonda || 0) - (b.ordenRonda || 0))
+                          .map((p, i) => ({
+                            'Fase': FASE_LABEL[p.fase] || p.fase,
+                            'Partido #': i + 1,
+                            'Pareja Local': parejaLabel(p.parejaLocal),
+                            'Pareja Visitante': parejaLabel(p.parejaVisitante),
+                            'Resultado': p.estado === 'FINALIZADO' ? setsLabel(p) : p.estado,
+                            'Ganador': getWinner(p) === 'local' ? parejaLabel(p.parejaLocal) : getWinner(p) === 'visitante' ? parejaLabel(p.parejaVisitante) : ''
+                          }))}
+                      />
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                        i.estado === 'ACEPTADA'     ? 'bg-green-100 text-green-700' :
-                        i.estado === 'LISTA_ESPERA' ? 'bg-amber-100 text-amber-700' :
-                        'bg-slate-100 text-slate-500'
-                      }`}>
-                        {i.estado === 'ACEPTADA' ? 'Aceptada' : i.estado === 'LISTA_ESPERA' ? 'Lista espera' : i.estado}
-                      </span>
-                      {esAdminClub && (
-                        <button onClick={() => handleEliminarInscripcion(i.id)} disabled={eliminando === i.id}
-                          className="text-red-400 hover:text-red-600 text-xs disabled:opacity-50 transition">
-                          Quitar
-                        </button>
-                      )}
+                    <div>
+                      <BracketVisual partidos={partidosFiltrados} />
                     </div>
                   </div>
-                ))}
+                )}
               </div>
             )}
-          </div>
-        )}
+
+            {/* Posiciones por grupo */}
+            {tab === 'clasificacion' && <ClasificacionCategoria grupos={gruposFiltrados} />}
+
+            {/* Ranking global de categoría */}
+            {tab === 'ranking' && <RankingCategoria grupos={gruposFiltrados} />}
+
+            {/* Inscripciones */}
+            {tab === 'inscripciones' && (
+              <div className="space-y-4 max-w-2xl">
+                {(puedeInscribirseAdmin || puedeInscribirseJugador) && (
+                  <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <p className="font-medium text-slate-800 mb-3 text-sm">{esAdminClub ? 'Agregar pareja' : 'Inscribir mi pareja'}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {categorias.length > 1 && (
+                        <select value={categoriaInscripcion} onChange={(e) => setCategoriaInscripcion(e.target.value)}
+                          className="px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white">
+                          {categorias.map((cat) => <option key={cat.id} value={cat.id}>{categoriaLabel(cat)}</option>)}
+                        </select>
+                      )}
+                      <select value={parejaSeleccionada} onChange={(e) => setParejaSeleccionada(e.target.value)}
+                        className="px-3 py-2 rounded-lg border border-slate-300 text-sm flex-1 bg-white">
+                        <option value="">Seleccionar pareja...</option>
+                        {parejasDisponibles
+                          .filter((p) => !parejasInscritas.includes(p.id))
+                          .map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
+                            </option>
+                          ))}
+                      </select>
+                      <button onClick={handleInscribir} disabled={inscribiendo || !parejaSeleccionada}
+                        className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 disabled:opacity-50">
+                        {inscribiendo ? 'Agregando...' : 'Inscribir'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {inscripciones.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <p className="text-3xl mb-2">📋</p>
+                    <p className="text-slate-400">No hay inscripciones aún.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {inscripciones.map((i) => (
+                      <div key={i.id} className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-200 hover:shadow-sm transition">
+                        <div>
+                          <span className="font-medium text-sm text-slate-800">
+                            {i.pareja?.jugador1?.usuario?.nombre} / {i.pareja?.jugador2?.usuario?.nombre}
+                          </span>
+                          {i.categoria && (
+                            <span className="ml-2 text-xs text-slate-400">{categoriaLabel(i.categoria)}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                            i.estado === 'ACEPTADA'     ? 'bg-green-100 text-green-700' :
+                            i.estado === 'LISTA_ESPERA' ? 'bg-amber-100 text-amber-700' :
+                            'bg-slate-100 text-slate-500'
+                          }`}>
+                            {i.estado === 'ACEPTADA' ? 'Aceptada' : i.estado === 'LISTA_ESPERA' ? 'Lista espera' : i.estado}
+                          </span>
+                          {esAdminClub && (
+                            <button onClick={() => handleEliminarInscripcion(i.id)} disabled={eliminando === i.id}
+                              className="text-red-400 hover:text-red-600 text-xs disabled:opacity-50 transition">
+                              Quitar
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -66,10 +66,10 @@ export default function Home() {
             <Link
               key={c.id}
               to={`/campeonatos/${c.id}`}
-              className="group block bg-white rounded-xl border border-slate-200 hover:border-yellow-400 hover:shadow-md transition-all duration-200 overflow-hidden"
+              className="group card card-hover block overflow-hidden"
             >
-              <div className="h-1.5 bg-gradient-to-r from-yellow-400 to-yellow-500" />
-              <div className="p-5">
+              <div className="h-2 bg-gradient-to-r from-padel to-padel-dark group-hover:from-padel-light group-hover:to-padel transition-colors" />
+              <div className="p-6">
                 <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold mb-3 ${config.tagBg}`}>
                   {config.label}
                 </span>
@@ -97,37 +97,37 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <section className="mb-16 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+        <div className="relative overflow-hidden rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl">
           {/* Fondo decorativo */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-500 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-padel/20 rounded-full blur-[100px]"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-padel-dark/20 rounded-full blur-[100px]"></div>
           </div>
 
           {/* Contenido */}
-          <div className="relative z-10 px-6 py-16 sm:px-12 sm:py-20 text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Bienvenido a
-              <span className="block bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
+          <div className="relative z-10 px-6 py-20 sm:px-12 sm:py-24 text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
+              Bienvenido a <br/>
+              <span className="text-padel drop-shadow-[0_0_20px_rgba(204,255,0,0.4)]">
                 Torneos Padel UY
               </span>
             </h1>
-            <p className="text-lg sm:text-xl text-slate-300 mb-8 max-w-2xl mx-auto">
-              La plataforma completa para gestionar torneos de pádel. 
+            <p className="text-lg sm:text-xl text-slate-300 mb-10 max-w-2xl mx-auto font-light">
+              La plataforma premium para gestionar y vivir tus torneos de pádel. 
               Inscripciones, cruces, partidos y horarios en un solo lugar.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
               <Link 
                 to="/campeonatos"
-                className="px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 text-slate-900 font-bold rounded-lg hover:shadow-lg hover:shadow-yellow-500/50 transition-all transform hover:scale-105"
+                className="btn-primary w-full sm:w-auto"
               >
                 Explorar Torneos →
               </Link>
               <a 
                 href="#campeonatos"
-                className="px-8 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-slate-900 transition-all"
+                className="px-8 py-3 text-white font-medium hover:text-padel transition-colors"
               >
-                Ir a Torneos ↓
+                Ver más ↓
               </a>
             </div>
           </div>
@@ -136,22 +136,22 @@ export default function Home() {
 
       {/* Estadísticas rápidas */}
       {!loading && campeonatos.length > 0 && (
-        <section className="mb-16 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-slate-200 hover:border-yellow-400 transition text-center">
-            <div className="text-3xl font-bold text-slate-900">{campeonatos.length}</div>
-            <p className="text-slate-600 text-sm mt-2">Torneos Totales</p>
+        <section className="mb-20 grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="card p-8 text-center group">
+            <div className="text-4xl font-black text-slate-900 group-hover:text-padel-dark transition-colors">{campeonatos.length}</div>
+            <p className="text-slate-500 text-sm mt-3 font-medium uppercase tracking-wider">Torneos Totales</p>
           </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-slate-200 hover:border-yellow-400 transition text-center">
-            <div className="text-3xl font-bold text-blue-600">{campeonatosPorEstado.INSCRIPCIONES.length}</div>
-            <p className="text-slate-600 text-sm mt-2">En Inscripciones</p>
+          <div className="card p-8 text-center group">
+            <div className="text-4xl font-black text-blue-600 group-hover:text-blue-500 transition-colors">{campeonatosPorEstado.INSCRIPCIONES.length}</div>
+            <p className="text-slate-500 text-sm mt-3 font-medium uppercase tracking-wider">En Inscripciones</p>
           </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-slate-200 hover:border-yellow-400 transition text-center">
-            <div className="text-3xl font-bold text-green-600">{campeonatosPorEstado.EN_CURSO.length}</div>
-            <p className="text-slate-600 text-sm mt-2">En Curso</p>
+          <div className="card p-8 text-center group">
+            <div className="text-4xl font-black text-padel-dark group-hover:text-padel transition-colors">{campeonatosPorEstado.EN_CURSO.length}</div>
+            <p className="text-slate-500 text-sm mt-3 font-medium uppercase tracking-wider">En Curso</p>
           </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-slate-200 hover:border-yellow-400 transition text-center">
-            <div className="text-3xl font-bold text-slate-500">{campeonatosPorEstado.FINALIZADO.length}</div>
-            <p className="text-slate-600 text-sm mt-2">Finalizados</p>
+          <div className="card p-8 text-center group">
+            <div className="text-4xl font-black text-slate-400">{campeonatosPorEstado.FINALIZADO.length}</div>
+            <p className="text-slate-500 text-sm mt-3 font-medium uppercase tracking-wider">Finalizados</p>
           </div>
         </section>
       )}

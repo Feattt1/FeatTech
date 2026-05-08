@@ -55,8 +55,8 @@ function PartidoCard({ p }) {
   } else { sL = p.setsLocal ?? 0; sV = p.setsVisitante ?? 0; }
 
   return (
-    <div className={`p-4 bg-white rounded-xl border transition-shadow hover:shadow-sm ${
-      p.estado === 'FINALIZADO' ? 'border-slate-200' : 'border-blue-100 bg-blue-50/30'
+    <div className={`card p-5 ${
+      p.estado === 'FINALIZADO' ? 'border-slate-100' : 'border-padel bg-padel/5 shadow-neon'
     }`}>
       {fecha && (
         <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
@@ -127,32 +127,32 @@ function ClasificacionCategoria({ grupos }) {
   return (
     <div className="space-y-6">
       {grupos.map((g) => (
-        <div key={g.id} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <h3 className="font-semibold px-4 py-3 bg-slate-50 text-slate-700 text-sm border-b border-slate-200">{g.nombre}</h3>
+        <div key={g.id} className="card overflow-hidden">
+          <h3 className="font-bold px-5 py-4 bg-slate-900 text-white text-sm border-b border-slate-800">{g.nombre}</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="table-premium">
               <thead>
-                <tr className="text-left text-xs text-slate-500 uppercase tracking-wide">
-                  <th className="px-4 py-2.5">#</th>
-                  <th className="px-4 py-2.5">Pareja</th>
-                  <th className="px-4 py-2.5 text-center">Pts</th>
-                  <th className="px-4 py-2.5 text-center">PJ</th>
-                  <th className="px-4 py-2.5 text-center">PG</th>
-                  <th className="px-4 py-2.5 text-center">S+</th>
-                  <th className="px-4 py-2.5 text-center">S-</th>
-                  <th className="px-4 py-2.5 text-center hidden sm:table-cell">G+</th>
-                  <th className="px-4 py-2.5 text-center hidden sm:table-cell">G-</th>
+                <tr>
+                  <th>#</th>
+                  <th>Pareja</th>
+                  <th className="text-center">Pts</th>
+                  <th className="text-center">PJ</th>
+                  <th className="text-center">PG</th>
+                  <th className="text-center">S+</th>
+                  <th className="text-center">S-</th>
+                  <th className="text-center hidden sm:table-cell">G+</th>
+                  <th className="text-center hidden sm:table-cell">G-</th>
                 </tr>
               </thead>
               <tbody>
                 {(g.clasificaciones ?? [])
                   .sort((a, b) => b.puntos - a.puntos || b.setsGanados - a.setsGanados || b.gamesGanados - a.gamesGanados)
                   .map((cl, idx) => (
-                    <tr key={cl.id} className={`border-t border-slate-100 ${idx < 2 ? 'bg-green-50/60' : 'hover:bg-slate-50'}`}>
-                      <td className="px-4 py-3 text-slate-400 text-xs">{idx + 1}</td>
-                      <td className="px-4 py-3 font-medium text-slate-800">
+                    <tr key={cl.id} className={`${idx < 2 ? 'bg-padel/10' : ''}`}>
+                      <td className="font-bold text-slate-400 text-xs">{idx + 1}</td>
+                      <td className="font-bold text-slate-800">
                         {cl.pareja?.jugador1?.usuario?.nombre} / {cl.pareja?.jugador2?.usuario?.nombre}
-                        {idx < 2 && <span className="ml-1.5 text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-semibold">Clasifica</span>}
+                        {idx < 2 && <span className="ml-2 text-[10px] bg-padel text-slate-900 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Clasifica</span>}
                       </td>
                       <td className="px-4 py-3 text-center font-bold text-blue-600">{cl.puntos}</td>
                       <td className="px-4 py-3 text-center text-slate-600">{cl.partidosJugados}</td>

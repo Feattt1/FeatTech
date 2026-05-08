@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { campeonatosApi, gruposApi, partidosApi, inscripcionesApi, parejasApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useClub } from '../context/ClubContext';
-import ExportPDFButton from '../components/ExportPDFButton';
+
 import ExportExcelButton from '../components/ExportExcelButton';
 
 const MODALIDAD_LABEL = { MASCULINO: 'Masculino', FEMENINO: 'Femenino', MIXTO: 'Mixto' };
@@ -629,7 +629,21 @@ export default function CampeonatoDetalle() {
               <div>
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bracket eliminatorio</h3>
-                  <ExportPDFButton targetId="bracket-visual-container" fileName="Bracket_Torneo.pdf" />
+                  <ExportExcelButton 
+                    fileName="Bracket_Torneo.xlsx"
+                    sheetName="Eliminatorias"
+                    data={partidosFiltrados
+                      .filter((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase))
+                      .sort((a, b) => FASE_ORDER[a.fase] - FASE_ORDER[b.fase] || (a.ordenRonda || 0) - (b.ordenRonda || 0))
+                      .map((p, i) => ({
+                        'Fase': FASE_LABEL[p.fase] || p.fase,
+                        'Partido #': i + 1,
+                        'Pareja Local': parejaLabel(p.parejaLocal),
+                        'Pareja Visitante': parejaLabel(p.parejaVisitante),
+                        'Resultado': p.estado === 'FINALIZADO' ? setsLabel(p) : p.estado,
+                        'Ganador': getWinner(p) === 'local' ? parejaLabel(p.parejaLocal) : getWinner(p) === 'visitante' ? parejaLabel(p.parejaVisitante) : ''
+                      }))}
+                  />
                 </div>
                 <div id="bracket-visual-container" className="bg-slate-950 p-4 rounded-xl shadow-glass overflow-hidden">
                   <BracketVisual partidos={partidosFiltrados} />

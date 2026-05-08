@@ -75,7 +75,7 @@ function PartidoCard({ p }) {
 
   return (
     <div className={`card p-5 ${
-      p.estado === 'FINALIZADO' ? 'border-slate-100' : 'border-padel bg-padel/5 shadow-neon'
+      p.estado === 'FINALIZADO' ? 'border-slate-100 dark:border-slate-700 dark:bg-slate-800' : 'border-padel bg-padel/5 shadow-neon dark:bg-padel/10 dark:border-padel/60'
     }`}>
       {fecha && (
         <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
@@ -83,15 +83,15 @@ function PartidoCard({ p }) {
         </p>
       )}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className={`font-medium text-sm flex-1 min-w-[120px] ${res && sL > sV ? 'text-blue-700 font-bold' : 'text-slate-700'}`}>
+        <span className={`font-medium text-sm flex-1 min-w-[120px] ${res && sL > sV ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}>
           {parejaLabel(p.parejaLocal)}
         </span>
         {res ? (
-          <span className="font-bold text-blue-600 text-sm bg-blue-50 px-2 py-0.5 rounded shrink-0">{res}</span>
+          <span className="font-bold text-blue-600 dark:text-blue-400 text-sm bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded shrink-0">{res}</span>
         ) : (
-          <span className="text-slate-300 text-sm shrink-0 font-light">vs</span>
+          <span className="text-slate-300 dark:text-slate-600 text-sm shrink-0 font-light">vs</span>
         )}
-        <span className={`font-medium text-sm flex-1 min-w-[120px] text-right ${res && sV > sL ? 'text-blue-700 font-bold' : 'text-slate-700'}`}>
+        <span className={`font-medium text-sm flex-1 min-w-[120px] text-right ${res && sV > sL ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}>
           {parejaLabel(p.parejaVisitante)}
         </span>
       </div>
@@ -679,12 +679,12 @@ export default function CampeonatoDetalle() {
                     <div className="flex flex-wrap gap-2">
                       {categorias.length > 1 && (
                         <select value={categoriaInscripcion} onChange={(e) => setCategoriaInscripcion(e.target.value)}
-                          className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-sm bg-white">
+                          className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white text-sm bg-white">
                           {categorias.map((cat) => <option key={cat.id} value={cat.id}>{categoriaLabel(cat)}</option>)}
                         </select>
                       )}
                       <select value={parejaSeleccionada} onChange={(e) => setParejaSeleccionada(e.target.value)}
-                        className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white text-sm flex-1 bg-white">
+                        className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white text-sm flex-1 bg-white">
                         <option value="">Seleccionar pareja...</option>
                         {parejasDisponibles
                           .filter((p) => !parejasInscritas.includes(p.id))

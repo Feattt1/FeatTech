@@ -92,12 +92,12 @@ export default function Layout() {
                     {club?.nombre || 'Club'} ▾
                   </motion.button>
                   {clubAbierto && (
-                    <div className="absolute top-full left-0 mt-2 py-2 bg-white rounded-xl shadow-2xl text-slate-900 min-w-[200px] z-50 border border-slate-100 animate-fade-in origin-top-left">
+                    <div className="absolute top-full left-0 mt-2 py-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xl text-slate-900 dark:text-slate-200 min-w-[200px] z-50 border border-slate-100 dark:border-slate-700 animate-fade-in origin-top-left">
                       {clubs.map((c) => (
                         <button
                           key={c.id}
                           onClick={() => { selectClub(c); setClubAbierto(false); }}
-                          className={`block w-full text-left px-4 py-3 hover:bg-padel/10 text-sm border-b border-slate-100 last:border-0 transition-colors ${club?.id === c.id ? 'font-bold bg-padel/20 text-slate-900' : ''}`}
+                          className={`block w-full text-left px-4 py-3 hover:bg-padel/10 text-sm border-b border-slate-100 dark:border-slate-700 last:border-0 transition-colors ${club?.id === c.id ? 'font-bold bg-padel/20 text-slate-900' : ''}`}
                         >
                           {c.nombre}
                         </button>
@@ -146,11 +146,11 @@ export default function Layout() {
                         Admin ▾
                       </motion.button>
                       {adminAbierto && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl py-2 border border-slate-100 z-50 animate-fade-in origin-top-right">
-                          <Link to="/admin/campeonatos" onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 font-medium transition-colors hover:pl-5">Campeonatos</Link>
-                          <Link to="/admin/jugadores"   onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 transition-colors hover:pl-5">Jugadores</Link>
-                          <Link to="/admin/parejas"     onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 transition-colors hover:pl-5">Parejas</Link>
-                          <Link to="/admin/clubs"       onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 transition-colors hover:pl-5">Clubes</Link>
+                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl py-2 border border-slate-100 dark:border-slate-700 z-50 animate-fade-in origin-top-right">
+                          <Link to="/admin/campeonatos" onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 font-medium transition-colors hover:pl-5">Campeonatos</Link>
+                          <Link to="/admin/jugadores"   onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 transition-colors hover:pl-5">Jugadores</Link>
+                          <Link to="/admin/parejas"     onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 transition-colors hover:pl-5">Parejas</Link>
+                          <Link to="/admin/clubs"       onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 transition-colors hover:pl-5">Clubes</Link>
                         </div>
                       )}
                     </div>

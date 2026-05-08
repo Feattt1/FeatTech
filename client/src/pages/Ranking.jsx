@@ -4,9 +4,9 @@ import { clubsApi } from '../services/api';
 import ExportExcelButton from '../components/ExportExcelButton';
 
 const MEDALLAS = [
-  <span className="text-yellow-600 dark:text-yellow-400 font-black">1º</span>,
-  <span className="text-slate-500 dark:text-slate-300 font-black">2º</span>,
-  <span className="text-orange-600 dark:text-orange-400 font-black">3º</span>
+  <span className="text-yellow-600 dark:text-yellow-400 font-black dark:drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]">1º</span>,
+  <span className="text-slate-500 dark:text-slate-300 font-black dark:drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]">2º</span>,
+  <span className="text-orange-600 dark:text-orange-400 font-black dark:drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]">3º</span>
 ];
 const ROW_BG = ['bg-yellow-50', 'bg-slate-50 dark:bg-slate-900', 'bg-orange-50/40'];
 const MODALIDAD_LABEL = { MASCULINO: 'Masc.', FEMENINO: 'Fem.', MIXTO: 'Mixto' };
@@ -160,10 +160,10 @@ export default function Ranking() {
                     className={`flex flex-col items-center justify-end ${minHeights[visualIdx]} rounded-xl border-2 ${colors[visualIdx]} p-3 text-center transition-colors`}
                   >
                     <span className="text-3xl mb-2">{MEDALLAS[realIdx]}</span>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                    <p className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
                       {parejaLabel(r.pareja)}
                     </p>
-                    <p className="text-sm font-bold text-blue-600 mt-1">{r.puntos} pts</p>
+                    <p className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1">{r.puntos} pts</p>
                   </div>
                 );
               })}
@@ -175,7 +175,7 @@ export default function Ranking() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 dark:bg-slate-900 text-left text-xs text-slate-500 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700">
+                  <tr className="bg-slate-50 dark:bg-slate-900 text-left text-xs text-slate-500 dark:text-slate-300 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700">
                     <th className="px-4 py-3 w-10">#</th>
                     <th className="px-4 py-3">Pareja</th>
                     <th className="px-4 py-3 text-center">Torneos</th>
@@ -203,16 +203,16 @@ export default function Ranking() {
                         }
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">{parejaLabel(r.pareja)}</span>
+                        <span className="font-semibold text-slate-900 dark:text-white">{parejaLabel(r.pareja)}</span>
                       </td>
-                      <td className="px-4 py-3 text-center text-slate-500">{r.torneos}</td>
-                      <td className="px-4 py-3 text-center font-bold text-blue-600 text-base">{r.puntos}</td>
-                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.partidosJugados}</td>
-                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.partidosGanados}</td>
-                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.setsGanados}</td>
-                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.setsPerdidos}</td>
-                      <td className="px-4 py-3 text-center text-slate-500 hidden sm:table-cell">{r.gamesGanados}</td>
-                      <td className="px-4 py-3 text-center text-slate-500 hidden sm:table-cell">{r.gamesPerdidos}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">{r.torneos}</td>
+                      <td className="px-4 py-3 text-center font-bold text-blue-600 dark:text-blue-400 text-base">{r.puntos}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">{r.partidosJugados}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">{r.partidosGanados}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">{r.setsGanados}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-300">{r.setsPerdidos}</td>
+                      <td className="px-4 py-3 text-center text-slate-500 dark:text-slate-400 hidden sm:table-cell">{r.gamesGanados}</td>
+                      <td className="px-4 py-3 text-center text-slate-500 dark:text-slate-400 hidden sm:table-cell">{r.gamesPerdidos}</td>
                     </tr>
                   ))}
                 </tbody>

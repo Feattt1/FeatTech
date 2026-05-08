@@ -33,15 +33,15 @@ export default function Home() {
   const estadoConfig = {
     INSCRIPCIONES: {
       label: 'Inscripciones Abiertas',
-      tagBg: 'bg-blue-100 text-blue-700'
+      tagBg: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
     },
     EN_CURSO: {
       label: 'En Curso',
-      tagBg: 'bg-green-100 text-green-700'
+      tagBg: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
     },
     FINALIZADO: {
       label: 'Finalizados',
-      tagBg: 'bg-slate-200 text-slate-700 dark:text-slate-300'
+      tagBg: 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
     },
   };
 

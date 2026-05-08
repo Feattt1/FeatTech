@@ -222,9 +222,9 @@ function RankingCategoria({ grupos }) {
   );
 
   const medalas = [
-    <span className="text-yellow-600 dark:text-yellow-400 font-black">1º</span>,
-    <span className="text-slate-500 dark:text-slate-300 font-black">2º</span>,
-    <span className="text-orange-600 dark:text-orange-400 font-black">3º</span>
+    <span className="text-yellow-600 dark:text-yellow-400 font-black dark:drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]">1º</span>,
+    <span className="text-slate-500 dark:text-slate-300 font-black dark:drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]">2º</span>,
+    <span className="text-orange-600 dark:text-orange-400 font-black dark:drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]">3º</span>
   ];
 
   return (

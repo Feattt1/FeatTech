@@ -88,7 +88,7 @@ export default function AdminClubs() {
         </Link>
       </div>
 
-      <p className="text-slate-600 mb-6">
+      <p className="text-slate-600 dark:text-slate-400 mb-6">
         {esAdminPlataforma
           ? 'Como admin de plataforma puedes crear clubes y asignar admins a cada uno.'
           : 'Eres admin del club actual. Solo puedes gestionar los datos de tu(s) club(es).'}
@@ -106,7 +106,7 @@ export default function AdminClubs() {
       )}
 
       {mostrarForm && (
-        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white rounded-xl border border-slate-200 max-w-md">
+        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 max-w-md">
           <h2 className="text-xl font-semibold mb-4">Crear club</h2>
           {error && <div className="p-3 rounded-lg bg-red-100 text-red-700 mb-4">{error}</div>}
           <div className="flex gap-2">
@@ -116,7 +116,7 @@ export default function AdminClubs() {
               onChange={(e) => setNombre(e.target.value)}
               placeholder="Nombre del club"
               required
-              className="flex-1 px-4 py-2 rounded-lg border border-slate-300"
+              className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
             />
             <button
               type="submit"
@@ -131,7 +131,7 @@ export default function AdminClubs() {
 
       <div className="space-y-4">
         {clubs.map((c) => (
-          <div key={c.id} className="p-4 bg-white rounded-xl border border-slate-200">
+          <div key={c.id} className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
             <div className="flex justify-between items-center flex-wrap gap-4">
               <span className="font-medium text-lg">{c.nombre}</span>
               {esAdminPlataforma && (
@@ -141,7 +141,7 @@ export default function AdminClubs() {
                     placeholder="Email del usuario a asignar como admin"
                     value={emailAdmin[c.id] || ''}
                     onChange={(e) => setEmailAdmin((p) => ({ ...p, [c.id]: e.target.value }))}
-                    className="px-3 py-1.5 rounded-lg border border-slate-300 text-sm w-64"
+                    className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm w-64"
                   />
                   <button
                     type="button"
@@ -163,10 +163,10 @@ export default function AdminClubs() {
               )}
             </div>
             {adminsPorClub[c.id]?.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-slate-100">
+              <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
                 <span className="text-sm text-slate-500">Admins: </span>
                 {adminsPorClub[c.id].map((a) => (
-                  <span key={a.id} className="text-sm text-slate-700 mr-2">
+                  <span key={a.id} className="text-sm text-slate-700 dark:text-slate-300 mr-2">
                     {a.usuario?.nombre} ({a.usuario?.email})
                   </span>
                 ))}

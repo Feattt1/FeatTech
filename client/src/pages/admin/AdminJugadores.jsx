@@ -83,9 +83,9 @@ export default function AdminJugadores() {
       </div>
 
       {mostrarForm && (
-        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white rounded-xl border border-slate-200 max-w-lg">
+        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 max-w-lg">
           <h2 className="text-xl font-semibold mb-4">Crear jugador</h2>
-          <p className="text-sm text-slate-600 mb-4">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
             Crea jugadores para el club. Si no indicas email, se generará uno automático. Contraseña por defecto: Padel2024
           </p>
           <div className="space-y-4">
@@ -97,7 +97,7 @@ export default function AdminJugadores() {
                 value={form.nombre}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               />
             </div>
             <div>
@@ -108,7 +108,7 @@ export default function AdminJugadores() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="Si vacío, se genera automáticamente"
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               />
             </div>
             <div>
@@ -118,13 +118,13 @@ export default function AdminJugadores() {
                 type="tel"
                 value={form.telefono}
                 onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Categoría (1-7)</label>
-                <select name="categoria" value={form.categoria} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-300">
+                <select name="categoria" value={form.categoria} onChange={handleChange} className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600">
                   {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                     <option key={n} value={n}>{n}ª</option>
                   ))}
@@ -138,7 +138,7 @@ export default function AdminJugadores() {
                   value={form.nivel}
                   onChange={handleChange}
                   placeholder="Ej: Principiante"
-                  className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
                 />
               </div>
             </div>
@@ -152,14 +152,14 @@ export default function AdminJugadores() {
       {loading ? (
         <div className="text-slate-500">Cargando...</div>
       ) : jugadores.length === 0 ? (
-        <div className="bg-slate-100 rounded-xl p-8 text-center text-slate-600">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-8 text-center text-slate-600 dark:text-slate-400">
           No hay jugadores. Crea el primero.
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-slate-100 text-left">
+              <tr className="bg-slate-100 dark:bg-slate-800 text-left">
                 <th className="p-3">Nombre</th>
                 <th className="p-3">Email</th>
                 <th className="p-3">Teléfono</th>
@@ -169,12 +169,12 @@ export default function AdminJugadores() {
             </thead>
             <tbody>
               {jugadores.map((j) => (
-                <tr key={j.id} className="border-t border-slate-200">
+                <tr key={j.id} className="border-t border-slate-200 dark:border-slate-700">
                   <td className="p-3 font-medium">{j.usuario?.nombre}</td>
-                  <td className="p-3 text-slate-600">{j.usuario?.email}</td>
-                  <td className="p-3 text-slate-600">{j.usuario?.telefono || '-'}</td>
+                  <td className="p-3 text-slate-600 dark:text-slate-400">{j.usuario?.email}</td>
+                  <td className="p-3 text-slate-600 dark:text-slate-400">{j.usuario?.telefono || '-'}</td>
                   <td className="p-3">{j.categoria}ª</td>
-                  <td className="p-3 text-slate-600">{j.nivel || '-'}</td>
+                  <td className="p-3 text-slate-600 dark:text-slate-400">{j.nivel || '-'}</td>
                 </tr>
               ))}
             </tbody>

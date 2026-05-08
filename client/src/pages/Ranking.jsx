@@ -4,7 +4,7 @@ import { clubsApi } from '../services/api';
 import ExportExcelButton from '../components/ExportExcelButton';
 
 const MEDALLAS = ['🥇', '🥈', '🥉'];
-const ROW_BG = ['bg-yellow-50', 'bg-slate-50', 'bg-orange-50/40'];
+const ROW_BG = ['bg-yellow-50', 'bg-slate-50 dark:bg-slate-900', 'bg-orange-50/40'];
 const MODALIDAD_LABEL = { MASCULINO: 'Masc.', FEMENINO: 'Fem.', MIXTO: 'Mixto' };
 
 function parejaLabel(pareja) {
@@ -54,7 +54,7 @@ export default function Ranking() {
         <div className="flex flex-col sm:flex-row sm:items-end gap-3 justify-between">
           <div className="flex flex-col gap-3">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Ranking anual</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">Ranking anual</h1>
               <p className="text-slate-500 text-sm mt-1">
                 Acumulado de puntos en todos los torneos del club.
               </p>
@@ -87,7 +87,7 @@ export default function Ranking() {
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
                   year === y
                     ? 'bg-slate-900 text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
                 }`}
               >
                 {y}
@@ -109,7 +109,7 @@ export default function Ranking() {
                 className={`px-3 py-1.5 rounded-full text-sm font-medium transition border ${
                   sel
                     ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'
+                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-slate-400'
                 }`}
               >
                 {catLabel(cat)}
@@ -122,7 +122,7 @@ export default function Ranking() {
       {loading ? (
         <div className="space-y-3">
           {[1,2,3,4,5].map((i) => (
-            <div key={i} className="h-14 rounded-xl bg-slate-100 animate-pulse" />
+            <div key={i} className="h-14 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse" />
           ))}
         </div>
       ) : error ? (
@@ -130,7 +130,7 @@ export default function Ranking() {
           {error}
         </div>
       ) : ranking.length === 0 ? (
-        <div className="py-20 text-center border-2 border-dashed border-slate-200 rounded-2xl">
+        <div className="py-20 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl">
           <p className="text-4xl mb-3">🏆</p>
           <p className="text-slate-500 font-medium">Sin datos para {year}</p>
           <p className="text-slate-400 text-sm mt-1">
@@ -147,7 +147,7 @@ export default function Ranking() {
                 const realIdx = visualIdx === 0 ? 1 : visualIdx === 1 ? 0 : 2;
                 const minHeights = ['min-h-28', 'min-h-36', 'min-h-24'];
                 const colors = [
-                  'border-slate-300 bg-slate-50',
+                  'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-900',
                   'border-yellow-300 bg-yellow-50',
                   'border-orange-200 bg-orange-50/60',
                 ];
@@ -157,7 +157,7 @@ export default function Ranking() {
                     className={`flex flex-col items-center justify-end ${minHeights[visualIdx]} rounded-xl border-2 ${colors[visualIdx]} p-3 text-center`}
                   >
                     <span className="text-2xl mb-1">{MEDALLAS[realIdx]}</span>
-                    <p className="text-xs font-bold text-slate-800 leading-snug">
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug">
                       {parejaLabel(r.pareja)}
                     </p>
                     <p className="text-sm font-bold text-blue-600 mt-1">{r.puntos} pts</p>
@@ -168,11 +168,11 @@ export default function Ranking() {
           )}
 
           {/* Tabla completa */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 text-left text-xs text-slate-500 uppercase tracking-wide border-b border-slate-200">
+                  <tr className="bg-slate-50 dark:bg-slate-900 text-left text-xs text-slate-500 uppercase tracking-wide border-b border-slate-200 dark:border-slate-700">
                     <th className="px-4 py-3 w-10">#</th>
                     <th className="px-4 py-3">Pareja</th>
                     <th className="px-4 py-3 text-center">Torneos</th>
@@ -189,8 +189,8 @@ export default function Ranking() {
                   {ranking.map((r, idx) => (
                     <tr
                       key={r.parejaId}
-                      className={`border-t border-slate-100 transition-colors ${
-                        idx < 3 ? ROW_BG[idx] : 'hover:bg-slate-50'
+                      className={`border-t border-slate-100 dark:border-slate-700 transition-colors ${
+                        idx < 3 ? ROW_BG[idx] : 'hover:bg-slate-50 dark:hover:bg-slate-800'
                       }`}
                     >
                       <td className="px-4 py-3 text-center font-bold leading-none">
@@ -200,14 +200,14 @@ export default function Ranking() {
                         }
                       </td>
                       <td className="px-4 py-3">
-                        <span className="font-semibold text-slate-800">{parejaLabel(r.pareja)}</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">{parejaLabel(r.pareja)}</span>
                       </td>
                       <td className="px-4 py-3 text-center text-slate-500">{r.torneos}</td>
                       <td className="px-4 py-3 text-center font-bold text-blue-600 text-base">{r.puntos}</td>
-                      <td className="px-4 py-3 text-center text-slate-600">{r.partidosJugados}</td>
-                      <td className="px-4 py-3 text-center text-slate-600">{r.partidosGanados}</td>
-                      <td className="px-4 py-3 text-center text-slate-600">{r.setsGanados}</td>
-                      <td className="px-4 py-3 text-center text-slate-600">{r.setsPerdidos}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.partidosJugados}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.partidosGanados}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.setsGanados}</td>
+                      <td className="px-4 py-3 text-center text-slate-600 dark:text-slate-400">{r.setsPerdidos}</td>
                       <td className="px-4 py-3 text-center text-slate-500 hidden sm:table-cell">{r.gamesGanados}</td>
                       <td className="px-4 py-3 text-center text-slate-500 hidden sm:table-cell">{r.gamesPerdidos}</td>
                     </tr>

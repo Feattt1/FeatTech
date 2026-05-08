@@ -134,7 +134,7 @@ export default function AdminHorarios() {
       )}
 
       {/* Formulario */}
-      <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 mb-6">
         <h2 className="text-lg font-semibold mb-4">
           {form.fecha && disponibilidades.find((d) => dateToInput(d.fecha) === form.fecha)
             ? 'Editar disponibilidad'
@@ -149,7 +149,7 @@ export default function AdminHorarios() {
               min={fechaMin}
               max={fechaMax}
               onChange={(e) => setForm((f) => ({ ...f, fecha: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
               required
             />
           </div>
@@ -160,7 +160,7 @@ export default function AdminHorarios() {
               type="number" min={1} max={50}
               value={form.cantidadCanchas}
               onChange={(e) => setForm((f) => ({ ...f, cantidadCanchas: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
             />
           </div>
 
@@ -170,7 +170,7 @@ export default function AdminHorarios() {
               type="time"
               value={form.horaInicio}
               onChange={(e) => setForm((f) => ({ ...f, horaInicio: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
             />
           </div>
 
@@ -180,7 +180,7 @@ export default function AdminHorarios() {
               type="time"
               value={form.horaFin}
               onChange={(e) => setForm((f) => ({ ...f, horaFin: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
             />
           </div>
 
@@ -189,7 +189,7 @@ export default function AdminHorarios() {
             <select
               value={form.duracionMinutos}
               onChange={(e) => setForm((f) => ({ ...f, duracionMinutos: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
             >
               <option value={60}>60 min (1 hora)</option>
               <option value={90}>90 min (1h 30min)</option>
@@ -246,7 +246,7 @@ export default function AdminHorarios() {
             {disponibilidades.map((d) => {
               const slots = calcularSlots(d);
               return (
-                <div key={d.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200">
+                <div key={d.id} className="flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
                   <div>
                     <p className="font-medium text-sm capitalize">{formatFecha(d.fecha)}</p>
                     <p className="text-xs text-slate-500 mt-0.5">

@@ -15,7 +15,7 @@ function categoriaLabel(cat) {
 
 function AccionBtn({ onClick, disabled, children, color = 'slate' }) {
   const colors = {
-    slate:  'bg-slate-100 hover:bg-slate-200 text-slate-700',
+    slate:  'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300',
     blue:   'bg-blue-100 hover:bg-blue-200 text-blue-700',
     green:  'bg-green-100 hover:bg-green-200 text-green-700',
     yellow: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-800',
@@ -228,7 +228,7 @@ export default function AdminCampeonatoEditar() {
     <div className="max-w-2xl">
       <div className="h-4 w-40 bg-slate-200 rounded animate-pulse mb-6" />
       <div className="space-y-4">
-        {[1,2,3,4].map(i => <div key={i} className="h-12 bg-slate-100 rounded-xl animate-pulse" />)}
+        {[1,2,3,4].map(i => <div key={i} className="h-12 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
       </div>
     </div>
   );
@@ -261,14 +261,14 @@ export default function AdminCampeonatoEditar() {
 
       {/* ── Título ── */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
           {esNuevo ? 'Nuevo torneo' : (form.nombre || 'Editar torneo')}
         </h1>
         {!esNuevo && (
           <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
             form.estado === 'INSCRIPCIONES' ? 'bg-blue-50 text-blue-700 border-blue-200' :
             form.estado === 'EN_CURSO'      ? 'bg-green-50 text-green-700 border-green-200' :
-            'bg-slate-100 text-slate-500 border-slate-200'
+            'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700'
           }`}>
             {form.estado === 'INSCRIPCIONES' ? 'Inscripciones' : form.estado === 'EN_CURSO' ? 'En curso' : 'Finalizado'}
           </span>
@@ -294,36 +294,36 @@ export default function AdminCampeonatoEditar() {
       <form onSubmit={handleSubmit} className="space-y-5">
 
         {/* ── Datos básicos ── */}
-        <section className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
-          <h2 className="font-semibold text-slate-800">Datos del torneo</h2>
+        <section className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 space-y-4">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200">Datos del torneo</h2>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Nombre del torneo *</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nombre del torneo *</label>
             <input
               name="nombre" type="text" value={form.nombre} onChange={handleChange} required
               placeholder="Ej: Copa Primavera 2026"
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Descripción</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Descripción</label>
             <textarea
               name="descripcion" value={form.descripcion} onChange={handleChange} rows={2}
               placeholder="Descripción opcional..."
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm resize-none"
+              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Imagen de portada (URL)</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Imagen de portada (URL)</label>
             <input
               name="imagenPortada" type="url" value={form.imagenPortada} onChange={handleChange}
               placeholder="https://ejemplo.com/imagen.jpg"
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm"
+              className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
             />
             {form.imagenPortada && (
-              <div className="mt-2 rounded-lg overflow-hidden h-24 bg-slate-100">
+              <div className="mt-2 rounded-lg overflow-hidden h-24 bg-slate-100 dark:bg-slate-800">
                 <img src={form.imagenPortada} alt="Portada" className="w-full h-full object-cover" onError={(e) => e.target.style.display='none'} />
               </div>
             )}
@@ -331,35 +331,35 @@ export default function AdminCampeonatoEditar() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Inicio del torneo *</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Inicio del torneo *</label>
               <input name="fechaInicio" type="datetime-local" value={form.fechaInicio} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm" />
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Fin del torneo *</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Fin del torneo *</label>
               <input name="fechaFin" type="datetime-local" value={form.fechaFin} onChange={handleChange} required
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm" />
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Inscripciones desde</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Inscripciones desde</label>
               <input name="fechaInscripcionInicio" type="datetime-local" value={form.fechaInscripcionInicio} onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm" />
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Inscripciones hasta</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Inscripciones hasta</label>
               <input name="fechaInscripcionFin" type="datetime-local" value={form.fechaInscripcionFin} onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm" />
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm" />
             </div>
           </div>
 
           {!esNuevo && (
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Estado</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Estado</label>
               <select name="estado" value={form.estado} onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm bg-white">
+                className="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-sm bg-white dark:bg-slate-800">
                 <option value="INSCRIPCIONES">Inscripciones abiertas</option>
                 <option value="EN_CURSO">En curso</option>
                 <option value="FINALIZADO">Finalizado</option>
@@ -369,9 +369,9 @@ export default function AdminCampeonatoEditar() {
         </section>
 
         {/* ── Categorías ── */}
-        <section className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <section className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-slate-800">Categorías</h2>
+            <h2 className="font-semibold text-slate-800 dark:text-slate-200">Categorías</h2>
             <span className="text-xs text-slate-400">
               {categorias.length === 0 ? 'Ninguna agregada' : `${categorias.length} agregada${categorias.length !== 1 ? 's' : ''}`}
             </span>
@@ -380,10 +380,10 @@ export default function AdminCampeonatoEditar() {
           {categorias.length > 0 && (
             <div className="space-y-3">
               {categorias.map((cat, i) => (
-                <div key={cat.id ?? i} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div key={cat.id ?? i} className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-3">
                   <div className="flex items-center justify-between mb-2">
                     <div>
-                      <span className="font-semibold text-sm text-slate-800">{categoriaLabel(cat)}</span>
+                      <span className="font-semibold text-sm text-slate-800 dark:text-slate-200">{categoriaLabel(cat)}</span>
                       {cat.maxParejas && (
                         <span className="ml-2 text-xs text-slate-500">máx. {cat.maxParejas} parejas</span>
                       )}
@@ -398,7 +398,7 @@ export default function AdminCampeonatoEditar() {
                   </div>
 
                   {!esNuevo && cat.id && (
-                    <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200">
+                    <div className="flex flex-wrap gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
                       <AccionBtn onClick={() => handleGenerarGrupos(cat.id)} disabled={generandoGrupos} color="slate">
                         Generar grupos
                       </AccionBtn>
@@ -417,12 +417,12 @@ export default function AdminCampeonatoEditar() {
 
           {/* Formulario agregar categoría */}
           <div className="pt-2">
-            <p className="text-xs font-medium text-slate-600 mb-2">Agregar categoría</p>
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Agregar categoría</p>
             <div className="flex flex-wrap gap-2">
               <select
                 value={catForm.categoria}
                 onChange={(e) => setCatForm((f) => ({ ...f, categoria: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white"
+                className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm bg-white dark:bg-slate-800"
               >
                 {[1,2,3,4,5,6,7].map((n) => (
                   <option key={n} value={n}>{n}ta categoría</option>
@@ -431,7 +431,7 @@ export default function AdminCampeonatoEditar() {
               <select
                 value={catForm.modalidad}
                 onChange={(e) => setCatForm((f) => ({ ...f, modalidad: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-300 text-sm bg-white"
+                className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm bg-white dark:bg-slate-800"
               >
                 {MODALIDAD_OPTS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
@@ -441,7 +441,7 @@ export default function AdminCampeonatoEditar() {
                 type="number" min={1} placeholder="Máx. parejas"
                 value={catForm.maxParejas}
                 onChange={(e) => setCatForm((f) => ({ ...f, maxParejas: e.target.value }))}
-                className="w-32 px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                className="w-32 px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
               />
               <button
                 type="button"
@@ -456,7 +456,7 @@ export default function AdminCampeonatoEditar() {
         </section>
 
         {/* ── Acciones principales ── */}
-        <section className="bg-white rounded-xl border border-slate-200 p-5">
+        <section className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5">
           <div className="flex flex-wrap gap-3">
             <button
               type="submit" disabled={saving}
@@ -476,7 +476,7 @@ export default function AdminCampeonatoEditar() {
 
             <Link
               to="/admin/campeonatos"
-              className="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium text-sm hover:bg-slate-50 transition"
+              className="px-6 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition"
             >
               Cancelar
             </Link>

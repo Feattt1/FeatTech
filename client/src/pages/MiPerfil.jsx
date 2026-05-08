@@ -104,7 +104,7 @@ export default function MiPerfil() {
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Perfil de jugador</h2>
         {jugador ? (
-          <div className="p-4 bg-white rounded-xl border border-slate-200">
+          <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
             <p><strong>Categoría:</strong> {jugador.categoria}ª</p>
             <p><strong>Nivel:</strong> {jugador.nivel || '-'}</p>
           </div>
@@ -115,7 +115,7 @@ export default function MiPerfil() {
               <select
                 value={formJugador.categoria}
                 onChange={(e) => setFormJugador((f) => ({ ...f, categoria: parseInt(e.target.value, 10) }))}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                   <option key={n} value={n}>{n}ª categoría</option>
@@ -129,7 +129,7 @@ export default function MiPerfil() {
                 value={formJugador.nivel}
                 onChange={(e) => setFormJugador((f) => ({ ...f, nivel: e.target.value }))}
                 placeholder="ej: Principiante, Intermedio..."
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               />
             </div>
             <button
@@ -153,7 +153,7 @@ export default function MiPerfil() {
               value={formPassword.actual}
               onChange={(e) => setFormPassword((f) => ({ ...f, actual: e.target.value }))}
               required
-              className="w-full px-4 py-2 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
             />
           </div>
           <div>
@@ -164,7 +164,7 @@ export default function MiPerfil() {
               onChange={(e) => setFormPassword((f) => ({ ...f, nueva: e.target.value }))}
               required
               minLength={6}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
             />
           </div>
           <div>
@@ -175,7 +175,7 @@ export default function MiPerfil() {
               onChange={(e) => setFormPassword((f) => ({ ...f, repetir: e.target.value }))}
               required
               minLength={6}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
             />
           </div>
           <button
@@ -193,9 +193,9 @@ export default function MiPerfil() {
         {parejas.length > 0 && (
           <div className="space-y-2 mb-6">
             {parejas.map((p) => (
-              <div key={p.id} className="p-3 bg-white rounded-lg border border-slate-200">
+              <div key={p.id} className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                 {p.nombre ? <p className="font-medium">{p.nombre}</p> : null}
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-slate-600 dark:text-slate-400">
                   {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
                 </p>
               </div>
@@ -203,7 +203,7 @@ export default function MiPerfil() {
           </div>
         )}
         <form onSubmit={handleCrearPareja} className="space-y-4 max-w-md">
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Para crear una pareja, selecciona dos jugadores (deben tener perfil de jugador).
           </p>
           <div className="grid grid-cols-2 gap-4">
@@ -212,7 +212,7 @@ export default function MiPerfil() {
               <select
                 value={formPareja.jugador1Id}
                 onChange={(e) => setFormPareja((f) => ({ ...f, jugador1Id: e.target.value }))}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Selecciona</option>
                 {jugadores.map((j) => (
@@ -227,7 +227,7 @@ export default function MiPerfil() {
               <select
                 value={formPareja.jugador2Id}
                 onChange={(e) => setFormPareja((f) => ({ ...f, jugador2Id: e.target.value }))}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Selecciona</option>
                 {jugadores.map((j) => (
@@ -245,7 +245,7 @@ export default function MiPerfil() {
               value={formPareja.nombre}
               onChange={(e) => setFormPareja((f) => ({ ...f, nombre: e.target.value }))}
               placeholder="ej: Los Campeones"
-              className="w-full px-4 py-2 rounded-lg border border-slate-300"
+              className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
             />
           </div>
           <button

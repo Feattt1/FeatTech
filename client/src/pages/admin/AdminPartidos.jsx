@@ -169,12 +169,12 @@ function PartidoRow({ p, onEditar, partidoEditando, sets, onSetsChange, onGuarda
   const esperandoM1 = p.fase === 'GRUPOS' && p.ordenRonda > 1 && !p.parejaLocal && p.estado !== 'FINALIZADO';
 
   return (
-    <div className={`flex flex-wrap items-start gap-3 p-4 bg-white rounded-xl border ${
-      esperandoM1 ? 'border-slate-100 opacity-70' : 'border-slate-200'
+    <div className={`flex flex-wrap items-start gap-3 p-4 bg-white dark:bg-slate-800 rounded-xl border ${
+      esperandoM1 ? 'border-slate-100 dark:border-slate-700 opacity-70' : 'border-slate-200 dark:border-slate-700'
     }`}>
       <div className="flex flex-col gap-1 shrink-0">
         <span className={`text-xs px-2 py-0.5 rounded font-medium ${
-          p.fase === 'GRUPOS' ? 'bg-slate-200 text-slate-700' : 'bg-yellow-300 text-slate-900'
+          p.fase === 'GRUPOS' ? 'bg-slate-200 text-slate-700 dark:text-slate-300' : 'bg-yellow-300 text-slate-900 dark:text-slate-100'
         }`}>
           {p.fase === 'GRUPOS' ? (p.grupo?.nombre || 'Grupo') : p.fase}
         </span>
@@ -183,11 +183,11 @@ function PartidoRow({ p, onEditar, partidoEditando, sets, onSetsChange, onGuarda
 
       {/* Horario: mostrar o editar con selector */}
       {editandoHorario ? (
-        <div className="flex flex-wrap items-center gap-2 bg-slate-50 p-2 rounded-lg border border-slate-200 shrink-0">
+        <div className="flex flex-wrap items-center gap-2 bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-200 dark:border-slate-700 shrink-0">
           <select
             value={slotSel}
             onChange={(e) => setSlotSel(e.target.value)}
-            className="text-xs border border-slate-300 rounded px-2 py-1.5 bg-white max-w-[260px]"
+            className="text-xs border border-slate-300 dark:border-slate-600 rounded px-2 py-1.5 bg-white dark:bg-slate-800 max-w-[260px]"
           >
             <option value="">— Sin horario —</option>
             {Object.entries(slotsPorFecha).map(([fechaLabel, slots]) => (
@@ -225,8 +225,8 @@ function PartidoRow({ p, onEditar, partidoEditando, sets, onSetsChange, onGuarda
           onClick={abrirEditHorario}
           className={`text-xs px-2 py-1 rounded border transition shrink-0 ${
             fecha
-              ? 'text-slate-600 bg-slate-50 border-slate-200 hover:bg-slate-100'
-              : 'text-slate-400 border-dashed border-slate-300 hover:border-slate-400 hover:text-slate-500'
+              ? 'text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+              : 'text-slate-400 border-dashed border-slate-300 dark:border-slate-600 hover:border-slate-400 hover:text-slate-500'
           }`}
         >
           {fecha ? `${fecha}${p.pista ? ` · ${p.pista}` : ''}` : '+ Asignar horario'}
@@ -492,7 +492,7 @@ export default function AdminPartidos() {
 
       {/* Tabs de categorías — scrollable horizontal en mobile */}
       {categorias.length > 1 && (
-        <div className="flex gap-1 mb-6 border-b border-slate-200 overflow-x-auto pb-px -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
+        <div className="flex gap-1 mb-6 border-b border-slate-200 dark:border-slate-700 overflow-x-auto pb-px -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
           <button
             onClick={() => setCategoriaActiva(null)}
             className={`shrink-0 px-3 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
@@ -548,9 +548,9 @@ export default function AdminPartidos() {
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {grupos.map((grupo) => (
-                <div key={grupo.id} className="border border-slate-200 rounded-xl p-4 bg-white">
+                <div key={grupo.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-white dark:bg-slate-800">
                   <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
-                    <h3 className="font-semibold text-slate-800">{grupo.nombre}</h3>
+                    <h3 className="font-semibold text-slate-800 dark:text-slate-200">{grupo.nombre}</h3>
                     <div className="flex gap-1 flex-wrap">
                       {grupo.clasificaciones.length === 3 && (
                         <button
@@ -576,7 +576,7 @@ export default function AdminPartidos() {
                     <ul className="space-y-2 mb-3">
                       {grupo.clasificaciones.map((c) => (
                         <li key={c.parejaId} className="flex items-center justify-between text-sm">
-                          <span className="text-slate-700">{parejaLabel(c.pareja)}</span>
+                          <span className="text-slate-700 dark:text-slate-300">{parejaLabel(c.pareja)}</span>
                           <button
                             onClick={() => handleQuitarPareja(grupo.id, c.parejaId)}
                             className="text-red-500 hover:text-red-700 text-xs px-2 py-0.5 rounded hover:bg-red-50"
@@ -589,11 +589,11 @@ export default function AdminPartidos() {
                   )}
 
                   {disponibles.length > 0 && (
-                    <div className="flex gap-2 pt-2 border-t border-slate-100">
+                    <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
                       <select
                         value={seleccionEnGrupo[grupo.id] || ''}
                         onChange={(e) => setSeleccionEnGrupo((prev) => ({ ...prev, [grupo.id]: e.target.value }))}
-                        className="flex-1 text-xs border border-slate-200 rounded px-2 py-1 bg-white"
+                        className="flex-1 text-xs border border-slate-200 dark:border-slate-700 rounded px-2 py-1 bg-white dark:bg-slate-800"
                       >
                         <option value="">Agregar pareja...</option>
                         {disponibles.map((i) => (

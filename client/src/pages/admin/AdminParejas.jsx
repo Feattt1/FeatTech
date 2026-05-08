@@ -67,7 +67,7 @@ export default function AdminParejas() {
       </div>
 
       {mostrarForm && (
-        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white rounded-xl border border-slate-200 max-w-lg">
+        <form onSubmit={handleSubmit} className="mb-8 p-6 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 max-w-lg">
           <h2 className="text-xl font-semibold mb-4">Crear pareja</h2>
           {error && <div className="p-3 rounded-lg bg-red-100 text-red-700 mb-4">{error}</div>}
           <div className="space-y-4">
@@ -77,7 +77,7 @@ export default function AdminParejas() {
                 value={form.jugador1Id}
                 onChange={(e) => setForm((f) => ({ ...f, jugador1Id: e.target.value }))}
                 required
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Selecciona</option>
                 {jugadores.map((j) => (
@@ -93,7 +93,7 @@ export default function AdminParejas() {
                 value={form.jugador2Id}
                 onChange={(e) => setForm((f) => ({ ...f, jugador2Id: e.target.value }))}
                 required
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Selecciona</option>
                 {jugadores.map((j) => (
@@ -108,7 +108,7 @@ export default function AdminParejas() {
               <select
                 value={form.tipoPareja}
                 onChange={(e) => setForm((f) => ({ ...f, tipoPareja: e.target.value }))}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="ABIERTO">Abierto</option>
                 <option value="MASCULINO">Masculino</option>
@@ -122,7 +122,7 @@ export default function AdminParejas() {
                 value={form.nombre}
                 onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
                 placeholder="Ej: Los Campeones"
-                className="w-full px-4 py-2 rounded-lg border border-slate-300"
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               />
             </div>
             <button type="submit" disabled={creando} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50">
@@ -135,19 +135,19 @@ export default function AdminParejas() {
       {loading ? (
         <div className="text-slate-500">Cargando...</div>
       ) : parejas.length === 0 ? (
-        <div className="bg-slate-100 rounded-xl p-8 text-center text-slate-600">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-8 text-center text-slate-600 dark:text-slate-400">
           No hay parejas. Crea jugadores primero y luego parejas.
         </div>
       ) : (
         <div className="space-y-2">
           {parejas.map((p) => (
-            <div key={p.id} className="p-4 bg-white rounded-xl border border-slate-200 flex justify-between items-center">
+            <div key={p.id} className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex justify-between items-center">
               <div>
-                {p.nombre && <span className="font-medium text-slate-800">{p.nombre} — </span>}
-                <span className="text-slate-600">
+                {p.nombre && <span className="font-medium text-slate-800 dark:text-slate-200">{p.nombre} — </span>}
+                <span className="text-slate-600 dark:text-slate-400">
                   {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
                 </span>
-                <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                   {p.tipoPareja === 'ABIERTO' ? 'Abierto' : p.tipoPareja === 'MASCULINO' ? 'Masculino' : 'Femenino'}
                 </span>
               </div>

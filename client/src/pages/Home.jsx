@@ -41,7 +41,7 @@ export default function Home() {
     },
     FINALIZADO: {
       label: 'Finalizados',
-      tagBg: 'bg-slate-200 text-slate-700'
+      tagBg: 'bg-slate-200 text-slate-700 dark:text-slate-300'
     },
   };
 
@@ -53,7 +53,7 @@ export default function Home() {
       <section key={estado} className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white">
               {config.label}
             </h2>
             <p className="text-slate-500 text-sm mt-1">
@@ -78,7 +78,7 @@ export default function Home() {
                 <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold mb-3 ${config.tagBg}`}>
                   {config.label}
                 </span>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
+                <h3 className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
                   {c.nombre}
                 </h3>
                 {c.categorias?.length > 0 && (
@@ -146,7 +146,7 @@ export default function Home() {
       {!loading && campeonatos.length > 0 && (
         <section className="mb-20 grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="card p-8 text-center group">
-            <div className="text-4xl font-black text-slate-900 dark:text-white group-hover:text-padel-dark transition-colors">{campeonatos.length}</div>
+            <div className="text-4xl font-black text-slate-900 dark:text-slate-100 dark:text-white group-hover:text-padel-dark transition-colors">{campeonatos.length}</div>
             <p className="text-slate-500 text-sm mt-3 font-medium uppercase tracking-wider">Torneos Totales</p>
           </div>
           <div className="card p-8 text-center group">
@@ -171,8 +171,8 @@ export default function Home() {
             <p>Cargando campeonatos...</p>
           </div>
         ) : campeonatos.length === 0 ? (
-          <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-12 text-center border-2 border-dashed border-slate-300 dark:border-slate-700 shadow-sm">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">No hay campeonatos disponibles</h2>
+          <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-2xl p-12 text-center border-2 border-dashed border-slate-300 dark:border-slate-600 dark:border-slate-700 shadow-sm">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mb-2">No hay campeonatos disponibles</h2>
             <p className="text-slate-600 dark:text-slate-400 mb-6">Vuelve pronto para ver emocionantes torneos de pádel</p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
               <Link 

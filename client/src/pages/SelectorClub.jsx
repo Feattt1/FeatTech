@@ -24,7 +24,7 @@ function FormularioPrimerClub({ onCreado }) {
 
   return (
     <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center max-w-md shadow-sm">
-      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Crear primer club</h2>
+      <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mb-2">Crear primer club</h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">No hay clubes registrados. Creá uno para comenzar.</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
@@ -41,7 +41,7 @@ function FormularioPrimerClub({ onCreado }) {
           disabled={creando}
           whileHover={!creando ? { scale: 1.02 } : {}}
           whileTap={!creando ? { scale: 0.98 } : {}}
-          className="w-full px-4 py-3 rounded-lg text-slate-900 font-bold bg-yellow-400 hover:bg-yellow-500 disabled:opacity-50 transition"
+          className="w-full px-4 py-3 rounded-lg text-slate-900 dark:text-slate-100 font-bold bg-yellow-400 hover:bg-yellow-500 disabled:opacity-50 transition"
         >
           {creando ? 'Creando...' : 'Crear club'}
         </motion.button>
@@ -54,9 +54,9 @@ export default function SelectorClub() {
   const { clubs, clubsLoading, clubsError, loadClubs, selectClub } = useClub();
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-12 bg-slate-50">
+    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-12 bg-slate-50 dark:bg-slate-900">
       <div className="text-center mb-12">
-        <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100 dark:text-white mb-3 tracking-tight">
           Championship Padel
         </h1>
         <p className="text-lg text-slate-500 max-w-xl mx-auto">
@@ -74,7 +74,7 @@ export default function SelectorClub() {
             <h2 className="text-xl font-bold text-red-900 dark:text-red-400 mb-2">Error de conexión</h2>
             <p className="text-red-700 dark:text-red-500 mb-4">{clubsError}</p>
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-6">
-              Asegurate de que el servidor esté corriendo con <code className="bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded font-mono">npm run dev</code>
+              Asegurate de que el servidor esté corriendo con <code className="bg-slate-100 dark:bg-slate-800 dark:bg-slate-900 px-2 py-1 rounded font-mono">npm run dev</code>
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -100,7 +100,7 @@ export default function SelectorClub() {
                 className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center font-bold text-lg hover:border-yellow-400 dark:hover:border-yellow-400 hover:shadow-md transition-all duration-200 group"
               >
                 <p className="text-xs text-slate-400 uppercase tracking-widest mb-2 font-medium">Club</p>
-                <p className="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-yellow-600 transition">{c.nombre}</p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 dark:text-white group-hover:text-yellow-600 transition">{c.nombre}</p>
               </motion.button>
             ))}
           </div>

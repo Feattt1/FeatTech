@@ -8,7 +8,7 @@ const ESTADOS = { INSCRIPCIONES: 'Inscripciones abiertas', EN_CURSO: 'En curso',
 const estadoBadge = {
   INSCRIPCIONES: 'bg-blue-100 text-blue-700',
   EN_CURSO: 'bg-green-100 text-green-700',
-  FINALIZADO: 'bg-slate-100 text-slate-600',
+  FINALIZADO: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400',
 };
 
 export default function Campeonatos() {
@@ -32,7 +32,7 @@ export default function Campeonatos() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-1">Torneos</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-1">Torneos</h1>
         <p className="text-slate-500">{club?.nombre}</p>
       </div>
 
@@ -44,8 +44,8 @@ export default function Campeonatos() {
             onClick={() => setFiltro({ estado: k })}
             className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
               filtro.estado === k
-                ? 'bg-padel text-slate-900 shadow-neon transform scale-105'
-                : 'bg-white border-2 border-slate-100 text-slate-500 hover:border-padel hover:text-slate-800 hover:shadow-glass'
+                ? 'bg-padel text-slate-900 dark:text-slate-100 shadow-neon transform scale-105'
+                : 'bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 text-slate-500 hover:border-padel hover:text-slate-800 hover:shadow-glass'
             }`}
           >
             {k === '' ? 'Todos' : ESTADOS[k]}
@@ -56,8 +56,8 @@ export default function Campeonatos() {
       {loading ? (
         <div className="py-16 text-center text-slate-400">Cargando torneos...</div>
       ) : campeonatos.length === 0 ? (
-        <div className="py-16 text-center border-2 border-dashed border-slate-200 rounded-xl">
-          <p className="text-xl font-semibold text-slate-700 mb-1">Sin resultados</p>
+        <div className="py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl">
+          <p className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-1">Sin resultados</p>
           <p className="text-slate-500 mb-4">No hay torneos para el filtro seleccionado.</p>
           <button
             onClick={() => setFiltro({ estado: '' })}
@@ -100,7 +100,7 @@ export default function Campeonatos() {
                       {ESTADOS[c.estado] ?? c.estado}
                     </span>
                   )}
-                  <h3 className="font-black text-slate-900 text-lg mb-1 group-hover:text-padel-dark transition-colors line-clamp-2">
+                  <h3 className="font-black text-slate-900 dark:text-slate-100 text-lg mb-1 group-hover:text-padel-dark transition-colors line-clamp-2">
                     {c.nombre}
                   </h3>
                   {c.categorias?.length > 0 && (
@@ -108,7 +108,7 @@ export default function Campeonatos() {
                       {c.categorias.map((cat) => cat.nombre || `${cat.categoria}ta ${cat.modalidad.charAt(0) + cat.modalidad.slice(1).toLowerCase()}`).join(' · ')}
                     </p>
                   )}
-                  <div className="flex items-center justify-between text-xs text-slate-400 border-t border-slate-100 pt-3 mt-3">
+                  <div className="flex items-center justify-between text-xs text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-3 mt-3">
                     <span>{formatDate(c.fechaInicio)} — {formatDate(c.fechaFin)}</span>
                     <span>{c._count?.inscripciones ?? 0} inscriptos</span>
                   </div>

@@ -146,7 +146,7 @@ export default function AdminGestionarPartidos() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200 mb-6">
+      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700 mb-6">
         {[
           { key: 'partidos', label: `Partidos (${partidos.length})` },
           { key: 'cronograma', label: `Cronograma (${conHorario.length})` },
@@ -158,7 +158,7 @@ export default function AdminGestionarPartidos() {
             className={`px-4 py-2 font-medium transition ${
               tab === t.key
                 ? 'border-b-2 border-blue-600 text-blue-600'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
           >
             {t.label}
@@ -170,7 +170,7 @@ export default function AdminGestionarPartidos() {
       {tab === 'partidos' && (
         <div>
           <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-slate-700 dark:text-slate-300">
               <strong>{conHorario.length}</strong> partidos con horario asignado
               <br />
               <strong>{sinHorario.length}</strong> partidos sin horario
@@ -178,7 +178,7 @@ export default function AdminGestionarPartidos() {
           </div>
 
           {/* Formulario Asignar */}
-          <div className="bg-white border border-slate-200 rounded-lg p-6 mb-6">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 mb-6">
             <h2 className="text-lg font-semibold mb-4">
               {editandoPartidoId ? 'Modificar horario' : 'Asignar horario a partido'}
             </h2>
@@ -191,7 +191,7 @@ export default function AdminGestionarPartidos() {
                     setFormHorario((prev) => ({ ...prev, partidoId: e.target.value }));
                     setEditandoPartidoId(e.target.value);
                   }}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
                 >
                   <option value="">Seleccionar...</option>
                   {(editandoPartidoId ? conHorario : sinHorario).map((p) => (
@@ -207,7 +207,7 @@ export default function AdminGestionarPartidos() {
                   type="date"
                   value={formHorario.fecha}
                   onChange={(e) => setFormHorario((prev) => ({ ...prev, fecha: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
                 />
               </div>
               <div>
@@ -216,7 +216,7 @@ export default function AdminGestionarPartidos() {
                   type="time"
                   value={formHorario.hora}
                   onChange={(e) => setFormHorario((prev) => ({ ...prev, hora: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
                 />
               </div>
               <div>
@@ -226,7 +226,7 @@ export default function AdminGestionarPartidos() {
                   placeholder="ej: 1, 2, A, B"
                   value={formHorario.cancha}
                   onChange={(e) => setFormHorario((prev) => ({ ...prev, cancha: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm"
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-sm"
                 />
               </div>
               <div className="flex items-end">
@@ -322,13 +322,13 @@ export default function AdminGestionarPartidos() {
           ) : (
             <div className="grid md:grid-cols-2 gap-6">
               {Object.entries(cronogramaObj).map(([cancha, ps]) => (
-                <div key={cancha} className="bg-white border border-slate-200 rounded-lg p-4">
+                <div key={cancha} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
                   <h3 className="font-semibold text-lg mb-4 text-blue-600">🏀 Cancha {cancha}</h3>
                   <div className="space-y-3">
                     {ps.map((p) => (
-                      <div key={p.id} className="bg-slate-50 rounded p-3 text-sm border-l-4 border-blue-600">
+                      <div key={p.id} className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm border-l-4 border-blue-600">
                         <p className="font-medium">{formatearFecha(p.fechaHora)} {formatearHora(p.fechaHora)}</p>
-                        <p className="text-slate-600">
+                        <p className="text-slate-600 dark:text-slate-400">
                           {p.parejaLocal?.nombre || 'TBD'} vs {p.parejaVisitante?.nombre || 'TBD'}
                         </p>
                       </div>
@@ -343,7 +343,7 @@ export default function AdminGestionarPartidos() {
 
       {/* ─── MOVER PAREJAS ─── */}
       {tab === 'mover' && (
-        <div className="bg-white border border-slate-200 rounded-lg p-6">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
           <h2 className="text-lg font-semibold mb-4">Mover pareja entre grupos</h2>
           <form onSubmit={handleMoverPareja} className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -351,7 +351,7 @@ export default function AdminGestionarPartidos() {
               <select
                 value={formMover.parejaId}
                 onChange={(e) => setFormMover((prev) => ({ ...prev, parejaId: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Seleccionar...</option>
                 {partidos.map((p) => [p.parejaLocal, p.parejaVisitante])
@@ -371,7 +371,7 @@ export default function AdminGestionarPartidos() {
               <select
                 value={formMover.grupoActual}
                 onChange={(e) => setFormMover((prev) => ({ ...prev, grupoActual: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Seleccionar...</option>
                 {grupos.map((g) => (
@@ -386,7 +386,7 @@ export default function AdminGestionarPartidos() {
               <select
                 value={formMover.grupoNuevo}
                 onChange={(e) => setFormMover((prev) => ({ ...prev, grupoNuevo: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg border border-slate-300"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="">Seleccionar...</option>
                 {grupos.map((g) => (

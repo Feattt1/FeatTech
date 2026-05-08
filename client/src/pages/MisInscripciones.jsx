@@ -29,7 +29,7 @@ export default function MisInscripciones() {
       {loading ? (
         <div className="text-slate-500">Cargando...</div>
       ) : inscripciones.length === 0 ? (
-        <div className="bg-slate-100 rounded-xl p-8 text-center text-slate-600">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-8 text-center text-slate-600 dark:text-slate-400">
           No tienes inscripciones.
           <Link to="/campeonatos" className="block mt-2 text-blue-600 hover:underline">
             Ver campeonatos disponibles
@@ -41,7 +41,7 @@ export default function MisInscripciones() {
             <Link
               key={i.id}
               to={`/campeonatos/${i.campeonatoId}`}
-              className="block p-4 bg-white rounded-xl shadow border border-slate-200 hover:shadow-lg transition"
+              className="block p-4 bg-white dark:bg-slate-800 rounded-xl shadow border border-slate-200 dark:border-slate-700 hover:shadow-lg transition"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -49,7 +49,7 @@ export default function MisInscripciones() {
                   <p className="text-sm text-slate-500 mt-1">
                     {formatDate(i.campeonato?.fechaInicio)} - {formatDate(i.campeonato?.fechaFin)}
                   </p>
-                  <p className="text-sm text-slate-600 mt-2">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
                     Pareja: {i.pareja?.jugador1?.usuario?.nombre} / {i.pareja?.jugador2?.usuario?.nombre}
                   </p>
                 </div>
@@ -57,7 +57,7 @@ export default function MisInscripciones() {
                   i.estado === 'ACEPTADA' ? 'bg-green-100 text-green-700' :
                   i.estado === 'LISTA_ESPERA' ? 'bg-amber-100 text-amber-700' :
                   i.estado === 'PENDIENTE' ? 'bg-blue-100 text-blue-700' :
-                  'bg-slate-100 text-slate-600'
+                  'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                 }`}>
                   {i.estado} {i.posicionLista && `#${i.posicionLista}`}
                 </span>

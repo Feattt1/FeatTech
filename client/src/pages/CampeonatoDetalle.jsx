@@ -5,8 +5,24 @@ import { useAuth } from '../context/AuthContext';
 import { useClub } from '../context/ClubContext';
 
 const MODALIDAD_LABEL = { MASCULINO: 'Masculino', FEMENINO: 'Femenino', MIXTO: 'Mixto' };
-const FASE_LABEL = { GRUPOS: 'Grupos', CUARTOS: 'Cuartos de final', SEMIS: 'Semifinales', FINAL: 'Final' };
-const FASE_ORDER = { GRUPOS: 0, CUARTOS: 1, SEMIS: 2, FINAL: 3 };
+const FASE_LABEL = { 
+  GRUPOS: 'Grupos', 
+  TREINTAIDOSAVOS: '32avos de final', 
+  DIECISEISAVOS: '16avos de final', 
+  OCTAVOS: 'Octavos de final', 
+  CUARTOS: 'Cuartos de final', 
+  SEMIS: 'Semifinales', 
+  FINAL: 'Final' 
+};
+const FASE_ORDER = { 
+  GRUPOS: 0, 
+  TREINTAIDOSAVOS: 1, 
+  DIECISEISAVOS: 2, 
+  OCTAVOS: 3, 
+  CUARTOS: 4, 
+  SEMIS: 5, 
+  FINAL: 6 
+};
 
 const ESTADO_CONFIG = {
   INSCRIPCIONES: { label: 'Inscripciones abiertas', color: 'bg-blue-500/20 text-blue-200 border-blue-400/30' },
@@ -276,7 +292,8 @@ function BracketMatchCard({ partido }) {
 }
 
 function BracketVisual({ partidos }) {
-  const eliPartidos = partidos.filter((p) => ['CUARTOS', 'SEMIS', 'FINAL'].includes(p.fase));
+  const fasesEliminatorias = ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS', 'SEMIS', 'FINAL'];
+  const eliPartidos = partidos.filter((p) => fasesEliminatorias.includes(p.fase));
   if (eliPartidos.length === 0) return (
     <div className="py-12 text-center card bg-slate-50/50 border-dashed border-2 border-slate-200">
       <p className="text-slate-500 font-medium">El bracket se generará cuando finalicen los grupos.</p>
@@ -284,11 +301,13 @@ function BracketVisual({ partidos }) {
   );
 
   const byFase = (fase) => eliPartidos.filter((p) => p.fase === fase).sort((a, b) => (a.ordenRonda || 0) - (b.ordenRonda || 0));
-  const cuartos = byFase('CUARTOS'), semis = byFase('SEMIS'), final_ = byFase('FINAL');
   const rounds = [];
-  if (cuartos.length) rounds.push({ label: 'Cuartos de final', matches: cuartos });
-  if (semis.length) rounds.push({ label: 'Semifinales', matches: semis });
-  if (final_.length) rounds.push({ label: 'Final', matches: final_ });
+  fasesEliminatorias.forEach((faseKey) => {
+    const matches = byFase(faseKey);
+    if (matches.length > 0) {
+      rounds.push({ label: FASE_LABEL[faseKey], matches });
+    }
+  });
   if (!rounds.length) return null;
 
   const CARD_W = 216, CARD_H = 65, SIB_GAP = 16, COL_GAP = 44, COL_W = CARD_W + COL_GAP, LABEL_H = 32, PAD = 24;
@@ -565,7 +584,7 @@ export default function CampeonatoDetalle() {
             <div>
               <BracketCategoria partidos={partidosFiltrados} grupos={gruposFiltrados} />
             </div>
-            {partidosFiltrados.some((p) => ['CUARTOS','SEMIS','FINAL'].includes(p.fase)) && (
+            {partidosFiltrados.some((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase)) && (
               <div>
                 <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Bracket eliminatorio</h3>
                 <BracketVisual partidos={partidosFiltrados} />

@@ -36,6 +36,9 @@ enum EstadoPartido {
 
 enum FasePartido {
   GRUPOS
+  TREINTAIDOSAVOS
+  DIECISEISAVOS
+  OCTAVOS
   CUARTOS
   SEMIS
   FINAL

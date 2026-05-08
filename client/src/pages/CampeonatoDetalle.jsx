@@ -254,22 +254,22 @@ function BracketMatchCard({ partido }) {
       ? partido.sets.map((s) => (side === 'local' ? s.gamesLocal : s.gamesVisitante))
       : [];
     return (
-      <div className={`flex items-center gap-2 px-3 py-2 ${isWin ? 'bg-white/10' : ''}`}>
-        <span className={`text-xs truncate flex-1 ${isWin ? 'text-white font-bold' : 'text-slate-400'}`} style={{ maxWidth: 138 }}>
+      <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-padel/15' : 'bg-white'}`}>
+        <span className={`text-xs truncate flex-1 ${isWin ? 'text-slate-900 font-bold' : 'text-slate-500 font-medium'}`} style={{ maxWidth: 138 }}>
           {parejaLabel(pareja)}
         </span>
         <div className="flex gap-1.5 shrink-0">
           {scores.map((s, i) => (
-            <span key={i} className={`text-xs font-bold w-4 text-center ${isWin ? 'text-white' : 'text-slate-500'}`}>{s}</span>
+            <span key={i} className={`text-xs w-4 text-center ${isWin ? 'text-slate-900 font-black' : 'text-slate-400 font-semibold'}`}>{s}</span>
           ))}
         </div>
       </div>
     );
   };
   return (
-    <div className="rounded-lg overflow-hidden border border-[#383838] bg-[#242424]" style={{ width: 216 }}>
+    <div className="rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm hover:border-padel hover:shadow-glass transition-all" style={{ width: 216 }}>
       {renderRow(partido.parejaLocal, 'local')}
-      <div className="h-px bg-[#383838]" />
+      <div className="h-px bg-slate-100" />
       {renderRow(partido.parejaVisitante, 'visitante')}
     </div>
   );
@@ -278,8 +278,8 @@ function BracketMatchCard({ partido }) {
 function BracketVisual({ partidos }) {
   const eliPartidos = partidos.filter((p) => ['CUARTOS', 'SEMIS', 'FINAL'].includes(p.fase));
   if (eliPartidos.length === 0) return (
-    <div className="py-12 text-center bg-[#181818] rounded-2xl">
-      <p className="text-slate-500">El bracket se generará cuando finalicen los grupos.</p>
+    <div className="py-12 text-center card bg-slate-50/50 border-dashed border-2 border-slate-200">
+      <p className="text-slate-500 font-medium">El bracket se generará cuando finalicen los grupos.</p>
     </div>
   );
 
@@ -313,14 +313,14 @@ function BracketVisual({ partidos }) {
   const totalW = rounds.length * COL_W - COL_GAP;
 
   return (
-    <div className="overflow-x-auto">
-      <div className="inline-block relative bg-[#181818] rounded-2xl" style={{ width: totalW+2*PAD, height: maxY+LABEL_H+2*PAD, minWidth:'100%' }}>
+    <div className="overflow-x-auto pb-4 scrollbar-none">
+      <div className="inline-block relative card bg-slate-50/30 p-6" style={{ width: totalW+2*PAD, height: maxY+LABEL_H+2*PAD, minWidth:'100%' }}>
         {rounds.map((round, r) => (
-          <div key={r} className="absolute text-[10px] text-slate-500 font-medium uppercase tracking-widest text-center"
+          <div key={r} className="absolute text-xs text-slate-400 font-bold uppercase tracking-widest text-center"
             style={{ left: r*COL_W+PAD, top: PAD, width: CARD_W }}>{round.label}</div>
         ))}
         <svg className="absolute pointer-events-none" style={{ left: PAD, top: PAD+LABEL_H, width: totalW, height: maxY }}>
-          {paths.map((d, i) => <path key={i} d={d} stroke="#3a3a3a" strokeWidth="2" fill="none" strokeLinecap="round" />)}
+          {paths.map((d, i) => <path key={i} d={d} stroke="#cbd5e1" strokeWidth="2" fill="none" strokeLinecap="round" />)}
         </svg>
         {rounds.map((round, r) =>
           round.matches.map((match, i) => (
@@ -482,9 +482,9 @@ export default function CampeonatoDetalle() {
 
         {/* Contenido del hero */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-          <Link to="/campeonatos" className="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-6 transition-colors">
-            ← Torneos
-          </Link>
+          <button onClick={() => window.history.back()} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/10 text-white text-sm mb-6 transition-all backdrop-blur-md">
+            <span>←</span> Volver atrás
+          </button>
 
           <div className="flex flex-col sm:flex-row sm:items-end gap-4">
             <div className="flex-1">

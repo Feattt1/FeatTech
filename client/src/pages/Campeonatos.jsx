@@ -42,10 +42,10 @@ export default function Campeonatos() {
           <button
             key={k}
             onClick={() => setFiltro({ estado: k })}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+            className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${
               filtro.estado === k
-                ? 'bg-slate-900 text-white'
-                : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-400'
+                ? 'bg-padel text-slate-900 shadow-neon transform scale-105'
+                : 'bg-white border-2 border-slate-100 text-slate-500 hover:border-padel hover:text-slate-800 hover:shadow-glass'
             }`}
           >
             {k === '' ? 'Todos' : ESTADOS[k]}
@@ -76,7 +76,7 @@ export default function Campeonatos() {
               <Link
                 key={c.id}
                 to={`/campeonatos/${c.id}`}
-                className="group block bg-white rounded-xl border border-slate-200 hover:border-slate-400 hover:shadow-lg transition-all duration-200 overflow-hidden"
+                className="group card card-hover block overflow-hidden"
               >
                 {/* Imagen de portada o gradiente */}
                 {c.imagenPortada ? (
@@ -92,15 +92,15 @@ export default function Campeonatos() {
                     </span>
                   </div>
                 ) : (
-                  <div className="h-2 bg-gradient-to-r from-yellow-400 to-yellow-500" />
+                  <div className="h-2 bg-gradient-to-r from-padel to-padel-dark group-hover:from-padel-light group-hover:to-padel transition-colors" />
                 )}
-                <div className="p-5">
+                <div className="p-6">
                   {!c.imagenPortada && (
                     <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3 ${estadoBadge[c.estado] ?? estadoBadge.EN_CURSO}`}>
                       {ESTADOS[c.estado] ?? c.estado}
                     </span>
                   )}
-                  <h3 className="font-bold text-slate-900 text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
+                  <h3 className="font-black text-slate-900 text-lg mb-1 group-hover:text-padel-dark transition-colors line-clamp-2">
                     {c.nombre}
                   </h3>
                   {c.categorias?.length > 0 && (

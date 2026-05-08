@@ -65,12 +65,12 @@ export default function Layout() {
                     {club?.nombre || 'Club'} ▾
                   </button>
                   {clubAbierto && (
-                    <div className="absolute top-full left-0 mt-2 py-2 bg-white rounded-lg shadow-xl text-slate-900 min-w-[200px] z-50 border border-slate-200">
+                    <div className="absolute top-full left-0 mt-2 py-2 bg-white rounded-xl shadow-2xl text-slate-900 min-w-[200px] z-50 border border-slate-100 animate-fade-in origin-top-left">
                       {clubs.map((c) => (
                         <button
                           key={c.id}
                           onClick={() => { selectClub(c); setClubAbierto(false); }}
-                          className={`block w-full text-left px-4 py-3 hover:bg-padel/10 text-sm border-b border-slate-100 last:border-0 transition ${club?.id === c.id ? 'font-bold bg-padel/20 text-slate-900' : ''}`}
+                          className={`block w-full text-left px-4 py-3 hover:bg-padel/10 text-sm border-b border-slate-100 last:border-0 transition-colors ${club?.id === c.id ? 'font-bold bg-padel/20 text-slate-900' : ''}`}
                         >
                           {c.nombre}
                         </button>
@@ -80,23 +80,28 @@ export default function Layout() {
                 </div>
               )}
 
-              <Link to="/" className="text-white hover:text-padel transition-colors font-medium text-sm">
+              <Link to="/" className="text-white hover:text-padel transition-colors font-medium text-sm relative group py-1">
                 Inicio
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link to="/campeonatos" className="text-white hover:text-padel transition-colors font-medium text-sm">
+              <Link to="/campeonatos" className="text-white hover:text-padel transition-colors font-medium text-sm relative group py-1">
                 Torneos
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
               </Link>
-              <Link to="/ranking" className="text-white hover:text-padel transition-colors font-medium text-sm">
+              <Link to="/ranking" className="text-white hover:text-padel transition-colors font-medium text-sm relative group py-1">
                 Ranking
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
               </Link>
 
               {user ? (
                 <>
-                  <Link to="/mi-perfil" className="text-white hover:text-padel transition-colors font-medium text-sm">
+                  <Link to="/mi-perfil" className="text-white hover:text-padel transition-colors font-medium text-sm relative group py-1">
                     Perfil
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
                   </Link>
-                  <Link to="/mis-inscripciones" className="text-white hover:text-padel transition-colors font-medium text-sm hidden md:inline">
+                  <Link to="/mis-inscripciones" className="text-white hover:text-padel transition-colors font-medium text-sm hidden md:inline relative group py-1">
                     Mis inscripciones
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
                   </Link>
 
                   {esAdminClub && (
@@ -108,11 +113,11 @@ export default function Layout() {
                         Admin ▾
                       </button>
                       {adminAbierto && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl py-2 border border-slate-100 z-50">
-                          <Link to="/admin/campeonatos" onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 font-medium">Campeonatos</Link>
-                          <Link to="/admin/jugadores"   onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50">Jugadores</Link>
-                          <Link to="/admin/parejas"     onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50">Parejas</Link>
-                          <Link to="/admin/clubs"       onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900">Clubes</Link>
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl py-2 border border-slate-100 z-50 animate-fade-in origin-top-right">
+                          <Link to="/admin/campeonatos" onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 font-medium transition-colors hover:pl-5">Campeonatos</Link>
+                          <Link to="/admin/jugadores"   onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 transition-colors hover:pl-5">Jugadores</Link>
+                          <Link to="/admin/parejas"     onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 border-b border-slate-50 transition-colors hover:pl-5">Parejas</Link>
+                          <Link to="/admin/clubs"       onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 text-sm text-slate-900 transition-colors hover:pl-5">Clubes</Link>
                         </div>
                       )}
                     </div>
@@ -152,7 +157,7 @@ export default function Layout() {
 
         {/* ── Mobile drawer ─────────────────────────────────────────────────── */}
         {menuAbierto && (
-          <div className="sm:hidden bg-slate-900 border-t border-slate-700 px-4 py-4 space-y-1">
+          <div className="sm:hidden bg-slate-900/95 backdrop-blur-lg border-t border-slate-700 px-4 py-4 space-y-1 animate-fade-in shadow-2xl">
             {/* Club selector mobile */}
             {clubs.length > 0 && (
               <div className="mb-3">

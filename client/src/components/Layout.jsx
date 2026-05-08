@@ -120,9 +120,7 @@ export default function Layout() {
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
               </Link>
 
-              <button onClick={toggleTheme} className="text-lg p-1.5 rounded-full hover:bg-slate-800 transition-colors ml-2" title="Cambiar tema">
-                {theme === 'dark' ? '☀️' : '🌙'}
-              </button>
+
 
               {user ? (
                 <>
@@ -177,6 +175,10 @@ export default function Layout() {
                   </motion.div>
                 </>
               )}
+
+              <button onClick={toggleTheme} className="text-xl p-1.5 rounded-full hover:bg-slate-800 transition-colors ml-2" title="Cambiar tema">
+                {theme === 'dark' ? '☀️' : '🌙'}
+              </button>
             </div>
 
             {/* Mobile: botón hamburguesa */}

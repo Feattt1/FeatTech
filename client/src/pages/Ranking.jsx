@@ -8,7 +8,7 @@ const MEDALLAS = [
   <span className="text-slate-500 dark:text-slate-300 font-black dark:drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]">2º</span>,
   <span className="text-orange-600 dark:text-orange-400 font-black dark:drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]">3º</span>
 ];
-const ROW_BG = ['bg-yellow-50', 'bg-slate-50 dark:bg-slate-900', 'bg-orange-50/40'];
+const ROW_BG = ['bg-yellow-50 dark:bg-yellow-900/30', 'bg-slate-50 dark:bg-slate-800', 'bg-orange-50/40 dark:bg-orange-900/30'];
 const MODALIDAD_LABEL = { MASCULINO: 'Masc.', FEMENINO: 'Fem.', MIXTO: 'Mixto' };
 
 function parejaLabel(pareja) {

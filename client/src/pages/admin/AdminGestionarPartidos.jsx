@@ -323,7 +323,7 @@ export default function AdminGestionarPartidos() {
             <div className="grid md:grid-cols-2 gap-6">
               {Object.entries(cronogramaObj).map(([cancha, ps]) => (
                 <div key={cancha} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                  <h3 className="font-semibold text-lg mb-4 text-blue-600">🏀 Cancha {cancha}</h3>
+                  <h3 className="font-semibold text-lg mb-4 text-blue-600">Cancha {cancha}</h3>
                   <div className="space-y-3">
                     {ps.map((p) => (
                       <div key={p.id} className="bg-slate-50 dark:bg-slate-900 rounded p-3 text-sm border-l-4 border-blue-600">

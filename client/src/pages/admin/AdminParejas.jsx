@@ -11,6 +11,7 @@ export default function AdminParejas() {
   const [creando, setCreando] = useState(false);
   const [form, setForm] = useState({ jugador1Id: '', jugador2Id: '', tipoPareja: 'ABIERTO', nombre: '' });
   const [error, setError] = useState('');
+  const [eliminando, setEliminando] = useState(null);
   const { club } = useClub();
 
   const cargar = () => {
@@ -45,6 +46,19 @@ export default function AdminParejas() {
       setError(err.message || 'Error al crear pareja');
     } finally {
       setCreando(false);
+    }
+  };
+
+  const handleEliminar = async (pareja) => {
+    if (!confirm(`¿Estás seguro de eliminar a la pareja "${pareja.nombre || 'Sin nombre'}"?`)) return;
+    setEliminando(pareja.id);
+    try {
+      await parejasApi.delete(pareja.id);
+      cargar();
+    } catch (err) {
+      alert(err.message || 'Error al eliminar la pareja');
+    } finally {
+      setEliminando(null);
     }
   };
 
@@ -151,6 +165,13 @@ export default function AdminParejas() {
                   {p.tipoPareja === 'ABIERTO' ? 'Abierto' : p.tipoPareja === 'LIBRE' ? 'Libre' : 'Femenina'}
                 </span>
               </div>
+              <button
+                onClick={() => handleEliminar(p)}
+                disabled={eliminando === p.id}
+                className="px-3 py-1.5 rounded-lg bg-red-100 text-red-700 text-xs font-medium hover:bg-red-200 disabled:opacity-50 transition ml-4"
+              >
+                {eliminando === p.id ? '...' : 'Eliminar'}
+              </button>
             </div>
           ))}
         </div>

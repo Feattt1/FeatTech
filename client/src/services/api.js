@@ -240,4 +240,5 @@ export const parejasApi = {
       method: 'POST',
       body: JSON.stringify({ grupoIdActual, grupoIdNuevo }),
     }),
+  delete: (id) => request(`/parejas/${id}`, { method: 'DELETE' }),
 };

@@ -541,7 +541,13 @@ export default function CampeonatoDetalle() {
     ? partidos.filter((p) => p.categoriaId === catActiva.id || (!p.categoriaId && categorias.length === 0))
     : partidos;
 
-  const parejasInscritas = inscripciones.map((i) => i.parejaId);
+  // Filtrar inscripciones por categoría activa (igual que grupos y partidos)
+  const inscripcionesFiltradas = catActiva
+    ? inscripciones.filter((i) => i.categoriaId === catActiva.id || (!i.categoriaId && categorias.length === 0))
+    : inscripciones;
+
+  // Las parejas ya inscritas en ESTA categoría (para no duplicar en el selector del admin)
+  const parejasInscritas = inscripcionesFiltradas.map((i) => i.parejaId);
   const puedeInscribirseAdmin = esAdminClub && parejasDisponibles.length > 0;
   const puedeInscribirseJugador = !esAdminClub && campeonato.estado === 'INSCRIPCIONES' && user && parejasDisponibles.length > 0;
 
@@ -551,7 +557,7 @@ export default function CampeonatoDetalle() {
     { key: 'bracket',       label: 'Partidos' },
     { key: 'clasificacion', label: 'Posiciones' },
     { key: 'ranking',       label: 'Ranking' },
-    { key: 'inscripciones', label: `Inscripciones (${inscripciones.length})` },
+    { key: 'inscripciones', label: `Inscripciones (${inscripcionesFiltradas.length})` },
   ];
 
   return (
@@ -845,13 +851,13 @@ export default function CampeonatoDetalle() {
                   </div>
                 )}
 
-                {inscripciones.length === 0 ? (
+                {inscripcionesFiltradas.length === 0 ? (
                   <div className="py-12 text-center">
-                    <p className="text-slate-400">No hay inscripciones aún.</p>
+                    <p className="text-slate-400">No hay inscripciones en esta categoría aún.</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {inscripciones.map((i) => (
+                    {inscripcionesFiltradas.map((i) => (
                       <div key={i.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:shadow-sm transition">
                         <div>
                           <span className="font-medium text-sm text-slate-800 dark:text-slate-200">

@@ -8,7 +8,9 @@ import { ClubProvider } from './context/ClubContext';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID =
+  import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+  '731098351593-f92m6478n5lm2e3obtkjvf0l8kas70he.apps.googleusercontent.com';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

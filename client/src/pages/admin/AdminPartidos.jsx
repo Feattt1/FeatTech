@@ -458,6 +458,20 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
     }
   };
 
+  const handleEliminarInscripcion = async (inscripcionId) => {
+    if (!confirm('¿Estás seguro de eliminar esta inscripción por completo?')) return;
+    setActualizandoEstado(inscripcionId);
+    try {
+      await inscripcionesApi.eliminar(inscripcionId);
+      await loadGrupos(categoriaActiva);
+      showMensaje('Inscripción eliminada');
+    } catch (e) {
+      showMensaje(e.message || 'Error al eliminar inscripción', 'error');
+    } finally {
+      setActualizandoEstado(null);
+    }
+  };
+
   if (loading || !campeonato) return <div className="text-slate-500">Cargando...</div>;
 
   const categorias = campeonato.categorias ?? [];
@@ -528,7 +542,7 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
                   <h3 className="text-sm font-bold text-red-600 mb-3 uppercase tracking-wider">Pendientes de revisión</h3>
                   <div className="space-y-2">
                     {inscripcionesPendientes.map((i) => (
-                      <div key={i.id} className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-800/30">
+                      <div key={i.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-800/30">
                         <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
                           {parejaLabel(i.pareja)}
                         </span>
@@ -540,6 +554,10 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
                           <button onClick={() => handleActualizarEstado(i.id, 'RECHAZADA')} disabled={actualizandoEstado === i.id}
                             className="px-3 py-1.5 bg-red-100 text-red-700 rounded text-xs font-semibold hover:bg-red-200 transition disabled:opacity-50">
                             Rechazar
+                          </button>
+                          <button onClick={() => handleEliminarInscripcion(i.id)} disabled={actualizandoEstado === i.id}
+                            className="px-3 py-1.5 bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200 rounded text-xs font-semibold hover:bg-slate-300 dark:hover:bg-slate-600 transition disabled:opacity-50">
+                            Eliminar
                           </button>
                         </div>
                       </div>
@@ -554,11 +572,23 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
                   <p className="text-slate-400 text-sm">No hay parejas confirmadas.</p>
                 ) : (
                   inscripciones.filter(i => i.estado === 'ACEPTADA').map(i => (
-                    <div key={i.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-                      <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
-                        {parejaLabel(i.pareja)}
-                      </span>
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Aceptada</span>
+                    <div key={i.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                          {parejaLabel(i.pareja)}
+                        </span>
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Aceptada</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => handleActualizarEstado(i.id, 'PENDIENTE')} disabled={actualizandoEstado === i.id}
+                          className="px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded text-xs font-semibold hover:bg-yellow-200 transition disabled:opacity-50">
+                          Pendiente
+                        </button>
+                        <button onClick={() => handleEliminarInscripcion(i.id)} disabled={actualizandoEstado === i.id}
+                          className="px-3 py-1.5 bg-red-100 text-red-700 rounded text-xs font-semibold hover:bg-red-200 transition disabled:opacity-50">
+                          Eliminar
+                        </button>
+                      </div>
                     </div>
                   ))
                 )}

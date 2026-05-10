@@ -9,7 +9,7 @@ const MEDALLAS = [
   <span className="text-orange-600 dark:text-orange-400 font-black dark:drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]">3º</span>
 ];
 const ROW_BG = ['bg-yellow-50 dark:bg-yellow-900/30', 'bg-slate-50 dark:bg-slate-800', 'bg-orange-50/40 dark:bg-orange-900/30'];
-const MODALIDAD_LABEL = { MASCULINO: 'Masc.', FEMENINO: 'Fem.', MIXTO: 'Mixto' };
+const MODALIDAD_LABEL = { LIBRE: 'Libre', FEMENINO: 'Fem.', MIXTO: 'Mixto' };
 
 function parejaLabel(pareja) {
   if (!pareja) return '—';

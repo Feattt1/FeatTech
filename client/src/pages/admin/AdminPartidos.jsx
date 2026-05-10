@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { campeonatosApi, partidosApi, gruposApi, inscripcionesApi } from '../../services/api';
 import { useClub } from '../../context/ClubContext';
 
-const MODALIDAD_LABEL = { MASCULINO: 'Masculino', FEMENINO: 'Femenino', MIXTO: 'Mixto' };
+const MODALIDAD_LABEL = { LIBRE: 'Libre', FEMENINO: 'Femenina', MIXTO: 'Mixto' };
 
 function formatDate(d) {
   if (!d) return null;

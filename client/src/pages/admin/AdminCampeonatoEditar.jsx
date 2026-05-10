@@ -3,8 +3,8 @@ import { useParams, useNavigate, Link, useOutletContext } from 'react-router-dom
 import { campeonatosApi } from '../../services/api';
 
 const MODALIDAD_OPTS = [
-  { value: 'MASCULINO', label: 'Masculino' },
-  { value: 'FEMENINO', label: 'Femenino' },
+  { value: 'LIBRE', label: 'Libre' },
+  { value: 'FEMENINO', label: 'Femenina' },
   { value: 'MIXTO', label: 'Mixto' },
 ];
 
@@ -49,7 +49,7 @@ export default function AdminCampeonatoEditar() {
   });
 
   const [categorias, setCategorias] = useState([]);
-  const [catForm, setCatForm] = useState({ categoria: 5, modalidad: 'MASCULINO', maxParejas: '' });
+  const [catForm, setCatForm] = useState({ categoria: 5, modalidad: 'LIBRE', maxParejas: '' });
   const [guardandoCat, setGuardandoCat] = useState(false);
 
   const [loading, setLoading] = useState(!esNuevo);
@@ -169,7 +169,7 @@ export default function AdminCampeonatoEditar() {
           maxParejas: catForm.maxParejas ? parseInt(catForm.maxParejas, 10) : undefined,
         });
         setCategorias((prev) => [...prev, nueva]);
-        setCatForm({ categoria: 5, modalidad: 'MASCULINO', maxParejas: '' });
+        setCatForm({ categoria: 5, modalidad: 'LIBRE', maxParejas: '' });
       } catch (err) {
         alert(err.message || 'Error al agregar categoría');
       } finally {
@@ -181,7 +181,7 @@ export default function AdminCampeonatoEditar() {
         maxParejas: catForm.maxParejas ? parseInt(catForm.maxParejas, 10) : null,
         _temp: true,
       }]);
-      setCatForm({ categoria: 5, modalidad: 'MASCULINO', maxParejas: '' });
+      setCatForm({ categoria: 5, modalidad: 'LIBRE', maxParejas: '' });
     }
   };
 

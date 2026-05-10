@@ -111,8 +111,8 @@ export default function AdminParejas() {
                 className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
               >
                 <option value="ABIERTO">Abierto</option>
-                <option value="MASCULINO">Masculino</option>
-                <option value="FEMENINO">Femenino</option>
+                <option value="LIBRE">Libre</option>
+                <option value="FEMENINO">Femenina</option>
               </select>
             </div>
             <div>
@@ -148,7 +148,7 @@ export default function AdminParejas() {
                   {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
                 </span>
                 <span className="ml-2 text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                  {p.tipoPareja === 'ABIERTO' ? 'Abierto' : p.tipoPareja === 'MASCULINO' ? 'Masculino' : 'Femenino'}
+                  {p.tipoPareja === 'ABIERTO' ? 'Abierto' : p.tipoPareja === 'LIBRE' ? 'Libre' : 'Femenina'}
                 </span>
               </div>
             </div>

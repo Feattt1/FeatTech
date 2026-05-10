@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import ExportExcelButton from '../components/ExportExcelButton';
 
-const MODALIDAD_LABEL = { MASCULINO: 'Masculino', FEMENINO: 'Femenino', MIXTO: 'Mixto' };
+const MODALIDAD_LABEL = { LIBRE: 'Libre', FEMENINO: 'Femenina', MIXTO: 'Mixto' };
 const FASE_LABEL = { 
   GRUPOS: 'Grupos', 
   TREINTAIDOSAVOS: '32avos de final', 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { authApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -27,6 +28,17 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    try {
+      const { usuario, token } = await authApi.googleLogin(credentialResponse.credential);
+      login(usuario, token);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Error al registrarse con Google');
+    }
+  };
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -68,6 +80,30 @@ export default function Register() {
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8">
+
+          {/* Google — registro rápido */}
+          <div className="mb-6">
+            <p className="text-xs text-center text-slate-400 mb-3 font-medium uppercase tracking-wider">Registro instantáneo</p>
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('No se pudo registrar con Google')}
+                shape="rectangular"
+                size="large"
+                width="400"
+                text="signup_with"
+                locale="es"
+              />
+            </div>
+            <p className="text-xs text-slate-400 text-center mt-2">Tu cuenta de Google se vincula automáticamente</p>
+          </div>
+
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 border-t border-slate-200 dark:border-slate-700" />
+            <span className="text-xs text-slate-400 font-medium">o registrate con email</span>
+            <div className="flex-1 border-t border-slate-200 dark:border-slate-700" />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">

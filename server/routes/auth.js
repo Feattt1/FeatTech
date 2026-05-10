@@ -2,10 +2,12 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
+import { OAuth2Client } from 'google-auth-library';
 import prisma from '../config/db.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 router.post('/register', [
   body('email').isEmail().normalizeEmail(),
@@ -142,4 +144,103 @@ router.put('/password', authenticate, [
   }
 });
 
+// ── Login / Registro con Google ──────────────────────────────────────────────
+router.post('/google', [
+  body('credential').notEmpty().withMessage('Token de Google requerido'),
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const { credential } = req.body;
+
+    // 1. Verificar el token con Google
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    if (!email) return res.status(400).json({ error: 'No se pudo obtener el email de Google' });
+
+    // 2. Buscar usuario existente por googleId o email
+    let usuario = await prisma.usuario.findFirst({
+      where: { OR: [{ googleId }, { email }] },
+      include: {
+        jugador: { select: { id: true, categoria: true, nivel: true } },
+        clubsAdmin: { select: { clubId: true } },
+      },
+    });
+
+    if (usuario) {
+      // Vincular googleId si aún no está vinculado (ej: tenía cuenta con email/pass)
+      if (!usuario.googleId) {
+        await prisma.usuario.update({
+          where: { id: usuario.id },
+          data: { googleId },
+        });
+      }
+    } else {
+      // 3. Crear nuevo usuario + jugador automáticamente
+      const result = await prisma.$transaction(async (tx) => {
+        const nuevoUsuario = await tx.usuario.create({
+          data: {
+            email,
+            nombre: name || email.split('@')[0],
+            googleId,
+            rol: 'JUGADOR',
+          },
+        });
+        const nuevoJugador = await tx.jugador.create({
+          data: { usuarioId: nuevoUsuario.id, categoria: 4 },
+          select: { id: true, categoria: true, nivel: true },
+        });
+        return { usuario: nuevoUsuario, jugador: nuevoJugador };
+      });
+
+      usuario = {
+        ...result.usuario,
+        jugador: result.jugador,
+        clubsAdmin: [],
+      };
+    }
+
+    // 4. Generar JWT propio
+    const token = jwt.sign(
+      { userId: usuario.id },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    );
+
+    const { password: _, clubsAdmin: raw, ...rest } = usuario;
+    const clubsAdmin = Array.isArray(raw) ? raw.map((a) => a.clubId ?? a) : [];
+
+    res.json({ usuario: { ...rest, clubsAdmin }, token });
+  } catch (err) {
+    console.error('Google auth error:', err);
+    res.status(500).json({ error: 'Error al autenticar con Google' });
+  }
+});
+
+// ── Obtener perfil del usuario actual ────────────────────────────────────────
+router.get('/me', authenticate, async (req, res) => {
+  try {
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true, email: true, nombre: true, rol: true, telefono: true, googleId: true,
+        jugador: { select: { id: true, categoria: true, nivel: true } },
+        clubsAdmin: { select: { clubId: true } },
+      },
+    });
+    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    const { clubsAdmin: raw, ...rest } = usuario;
+    res.json({ ...rest, clubsAdmin: (raw || []).map((a) => a.clubId), tienePassword: !!usuario.password });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default router;
+

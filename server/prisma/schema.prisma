@@ -94,6 +94,7 @@ model Usuario {
   telefono  String?
   rol       Role     @default(JUGADOR)
   esGuest   Boolean  @default(false)
+  googleId  String?  @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

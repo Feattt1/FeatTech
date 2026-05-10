@@ -75,6 +75,12 @@ export const authApi = {
       body: JSON.stringify(data),
       headers: getHeaders(false),
     }),
+  googleLogin: (credential) =>
+    request('/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ credential }),
+      headers: getHeaders(false),
+    }),
   changePassword: (passwordActual, passwordNueva) =>
     request('/auth/password', {
       method: 'PUT',

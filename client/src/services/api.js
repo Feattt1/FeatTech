@@ -146,6 +146,11 @@ export const inscripcionesApi = {
       method: 'POST',
       body: JSON.stringify({ campeonatoId, parejaId, ...(categoriaId ? { categoriaId } : {}) }),
     }),
+  inscribirConCompanero: (data) =>
+    request('/inscripciones/con-companero', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
   eliminar: (id) => request(`/inscripciones/${id}`, { method: 'DELETE' }),
   actualizar: (id, estado) =>
     request(`/inscripciones/${id}`, { method: 'PUT', body: JSON.stringify({ estado }) }),

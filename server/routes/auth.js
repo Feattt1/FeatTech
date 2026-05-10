@@ -11,7 +11,9 @@ router.post('/register', [
   body('email').isEmail().normalizeEmail(),
   body('password').isLength({ min: 6 }),
   body('nombre').trim().notEmpty(),
+  body('apellido').optional().trim(),
   body('telefono').optional().trim(),
+  body('categoria').optional().isInt({ min: 1, max: 7 }),
   body('rol').optional().isIn(['ADMIN', 'JUGADOR', 'PUBLICO']),
 ], async (req, res) => {
   try {
@@ -19,7 +21,8 @@ router.post('/register', [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password, nombre, telefono, rol = 'JUGADOR' } = req.body;
+    const { email, password, nombre, apellido, telefono, categoria = 4, rol = 'JUGADOR' } = req.body;
+    const nombreCompleto = apellido ? `${nombre} ${apellido}` : nombre;
 
     const existe = await prisma.usuario.findUnique({ where: { email } });
     if (existe) {
@@ -27,20 +30,39 @@ router.post('/register', [
     }
 
     const hashed = await bcrypt.hash(password, 10);
-    const usuario = await prisma.usuario.create({
-      data: { email, password: hashed, nombre, telefono, rol },
-      select: { id: true, email: true, nombre: true, rol: true, telefono: true },
+
+    // Crear usuario y su perfil de jugador en una sola transacción
+    const result = await prisma.$transaction(async (tx) => {
+      const usuario = await tx.usuario.create({
+        data: { email, password: hashed, nombre: nombreCompleto, telefono: telefono || null, rol },
+        select: { id: true, email: true, nombre: true, rol: true, telefono: true },
+      });
+
+      // Auto-crear perfil jugador para poder inscribirse de inmediato
+      let jugador = null;
+      if (rol === 'JUGADOR') {
+        jugador = await tx.jugador.create({
+          data: {
+            usuarioId: usuario.id,
+            categoria: parseInt(categoria, 10) || 4,
+          },
+          select: { id: true, categoria: true, nivel: true },
+        });
+      }
+
+      return { usuario, jugador };
     });
 
-    const usuarioConClubs = { ...usuario, clubsAdmin: [] };
-
     const token = jwt.sign(
-      { userId: usuario.id },
+      { userId: result.usuario.id },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
-    res.status(201).json({ usuario: usuarioConClubs, token });
+    res.status(201).json({
+      usuario: { ...result.usuario, jugador: result.jugador, clubsAdmin: [] },
+      token,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

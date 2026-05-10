@@ -89,10 +89,11 @@ model ClubAdmin {
 model Usuario {
   id        String   @id @default(uuid())
   email     String   @unique
-  password  String
+  password  String   @default("")
   nombre    String
   telefono  String?
   rol       Role     @default(JUGADOR)
+  esGuest   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

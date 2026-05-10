@@ -411,11 +411,23 @@ export default function CampeonatoDetalle() {
   const [tab, setTab] = useState('bracket');
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [inscribiendo, setInscribiendo] = useState(false);
+  const [eliminando, setEliminando] = useState(null);
+  const [heroLoaded, setHeroLoaded] = useState(false);
+
+  // Admin: selector de pareja existente
   const [parejaSeleccionada, setParejaSeleccionada] = useState('');
   const [categoriaInscripcion, setCategoriaInscripcion] = useState('');
-  const [eliminando, setEliminando] = useState(null);
   const [parejasDisponibles, setParejasDisponibles] = useState([]);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+
+  // Jugador: formulario con datos del compañero
+  const [formCompanero, setFormCompanero] = useState({
+    nombreCompanero: '',
+    apellidoCompanero: '',
+    telefonoCompanero: '',
+    emailCompanero: '',
+  });
+  const [categoriaInscripcionJugador, setCategoriaInscripcionJugador] = useState('');
+  const [inscripcionExito, setInscripcionExito] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -456,13 +468,34 @@ export default function CampeonatoDetalle() {
     }
   }, [user, club?.id, esAdminClub]);
 
-  const handleInscribir = async () => {
+  const handleInscribirAdmin = async () => {
     if (!parejaSeleccionada) return;
     setInscribiendo(true);
     try {
       await inscripcionesApi.inscribir(id, parejaSeleccionada, categoriaInscripcion || undefined);
       await load();
       setParejaSeleccionada('');
+    } catch (e) {
+      alert(e.message || 'Error al inscribir');
+    } finally {
+      setInscribiendo(false);
+    }
+  };
+
+  const handleInscribirConCompanero = async (e) => {
+    e.preventDefault();
+    setInscribiendo(true);
+    setInscripcionExito(false);
+    try {
+      await inscripcionesApi.inscribirConCompanero({
+        campeonatoId: id,
+        categoriaId: categoriaInscripcionJugador || undefined,
+        ...formCompanero,
+      });
+      await load();
+      setFormCompanero({ nombreCompanero: '', apellidoCompanero: '', telefonoCompanero: '', emailCompanero: '' });
+      setInscripcionExito(true);
+      setTimeout(() => setInscripcionExito(false), 5000);
     } catch (e) {
       alert(e.message || 'Error al inscribir');
     } finally {
@@ -676,18 +709,20 @@ export default function CampeonatoDetalle() {
             {/* Inscripciones */}
             {tab === 'inscripciones' && (
               <div className="space-y-4 max-w-2xl">
-                {(puedeInscribirseAdmin || puedeInscribirseJugador) && (
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-200 dark:border-blue-900/50">
-                    <p className="font-medium text-slate-800 dark:text-slate-200 mb-3 text-sm">{esAdminClub ? 'Agregar pareja' : 'Inscribir mi pareja'}</p>
+
+                {/* ── ADMIN: selector de pareja existente ─────────────────────── */}
+                {puedeInscribirseAdmin && (
+                  <div className="p-5 bg-amber-50 dark:bg-amber-900/10 rounded-xl border border-amber-200 dark:border-amber-800/50">
+                    <p className="font-semibold text-slate-800 dark:text-slate-200 mb-3 text-sm">Agregar pareja (Admin)</p>
                     <div className="flex flex-wrap gap-2">
                       {categorias.length > 1 && (
                         <select value={categoriaInscripcion} onChange={(e) => setCategoriaInscripcion(e.target.value)}
-                          className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white text-sm bg-white dark:bg-slate-800">
+                          className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-sm bg-white">
                           {categorias.map((cat) => <option key={cat.id} value={cat.id}>{categoriaLabel(cat)}</option>)}
                         </select>
                       )}
                       <select value={parejaSeleccionada} onChange={(e) => setParejaSeleccionada(e.target.value)}
-                        className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-white text-sm flex-1 bg-white dark:bg-slate-800">
+                        className="px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white text-sm flex-1 bg-white">
                         <option value="">Seleccionar pareja...</option>
                         {parejasDisponibles
                           .filter((p) => !parejasInscritas.includes(p.id))
@@ -697,11 +732,116 @@ export default function CampeonatoDetalle() {
                             </option>
                           ))}
                       </select>
-                      <button onClick={handleInscribir} disabled={inscribiendo || !parejaSeleccionada}
-                        className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 disabled:opacity-50">
+                      <button onClick={handleInscribirAdmin} disabled={inscribiendo || !parejaSeleccionada}
+                        className="px-4 py-2 rounded-lg bg-amber-500 text-white text-sm font-medium hover:bg-amber-400 disabled:opacity-50">
                         {inscribiendo ? 'Agregando...' : 'Inscribir'}
                       </button>
                     </div>
+                  </div>
+                )}
+
+                {/* ── JUGADOR: formulario con datos del compañero ──────────────── */}
+                {!esAdminClub && campeonato.estado === 'INSCRIPCIONES' && user && (
+                  <div className="p-5 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-200 dark:border-blue-800/50">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" /></svg>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-800 dark:text-slate-200 text-sm">Inscribirme con mi compañero</p>
+                        <p className="text-xs text-slate-500">Tu compañero no necesita tener cuenta</p>
+                      </div>
+                    </div>
+
+                    {inscripcionExito && (
+                      <div className="mb-4 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-sm font-medium">
+                        ¡Inscripción realizada con éxito!
+                      </div>
+                    )}
+
+                    <form onSubmit={handleInscribirConCompanero} className="space-y-3">
+                      {categorias.length > 1 && (
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Categoría</label>
+                          <select
+                            value={categoriaInscripcionJugador}
+                            onChange={(e) => setCategoriaInscripcionJugador(e.target.value)}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white text-sm"
+                          >
+                            <option value="">Seleccionar categoría...</option>
+                            {categorias.map((cat) => <option key={cat.id} value={cat.id}>{categoriaLabel(cat)}</option>)}
+                          </select>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                            Nombre compañero <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text" required
+                            placeholder="Juan"
+                            value={formCompanero.nombreCompanero}
+                            onChange={(e) => setFormCompanero(p => ({ ...p, nombreCompanero: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white text-sm focus:border-blue-400 focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                            Apellido compañero <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text" required
+                            placeholder="García"
+                            value={formCompanero.apellidoCompanero}
+                            onChange={(e) => setFormCompanero(p => ({ ...p, apellidoCompanero: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white text-sm focus:border-blue-400 focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                          Celular compañero <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="tel" required
+                          placeholder="+598 912 345 678"
+                          value={formCompanero.telefonoCompanero}
+                          onChange={(e) => setFormCompanero(p => ({ ...p, telefonoCompanero: e.target.value }))}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white text-sm focus:border-blue-400 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">
+                          Email compañero <span className="text-slate-400 font-normal">(opcional — si ya tiene cuenta)</span>
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="companero@email.com"
+                          value={formCompanero.emailCompanero}
+                          onChange={(e) => setFormCompanero(p => ({ ...p, emailCompanero: e.target.value }))}
+                          className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white text-sm focus:border-blue-400 focus:outline-none"
+                        />
+                        <p className="text-xs text-slate-400 mt-1">Si tu compañero ya tiene cuenta, escribí su email para vincularlo automáticamente</p>
+                      </div>
+
+                      <button
+                        type="submit" disabled={inscribiendo}
+                        className="w-full py-2.5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 disabled:opacity-50 transition"
+                      >
+                        {inscribiendo ? 'Inscribiendo...' : 'Confirmar inscripción'}
+                      </button>
+                    </form>
+                  </div>
+                )}
+
+                {!user && campeonato.estado === 'INSCRIPCIONES' && (
+                  <div className="p-5 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 text-center">
+                    <p className="text-slate-600 dark:text-slate-400 text-sm mb-3">Iniciá sesión para inscribirte en este torneo</p>
+                    <a href="/login" className="inline-block px-5 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 transition">Iniciar sesión</a>
                   </div>
                 )}
 

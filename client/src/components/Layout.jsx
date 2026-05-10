@@ -138,7 +138,7 @@ export default function Layout() {
                       to="/admin"
                       className="px-4 py-2 ml-2 rounded-lg bg-padel-dark hover:bg-padel text-slate-900 font-bold text-sm transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.2)] hover:shadow-[0_0_20px_rgba(204,255,0,0.4)]"
                     >
-                      <span>⚙️</span> Panel de Control
+                      <span>Panel de Control</span>
                     </Link>
                   )}
 
@@ -237,7 +237,7 @@ export default function Layout() {
                   <>
                     <div className="border-t border-slate-700 my-2" />
                     <Link to="/admin" className="flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-padel-dark text-slate-900 hover:bg-padel font-bold text-sm transition">
-                      ⚙️ Panel de Control
+                      Panel de Control
                     </Link>
                   </>
                 )}

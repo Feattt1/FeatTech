@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useOutletContext } from 'react-router-dom';
 import { campeonatosApi } from '../../services/api';
 
 const MODALIDAD_OPTS = [
@@ -36,6 +36,10 @@ export default function AdminCampeonatoEditar() {
   const { id } = useParams();
   const navigate = useNavigate();
   const esNuevo = !id || id === 'nuevo';
+  
+  // Si estamos dentro del Control Center, obtenemos el context para actualizar el sidebar
+  const outletContext = useOutletContext();
+  const setCampeonatoGlobal = outletContext?.setCampeonato;
 
   const [form, setForm] = useState({
     nombre: '', descripcion: '', imagenPortada: '',
@@ -109,6 +113,9 @@ export default function AdminCampeonatoEditar() {
         navigate(`/admin/campeonatos/${c.id}`);
       } else {
         await campeonatosApi.update(id, data);
+        if (setCampeonatoGlobal) {
+          setCampeonatoGlobal(prev => ({ ...prev, ...data }));
+        }
         showMensaje('Cambios guardados.');
       }
     } catch (err) {
@@ -124,6 +131,9 @@ export default function AdminCampeonatoEditar() {
     try {
       await campeonatosApi.update(id, { estado: 'FINALIZADO' });
       setForm((prev) => ({ ...prev, estado: 'FINALIZADO' }));
+      if (setCampeonatoGlobal) {
+        setCampeonatoGlobal(prev => ({ ...prev, estado: 'FINALIZADO' }));
+      }
       showMensaje('¡Torneo finalizado!');
     } catch (err) {
       alert(err.message || 'Error al finalizar');

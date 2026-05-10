@@ -43,11 +43,11 @@ export default function AdminTorneoControlCenter() {
             {campeonato.nombre}
           </h2>
           <span className={`inline-block mt-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
-            campeonato.estado === 'INSCRIPCIONES' ? 'bg-blue-100 text-blue-700' :
+            (campeonato.estado || 'INSCRIPCIONES') === 'INSCRIPCIONES' ? 'bg-blue-100 text-blue-700' :
             campeonato.estado === 'EN_CURSO' ? 'bg-green-100 text-green-700' :
             'bg-slate-200 text-slate-600'
           }`}>
-            {campeonato.estado.replace('_', ' ')}
+            {(campeonato.estado || 'INSCRIPCIONES').replace('_', ' ')}
           </span>
         </div>
 

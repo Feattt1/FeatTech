@@ -86,6 +86,12 @@ export const authApi = {
       method: 'PUT',
       body: JSON.stringify({ passwordActual, passwordNueva }),
     }),
+  getMe: () => request('/auth/me'),
+  updateProfile: (data) =>
+    request('/auth/me', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
 };
 
 export const campeonatosApi = {

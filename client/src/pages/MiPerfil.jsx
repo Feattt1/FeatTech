@@ -17,6 +17,11 @@ export default function MiPerfil() {
   const [formPassword, setFormPassword] = useState({ actual: '', nueva: '', repetir: '' });
   const [cambiandoPassword, setCambiandoPassword] = useState(false);
 
+  const { login, getToken } = useAuth();
+  const [editandoPerfil, setEditandoPerfil] = useState(false);
+  const [formEditPerfil, setFormEditPerfil] = useState({ nombre: '', telefono: '', categoria: 5, nivel: '' });
+  const [guardandoPerfil, setGuardandoPerfil] = useState(false);
+
   const cargar = async () => {
     try {
       const [jList, pList] = await Promise.all([
@@ -69,6 +74,32 @@ export default function MiPerfil() {
     }
   };
 
+  const iniciarEdicionPerfil = () => {
+    setFormEditPerfil({
+      nombre: user?.nombre || '',
+      telefono: user?.telefono || '',
+      categoria: jugador?.categoria || 4,
+      nivel: jugador?.nivel || '',
+    });
+    setEditandoPerfil(true);
+  };
+
+  const handleGuardarPerfil = async (e) => {
+    e.preventDefault();
+    setGuardandoPerfil(true);
+    try {
+      const updatedUser = await authApi.updateProfile(formEditPerfil);
+      login(updatedUser, getToken()); // Refresca el usuario en el contexto global
+      setEditandoPerfil(false);
+      await cargar(); // Recarga listas de jugadores
+      alert('Perfil actualizado correctamente');
+    } catch (err) {
+      alert(err.message || 'Error al actualizar perfil');
+    } finally {
+      setGuardandoPerfil(false);
+    }
+  };
+
   const handleCrearPareja = async (e) => {
     e.preventDefault();
     if (!formPareja.jugador1Id || !formPareja.jugador2Id) {
@@ -102,46 +133,115 @@ export default function MiPerfil() {
       <h1 className="text-3xl font-bold mb-6">Mi perfil de jugador</h1>
 
       <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Perfil de jugador</h2>
-        {jugador ? (
-          <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-            <p><strong>Categoría:</strong> {jugador.categoria}ª</p>
-            <p><strong>Nivel:</strong> {jugador.nivel || '-'}</p>
-          </div>
-        ) : (
-          <form onSubmit={handleCrearJugador} className="space-y-4 max-w-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Mis datos</h2>
+          {!editandoPerfil && (
+            <button
+              onClick={iniciarEdicionPerfil}
+              className="text-sm px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+            >
+              Editar datos
+            </button>
+          )}
+        </div>
+
+        {editandoPerfil ? (
+          <form onSubmit={handleGuardarPerfil} className="max-w-md p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-4 shadow-sm">
             <div>
-              <label className="block text-sm font-medium mb-1">Categoría (1-7)</label>
-              <select
-                value={formJugador.categoria}
-                onChange={(e) => setFormJugador((f) => ({ ...f, categoria: parseInt(e.target.value, 10) }))}
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
-              >
-                {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-                  <option key={n} value={n}>{n}ª categoría</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Nivel (opcional)</label>
+              <label className="block text-sm font-medium mb-1">Nombre completo</label>
               <input
-                type="text"
-                value={formJugador.nivel}
-                onChange={(e) => setFormJugador((f) => ({ ...f, nivel: e.target.value }))}
-                placeholder="ej: Principiante, Intermedio..."
-                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600"
+                type="text" required
+                value={formEditPerfil.nombre}
+                onChange={(e) => setFormEditPerfil(f => ({ ...f, nombre: e.target.value }))}
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 focus:border-blue-400 focus:outline-none bg-transparent"
               />
             </div>
-            <button
-              type="submit"
-              disabled={creandoJugador}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50"
-            >
-              {creandoJugador ? 'Creando...' : 'Crear perfil de jugador'}
-            </button>
+            <div>
+              <label className="block text-sm font-medium mb-1">Teléfono</label>
+              <input
+                type="tel"
+                value={formEditPerfil.telefono}
+                onChange={(e) => setFormEditPerfil(f => ({ ...f, telefono: e.target.value }))}
+                className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 focus:border-blue-400 focus:outline-none bg-transparent"
+              />
+            </div>
+            
+            {/* Si ya es jugador o le estamos editando los datos de jugador, le mostramos categoría y nivel */}
+            <div className="grid grid-cols-2 gap-4 pt-2">
+              <div>
+                <label className="block text-sm font-medium mb-1">Categoría</label>
+                <select
+                  value={formEditPerfil.categoria}
+                  onChange={(e) => setFormEditPerfil(f => ({ ...f, categoria: parseInt(e.target.value, 10) }))}
+                  className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 focus:border-blue-400 focus:outline-none bg-transparent"
+                >
+                  {[1, 2, 3, 4, 5, 6, 7].map(n => <option key={n} value={n}>{n}ª</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Nivel</label>
+                <input
+                  type="text" placeholder="ej. Intermedio"
+                  value={formEditPerfil.nivel}
+                  onChange={(e) => setFormEditPerfil(f => ({ ...f, nivel: e.target.value }))}
+                  className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 focus:border-blue-400 focus:outline-none bg-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="submit" disabled={guardandoPerfil}
+                className="px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-500 disabled:opacity-50"
+              >
+                {guardandoPerfil ? 'Guardando...' : 'Guardar cambios'}
+              </button>
+              <button
+                type="button" onClick={() => setEditandoPerfil(false)} disabled={guardandoPerfil}
+                className="px-5 py-2 rounded-lg text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+              >
+                Cancelar
+              </button>
+            </div>
           </form>
+        ) : (
+          <div className="p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Nombre</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">{user?.nombre}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Email</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">{user?.email}</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Teléfono</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">{user?.telefono || '-'}</p>
+            </div>
+            {jugador ? (
+              <>
+                <div>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Categoría</p>
+                  <p className="font-medium text-slate-900 dark:text-slate-100">{jugador.categoria}ª</p>
+                </div>
+                <div>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Nivel</p>
+                  <p className="font-medium text-slate-900 dark:text-slate-100">{jugador.nivel || '-'}</p>
+                </div>
+              </>
+            ) : (
+              <div className="col-span-2 mt-2">
+                <span className="text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800">
+                  Sin perfil de jugador
+                </span>
+                <p className="text-xs text-slate-500 mt-2">Usa el botón "Editar datos" para crear tu perfil de jugador y poder inscribirte a torneos.</p>
+              </div>
+            )}
+          </div>
         )}
       </section>
+
+
 
       <section className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Cambiar contraseña</h2>

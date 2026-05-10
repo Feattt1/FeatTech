@@ -242,5 +242,67 @@ router.get('/me', authenticate, async (req, res) => {
   }
 });
 
+// ── Actualizar perfil del usuario actual ──────────────────────────────────────
+router.put('/me', authenticate, [
+  body('nombre').optional().trim().notEmpty(),
+  body('telefono').optional().trim(),
+  body('categoria').optional().isInt({ min: 1, max: 7 }),
+  body('nivel').optional().trim(),
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+    const { nombre, telefono, categoria, nivel } = req.body;
+
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Actualizar datos de Usuario
+      const dataUsuario = {};
+      if (nombre !== undefined) dataUsuario.nombre = nombre;
+      if (telefono !== undefined) dataUsuario.telefono = telefono || null;
+
+      let usuario = await tx.usuario.findUnique({ where: { id: req.user.id }, include: { jugador: true, clubsAdmin: true } });
+      
+      if (Object.keys(dataUsuario).length > 0) {
+        usuario = await tx.usuario.update({
+          where: { id: req.user.id },
+          data: dataUsuario,
+          include: { jugador: true, clubsAdmin: true }
+        });
+      }
+
+      // 2. Actualizar o crear Jugador si viene categoría/nivel
+      if (categoria !== undefined || nivel !== undefined) {
+        if (usuario.jugador) {
+          usuario.jugador = await tx.jugador.update({
+            where: { usuarioId: req.user.id },
+            data: {
+              categoria: categoria !== undefined ? parseInt(categoria, 10) : undefined,
+              nivel: nivel !== undefined ? nivel || null : undefined,
+            }
+          });
+        } else if (categoria !== undefined) {
+          // Si por alguna razón no tenía perfil, se lo creamos
+          usuario.jugador = await tx.jugador.create({
+            data: {
+              usuarioId: req.user.id,
+              categoria: parseInt(categoria, 10),
+              nivel: nivel || null
+            }
+          });
+        }
+      }
+
+      return usuario;
+    });
+
+    const { password: _, clubsAdmin: raw, ...rest } = result;
+    res.json({ ...rest, clubsAdmin: (raw || []).map((a) => a.clubId) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 export default router;
 

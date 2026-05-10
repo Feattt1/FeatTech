@@ -52,8 +52,8 @@ export default function AdminParejas() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Parejas del club</h1>
-        <Link to="/admin/campeonatos" className="text-blue-600 hover:underline text-sm">
-          ← Volver a campeonatos
+        <Link to="/admin" className="text-slate-500 hover:text-padel transition text-sm font-medium">
+          ← Volver al Panel
         </Link>
       </div>
 

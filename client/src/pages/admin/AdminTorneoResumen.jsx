@@ -9,6 +9,7 @@ export default function AdminTorneoResumen() {
     total: 0,
     aceptadas: 0,
     pendientes: 0,
+    byCat: {},
   });
   const [loading, setLoading] = useState(true);
 
@@ -16,10 +17,19 @@ export default function AdminTorneoResumen() {
     const loadStats = async () => {
       try {
         const insc = await inscripcionesApi.list({ campeonatoId: id });
+        const aceptadasList = insc.filter(i => i.estado === 'ACEPTADA');
+        const byCat = {};
+        aceptadasList.forEach(i => {
+          const catId = i.categoriaId || (i.categoria && i.categoria.id);
+          if (catId) {
+            byCat[catId] = (byCat[catId] || 0) + 1;
+          }
+        });
         setStats({
           total: insc.length,
-          aceptadas: insc.filter(i => i.estado === 'ACEPTADA').length,
+          aceptadas: aceptadasList.length,
           pendientes: insc.filter(i => i.estado === 'PENDIENTE').length,
+          byCat
         });
       } catch (err) {
         console.error('Error cargando stats', err);
@@ -73,8 +83,7 @@ export default function AdminTorneoResumen() {
           <h3 className="font-bold text-lg">Cupos por Categoría</h3>
           <div className="space-y-3">
             {campeonato.categorias?.map(cat => {
-              const inscritas = stats.aceptadas; // Esto es simplificado, lo ideal es filtrar stats por categoria
-              // Nota: En una app real, el backend deberia devolver el conteo por categoria
+              const inscritas = stats.byCat[cat.id] || 0;
               const max = cat.maxParejas || 0;
               const porcentaje = max > 0 ? (inscritas / max) * 100 : 0;
               
@@ -102,8 +111,8 @@ export default function AdminTorneoResumen() {
 
         {/* Acciones de Estado */}
         <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-padel/20 flex items-center justify-center text-3xl">
-            {campeonato.estado === 'INSCRIPCIONES' ? '📝' : campeonato.estado === 'EN_CURSO' ? '🎾' : '🏁'}
+          <div className="w-16 h-16 rounded-full bg-padel/20 flex items-center justify-center text-sm font-bold text-slate-700 dark:text-padel">
+            {campeonato.estado === 'INSCRIPCIONES' ? 'INS' : campeonato.estado === 'EN_CURSO' ? 'CUR' : 'FIN'}
           </div>
           <div>
             <h4 className="font-bold text-xl uppercase tracking-tight">

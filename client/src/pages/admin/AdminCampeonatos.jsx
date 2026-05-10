@@ -45,7 +45,9 @@ export default function AdminCampeonatos() {
   return (
     <div>
       {/* Breadcrumb */}
-      <p className="text-xs text-slate-400 mb-1">Panel de administración</p>
+      <Link to="/admin" className="text-slate-500 hover:text-padel transition text-sm font-medium mb-4 inline-block">
+        ← Volver al Panel
+      </Link>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">

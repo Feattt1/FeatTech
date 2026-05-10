@@ -279,6 +279,8 @@ export default function AdminPartidos() {
   const [grupos, setGrupos] = useState([]);
   const [inscripciones, setInscripciones] = useState([]);
   const [seleccionEnGrupo, setSeleccionEnGrupo] = useState({});
+  const [tabActivo, setTabActivo] = useState('inscripciones');
+  const [actualizandoEstado, setActualizandoEstado] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -301,7 +303,7 @@ export default function AdminPartidos() {
     if (!catId) { setGrupos([]); setInscripciones([]); return; }
     const [g, insc] = await Promise.all([
       gruposApi.list(id, catId).catch(() => []),
-      inscripcionesApi.list({ campeonatoId: id, categoriaId: catId, estado: 'ACEPTADA' }).catch(() => []),
+      inscripcionesApi.list({ campeonatoId: id, categoriaId: catId }).catch(() => []),
     ]);
     setGrupos(g);
     setInscripciones(insc);
@@ -438,6 +440,19 @@ export default function AdminPartidos() {
     }
   };
 
+  const handleActualizarEstado = async (inscripcionId, estado) => {
+    setActualizandoEstado(inscripcionId);
+    try {
+      await inscripcionesApi.actualizar(inscripcionId, estado);
+      await loadGrupos(categoriaActiva);
+      showMensaje(`Inscripción ${estado.toLowerCase()}`);
+    } catch (e) {
+      showMensaje(e.message || 'Error al actualizar', 'error');
+    } finally {
+      setActualizandoEstado(null);
+    }
+  };
+
   if (loading || !campeonato) return <div className="text-slate-500">Cargando...</div>;
 
   const categorias = campeonato.categorias ?? [];
@@ -452,24 +467,18 @@ export default function AdminPartidos() {
   const hayCanchas = (campeonato.pistas?.length ?? 0) > 0 || (campeonato.disponibilidades?.length ?? 0) > 0;
   const hayPartidosSinHorario = partidosFiltrados.some((p) => !p.fechaHora && p.estado !== 'FINALIZADO');
 
+  const inscripcionesPendientes = inscripciones.filter((i) => i.estado === 'PENDIENTE');
+
   return (
     <div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
         <div>
-          <nav className="flex items-center gap-1.5 text-sm mb-2">
-            <Link to="/admin/campeonatos" className="text-blue-600 hover:underline font-medium">
-              Torneos
-            </Link>
-            <span className="text-slate-300">/</span>
-            <Link to={`/admin/campeonatos/${id}`} className="text-blue-600 hover:underline truncate max-w-[160px]">
-              {campeonato.nombre}
-            </Link>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-500">Partidos</span>
-          </nav>
+          <Link to={`/campeonatos/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 mb-3 font-medium transition">
+            <span>←</span> Volver a la vista pública
+          </Link>
           <h1 className="text-xl sm:text-2xl font-bold">{campeonato.nombre}</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Gestión de grupos, partidos y eliminatorias</p>
+          <p className="text-sm text-slate-500 mt-0.5">Gestión integral del torneo</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           {hayCanchas && hayPartidosSinHorario && (
@@ -519,6 +528,39 @@ export default function AdminPartidos() {
         </div>
       )}
 
+      {/* Navegación por tabs principal */}
+      <div className="flex gap-4 mb-6 border-b border-slate-200 dark:border-slate-700 overflow-x-auto scrollbar-none">
+        <button
+          onClick={() => setTabActivo('inscripciones')}
+          className={`shrink-0 px-1 py-3 text-sm font-semibold border-b-2 transition-colors relative ${
+            tabActivo === 'inscripciones' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+          }`}
+        >
+          Inscripciones
+          {inscripcionesPendientes.length > 0 && (
+            <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full">
+              {inscripcionesPendientes.length}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setTabActivo('grupos')}
+          className={`shrink-0 px-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
+            tabActivo === 'grupos' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+          }`}
+        >
+          Fase de Grupos
+        </button>
+        <button
+          onClick={() => setTabActivo('eliminatorias')}
+          className={`shrink-0 px-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
+            tabActivo === 'eliminatorias' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+          }`}
+        >
+          Eliminatorias
+        </button>
+      </div>
+
       {/* Mensaje feedback */}
       {mensaje.texto && (
         <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${
@@ -528,12 +570,63 @@ export default function AdminPartidos() {
         </div>
       )}
 
-      {/* Gestión de grupos — solo cuando hay categoría activa y grupos creados */}
+      {/* Contenido según Tab */}
       {categoriaActiva && (() => {
         const parejasEnGrupos = new Set(grupos.flatMap((g) => g.clasificaciones.map((c) => c.parejaId)));
-        const disponibles = inscripciones.filter((i) => !parejasEnGrupos.has(i.parejaId));
-        return (
-          <section className="mb-8">
+        const disponibles = inscripciones.filter((i) => i.estado === 'ACEPTADA' && !parejasEnGrupos.has(i.parejaId));
+        
+        if (tabActivo === 'inscripciones') {
+          return (
+            <section className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">Gestión de inscripciones</h2>
+              {inscripcionesPendientes.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-sm font-bold text-red-600 mb-3 uppercase tracking-wider">Pendientes de revisión</h3>
+                  <div className="space-y-2">
+                    {inscripcionesPendientes.map((i) => (
+                      <div key={i.id} className="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/10 rounded-xl border border-red-200 dark:border-red-800/30">
+                        <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                          {parejaLabel(i.pareja)}
+                        </span>
+                        <div className="flex gap-2">
+                          <button onClick={() => handleActualizarEstado(i.id, 'ACEPTADA')} disabled={actualizandoEstado === i.id}
+                            className="px-3 py-1.5 bg-green-600 text-white rounded text-xs font-semibold hover:bg-green-500 transition disabled:opacity-50">
+                            Aceptar
+                          </button>
+                          <button onClick={() => handleActualizarEstado(i.id, 'RECHAZADA')} disabled={actualizandoEstado === i.id}
+                            className="px-3 py-1.5 bg-red-100 text-red-700 rounded text-xs font-semibold hover:bg-red-200 transition disabled:opacity-50">
+                            Rechazar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <h3 className="text-sm font-bold text-slate-500 mb-3 uppercase tracking-wider">Inscripciones confirmadas</h3>
+              <div className="space-y-2">
+                {inscripciones.filter(i => i.estado === 'ACEPTADA').length === 0 ? (
+                  <p className="text-slate-400 text-sm">No hay parejas confirmadas.</p>
+                ) : (
+                  inscripciones.filter(i => i.estado === 'ACEPTADA').map(i => (
+                    <div key={i.id} className="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+                      <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                        {parejaLabel(i.pareja)}
+                      </span>
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Aceptada</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
+          );
+        }
+
+        if (tabActivo === 'grupos') {
+          return (
+            <>
+              <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">Grupos</h2>
               <button
@@ -621,75 +714,82 @@ export default function AdminPartidos() {
                 {disponibles.map((i) => parejaLabel(i.pareja)).join(', ')}
               </p>
             )}
-            {disponibles.length === 0 && (
-              <p className="text-xs text-green-700 mt-3">Todas las parejas están asignadas a un grupo.</p>
-            )}
-          </section>
-        );
+                {disponibles.length === 0 && (
+                  <p className="text-xs text-green-700 mt-3">Todas las parejas están asignadas a un grupo.</p>
+                )}
+              </section>
+
+              {/* Partidos de grupos */}
+              <section className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">Partidos de grupos</h2>
+                {partidosGrupos.length === 0 ? (
+                  <p className="text-slate-500">No hay partidos de grupos creados.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {partidosGrupos.map((p) => (
+                      <PartidoRow
+                        key={p.id} p={p}
+                        onEditar={(pid) => { setPartidoEditando(pid); setSets([{ gamesLocal: '', gamesVisitante: '' }]); }}
+                        partidoEditando={partidoEditando}
+                        sets={sets} onSetsChange={setSets}
+                        onGuardar={() => handleGuardar(p.id)}
+                        onCancelar={handleCancelar}
+                        onRefresh={load}
+                        allSlots={allSlots}
+                        todosPartidos={partidos}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+            </>
+          );
+        }
+
+        if (tabActivo === 'eliminatorias') {
+          return (
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Eliminatorias</h2>
+                {partidosEliminatorias.length === 0 && todosGruposFinalizados && (
+                  <button
+                    onClick={handleGenerarEliminatorias}
+                    disabled={generandoEliminatorias}
+                    className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 disabled:opacity-50"
+                  >
+                    {generandoEliminatorias ? 'Generando...' : 'Generar bracket'}
+                  </button>
+                )}
+              </div>
+              {partidosEliminatorias.length === 0 ? (
+                <p className="text-slate-500">
+                  {todosGruposFinalizados
+                    ? 'Todos los grupos están completos. Hacé click en "Generar bracket".'
+                    : 'Completá todos los partidos de grupos para habilitar las eliminatorias.'}
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {partidosEliminatorias.map((p) => (
+                    <PartidoRow
+                      key={p.id} p={p}
+                      onEditar={(pid) => { setPartidoEditando(pid); setSets([{ gamesLocal: '', gamesVisitante: '' }]); }}
+                      partidoEditando={partidoEditando}
+                      sets={sets} onSetsChange={setSets}
+                      onGuardar={() => handleGuardar(p.id)}
+                      onCancelar={handleCancelar}
+                      onRefresh={load}
+                      allSlots={allSlots}
+                      todosPartidos={partidos}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          );
+        }
+        
+        return null;
       })()}
-
-      {/* Partidos de grupos */}
-      <section className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Partidos de grupos</h2>
-        {partidosGrupos.length === 0 ? (
-          <p className="text-slate-500">No hay partidos de grupos creados.</p>
-        ) : (
-          <div className="space-y-3">
-            {partidosGrupos.map((p) => (
-              <PartidoRow
-                key={p.id} p={p}
-                onEditar={(pid) => { setPartidoEditando(pid); setSets([{ gamesLocal: '', gamesVisitante: '' }]); }}
-                partidoEditando={partidoEditando}
-                sets={sets} onSetsChange={setSets}
-                onGuardar={() => handleGuardar(p.id)}
-                onCancelar={handleCancelar}
-                onRefresh={load}
-                allSlots={allSlots}
-                todosPartidos={partidos}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Eliminatorias */}
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Eliminatorias</h2>
-          {partidosEliminatorias.length === 0 && todosGruposFinalizados && (
-            <button
-              onClick={handleGenerarEliminatorias}
-              disabled={generandoEliminatorias}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 disabled:opacity-50"
-            >
-              {generandoEliminatorias ? 'Generando...' : 'Generar bracket'}
-            </button>
-          )}
-        </div>
-        {partidosEliminatorias.length === 0 ? (
-          <p className="text-slate-500">
-            {todosGruposFinalizados
-              ? 'Todos los grupos están completos. Hacé click en "Generar bracket".'
-              : 'Completá todos los partidos de grupos para habilitar las eliminatorias.'}
-          </p>
-        ) : (
-          <div className="space-y-3">
-            {partidosEliminatorias.map((p) => (
-              <PartidoRow
-                key={p.id} p={p}
-                onEditar={(pid) => { setPartidoEditando(pid); setSets([{ gamesLocal: '', gamesVisitante: '' }]); }}
-                partidoEditando={partidoEditando}
-                sets={sets} onSetsChange={setSets}
-                onGuardar={() => handleGuardar(p.id)}
-                onCancelar={handleCancelar}
-                onRefresh={load}
-                allSlots={allSlots}
-                todosPartidos={partidos}
-              />
-            ))}
-          </div>
-        )}
-      </section>
     </div>
   );
 }

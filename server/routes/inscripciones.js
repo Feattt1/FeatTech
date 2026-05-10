@@ -107,7 +107,7 @@ router.post('/', authenticate, [
         where: { campeonatoId, categoriaId: categoriaId ?? null, estado: 'ACEPTADA' },
       });
 
-      let estado = 'ACEPTADA';
+      let estado = 'PENDIENTE';
       let posicionLista = null;
       const limite = categoriaTorneo?.maxParejas;
       
@@ -271,7 +271,7 @@ router.post('/con-companero', authenticate, [
       if (existe) throw Object.assign(new Error('Esta pareja ya está inscrita en este torneo'), { statusCode: 400 });
 
       // 5. Verificar límite de cupos
-      let estado = 'ACEPTADA';
+      let estado = 'PENDIENTE';
       let posicionLista = null;
       if (maxParejasEfectivo) {
         const countAceptadas = await tx.inscripcion.count({

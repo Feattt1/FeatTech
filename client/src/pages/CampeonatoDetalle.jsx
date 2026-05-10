@@ -412,6 +412,7 @@ export default function CampeonatoDetalle() {
   const [categoriaActiva, setCategoriaActiva] = useState(null);
   const [inscribiendo, setInscribiendo] = useState(false);
   const [eliminando, setEliminando] = useState(null);
+  const [actualizandoEstado, setActualizandoEstado] = useState(null);
   const [heroLoaded, setHeroLoaded] = useState(false);
 
   // Admin: selector de pareja existente
@@ -513,6 +514,18 @@ export default function CampeonatoDetalle() {
       alert(e.message || 'Error al eliminar');
     } finally {
       setEliminando(null);
+    }
+  };
+
+  const handleActualizarEstado = async (inscripcionId, estado) => {
+    setActualizandoEstado(inscripcionId);
+    try {
+      await inscripcionesApi.actualizar(inscripcionId, estado);
+      await load();
+    } catch (e) {
+      alert(e.message || 'Error al actualizar');
+    } finally {
+      setActualizandoEstado(null);
     }
   };
 
@@ -871,15 +884,35 @@ export default function CampeonatoDetalle() {
                           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                             i.estado === 'ACEPTADA'     ? 'bg-green-100 text-green-700' :
                             i.estado === 'LISTA_ESPERA' ? 'bg-amber-100 text-amber-700' :
-                            'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                            i.estado === 'RECHAZADA'    ? 'bg-red-100 text-red-700' :
+                            'bg-blue-100 text-blue-700' // PENDIENTE
                           }`}>
-                            {i.estado === 'ACEPTADA' ? 'Aceptada' : i.estado === 'LISTA_ESPERA' ? 'Lista espera' : i.estado}
+                            {i.estado === 'ACEPTADA' ? 'Aceptada' : 
+                             i.estado === 'LISTA_ESPERA' ? 'Lista espera' : 
+                             i.estado === 'RECHAZADA' ? 'Rechazada' : 
+                             'Pendiente'}
                           </span>
                           {esAdminClub && (
-                            <button onClick={() => handleEliminarInscripcion(i.id)} disabled={eliminando === i.id}
-                              className="text-red-400 hover:text-red-600 text-xs disabled:opacity-50 transition">
-                              Quitar
-                            </button>
+                            <div className="flex items-center gap-2 ml-2">
+                              {i.estado === 'PENDIENTE' && (
+                                <>
+                                  <button onClick={() => handleActualizarEstado(i.id, 'ACEPTADA')} disabled={actualizandoEstado === i.id}
+                                    className="text-green-600 hover:text-green-700 font-medium text-xs disabled:opacity-50 transition">
+                                    Aceptar
+                                  </button>
+                                  <button onClick={() => handleActualizarEstado(i.id, 'RECHAZADA')} disabled={actualizandoEstado === i.id}
+                                    className="text-red-500 hover:text-red-600 font-medium text-xs disabled:opacity-50 transition">
+                                    Rechazar
+                                  </button>
+                                </>
+                              )}
+                              <button onClick={() => handleEliminarInscripcion(i.id)} disabled={eliminando === i.id || actualizandoEstado === i.id}
+                                className="text-slate-400 hover:text-red-600 transition disabled:opacity-50 ml-1" title="Quitar inscripción">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>

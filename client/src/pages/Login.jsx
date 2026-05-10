@@ -136,12 +136,6 @@ export default function Login() {
             </Link>
           </p>
         </div>
-
-        {/* Demo credentials */}
-        <div className="mt-4 bg-slate-50 dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Demo admin</p>
-          <p className="text-xs text-slate-400 font-mono">admin@torneos.local / admin123</p>
-        </div>
       </div>
     </div>
   );

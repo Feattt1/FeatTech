@@ -134,24 +134,12 @@ export default function Layout() {
                   </Link>
 
                   {esAdminClub && (
-                    <div className="relative" ref={adminRef}>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setAdminAbierto(!adminAbierto)}
-                        className="px-3 py-2 rounded-lg bg-padel-dark hover:bg-padel text-slate-900 font-bold text-sm transition-colors"
-                      >
-                        Admin ▾
-                      </motion.button>
-                      {adminAbierto && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-2xl py-2 border border-slate-100 dark:border-slate-700 z-50 animate-fade-in origin-top-right">
-                          <Link to="/admin/campeonatos" onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 font-medium transition-colors hover:pl-5">Campeonatos</Link>
-                          <Link to="/admin/jugadores"   onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 transition-colors hover:pl-5">Jugadores</Link>
-                          <Link to="/admin/parejas"     onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 transition-colors hover:pl-5">Parejas</Link>
-                          <Link to="/admin/clubs"       onClick={() => setAdminAbierto(false)} className="block px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm text-slate-900 dark:text-slate-200 transition-colors hover:pl-5">Clubes</Link>
-                        </div>
-                      )}
-                    </div>
+                    <Link
+                      to="/admin"
+                      className="px-4 py-2 ml-2 rounded-lg bg-padel-dark hover:bg-padel text-slate-900 font-bold text-sm transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(204,255,0,0.2)] hover:shadow-[0_0_20px_rgba(204,255,0,0.4)]"
+                    >
+                      <span>⚙️</span> Panel de Control
+                    </Link>
                   )}
 
                   <motion.button
@@ -248,18 +236,8 @@ export default function Layout() {
                 {esAdminClub && (
                   <>
                     <div className="border-t border-slate-700 my-2" />
-                    <p className="text-xs text-yellow-400 uppercase tracking-wider px-3 py-1 font-bold">Admin</p>
-                    <Link to="/admin/campeonatos" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 font-medium text-sm transition">
-                      🗂 Campeonatos
-                    </Link>
-                    <Link to="/admin/jugadores" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 text-sm transition">
-                      👥 Jugadores
-                    </Link>
-                    <Link to="/admin/parejas" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 text-sm transition">
-                      🤝 Parejas
-                    </Link>
-                    <Link to="/admin/clubs" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 text-sm transition">
-                      🏠 Clubes
+                    <Link to="/admin" className="flex items-center justify-center gap-2 px-3 py-3 rounded-lg bg-padel-dark text-slate-900 hover:bg-padel font-bold text-sm transition">
+                      ⚙️ Panel de Control
                     </Link>
                   </>
                 )}

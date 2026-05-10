@@ -113,17 +113,7 @@ export default function AdminHorarios() {
   if (loading || !campeonato) return <div className="text-slate-500">Cargando...</div>;
 
   return (
-    <div className="max-w-3xl">
-      <div className="mb-6">
-        <Link to={`/admin/campeonatos/${id}/partidos`} className="text-blue-600 hover:underline text-sm">
-          ← Volver a Partidos
-        </Link>
-        <h1 className="text-2xl font-bold mt-1">{campeonato.nombre} — Canchas y Horarios</h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Configurá los días disponibles, la cantidad de canchas y la duración de cada partido.
-          Luego usá "Asignar horarios" en la página de partidos para distribuir automáticamente.
-        </p>
-      </div>
+    <div className="max-w-3xl mx-auto">
 
       {mensaje.texto && (
         <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${

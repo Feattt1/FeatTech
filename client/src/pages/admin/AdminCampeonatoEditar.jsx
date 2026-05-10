@@ -234,45 +234,14 @@ export default function AdminCampeonatoEditar() {
   );
 
   return (
-    <div className="max-w-2xl">
-
-      {/* ── Navegación superior ── */}
-      <div className="flex items-center justify-between mb-6">
-        <nav className="flex items-center gap-1.5 text-sm">
-          <Link to="/admin/campeonatos" className="text-blue-600 hover:underline font-medium">
-            ← Torneos
-          </Link>
-          {!esNuevo && (
-            <>
-              <span className="text-slate-300">/</span>
-              <span className="text-slate-500 truncate max-w-[180px]">{form.nombre || 'Editar'}</span>
-            </>
-          )}
-        </nav>
-        {!esNuevo && (
-          <Link
-            to={`/admin/campeonatos/${id}/partidos`}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 transition"
-          >
-            Gestionar partidos →
-          </Link>
-        )}
-      </div>
-
-      {/* ── Título ── */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100">
-          {esNuevo ? 'Nuevo torneo' : (form.nombre || 'Editar torneo')}
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+          {esNuevo ? 'Crear Nuevo Torneo' : 'Ajustes del Torneo'}
         </h1>
-        {!esNuevo && (
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-            form.estado === 'INSCRIPCIONES' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-            form.estado === 'EN_CURSO'      ? 'bg-green-50 text-green-700 border-green-200' :
-            'bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 dark:border-slate-700'
-          }`}>
-            {form.estado === 'INSCRIPCIONES' ? 'Inscripciones' : form.estado === 'EN_CURSO' ? 'En curso' : 'Finalizado'}
-          </span>
-        )}
+        <p className="text-sm text-slate-500 mt-1">
+          {esNuevo ? 'Configurá los datos iniciales para lanzar el torneo.' : 'Modificá la configuración general y categorías.'}
+        </p>
       </div>
 
       {error && (

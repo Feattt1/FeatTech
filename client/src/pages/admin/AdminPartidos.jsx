@@ -264,7 +264,7 @@ function PartidoRow({ p, onEditar, partidoEditando, sets, onSetsChange, onGuarda
   );
 }
 
-export default function AdminPartidos() {
+export default function AdminPartidos({ initTab = 'inscripciones' }) {
   const { id } = useParams();
   const { club } = useClub();
   const [campeonato, setCampeonato] = useState(null);
@@ -279,8 +279,13 @@ export default function AdminPartidos() {
   const [grupos, setGrupos] = useState([]);
   const [inscripciones, setInscripciones] = useState([]);
   const [seleccionEnGrupo, setSeleccionEnGrupo] = useState({});
-  const [tabActivo, setTabActivo] = useState('inscripciones');
+  const [tabActivo, setTabActivo] = useState(initTab);
   const [actualizandoEstado, setActualizandoEstado] = useState(null);
+
+  // Sync tab if prop changes
+  useEffect(() => {
+    setTabActivo(initTab);
+  }, [initTab]);
 
   const load = async () => {
     setLoading(true);
@@ -471,33 +476,14 @@ export default function AdminPartidos() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
-        <div>
-          <Link to={`/campeonatos/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 mb-3 font-medium transition">
-            <span>←</span> Volver a la vista pública
-          </Link>
-          <h1 className="text-xl sm:text-2xl font-bold">{campeonato.nombre}</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Gestión integral del torneo</p>
+      {/* Mensaje feedback */}
+      {mensaje.texto && (
+        <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${
+          mensaje.tipo === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-800'
+        }`}>
+          {mensaje.texto}
         </div>
-        <div className="flex gap-2 flex-wrap">
-          {hayCanchas && hayPartidosSinHorario && (
-            <button
-              onClick={handleAsignarHorarios}
-              disabled={asignandoHorarios}
-              className="px-3 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 disabled:opacity-50"
-            >
-              {asignandoHorarios ? 'Asignando...' : 'Asignar horarios'}
-            </button>
-          )}
-          <Link
-            to={`/admin/campeonatos/${id}/horarios`}
-            className="px-3 py-2 rounded-lg bg-slate-200 text-sm font-medium hover:bg-slate-300"
-          >
-            Canchas
-          </Link>
-        </div>
-      </div>
+      )}
 
       {/* Tabs de categorías — scrollable horizontal en mobile */}
       {categorias.length > 1 && (
@@ -525,48 +511,6 @@ export default function AdminPartidos() {
               {cat.nombre || `${cat.categoria}ta ${MODALIDAD_LABEL[cat.modalidad]}`}
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Navegación por tabs principal */}
-      <div className="flex gap-4 mb-6 border-b border-slate-200 dark:border-slate-700 overflow-x-auto scrollbar-none">
-        <button
-          onClick={() => setTabActivo('inscripciones')}
-          className={`shrink-0 px-1 py-3 text-sm font-semibold border-b-2 transition-colors relative ${
-            tabActivo === 'inscripciones' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-          }`}
-        >
-          Inscripciones
-          {inscripcionesPendientes.length > 0 && (
-            <span className="ml-2 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full">
-              {inscripcionesPendientes.length}
-            </span>
-          )}
-        </button>
-        <button
-          onClick={() => setTabActivo('grupos')}
-          className={`shrink-0 px-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
-            tabActivo === 'grupos' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-          }`}
-        >
-          Fase de Grupos
-        </button>
-        <button
-          onClick={() => setTabActivo('eliminatorias')}
-          className={`shrink-0 px-1 py-3 text-sm font-semibold border-b-2 transition-colors ${
-            tabActivo === 'eliminatorias' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-          }`}
-        >
-          Eliminatorias
-        </button>
-      </div>
-
-      {/* Mensaje feedback */}
-      {mensaje.texto && (
-        <div className={`mb-4 p-3 rounded-lg text-sm font-medium ${
-          mensaje.tipo === 'error' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-800'
-        }`}>
-          {mensaje.texto}
         </div>
       )}
 

@@ -67,17 +67,8 @@ export default function AdminCampeonatos() {
 
       {/* Accesos rápidos */}
       <div className="flex flex-wrap gap-2 mb-8">
-        <Link to="/" className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition">
-          ← Inicio
-        </Link>
-        <Link to="/admin/jugadores" className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition">
-          Jugadores
-        </Link>
-        <Link to="/admin/parejas" className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition">
-          Parejas
-        </Link>
-        <Link to="/admin/clubs" className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition">
-          Clubes
+        <Link to="/admin" className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 transition">
+          ← Volver al Panel
         </Link>
       </div>
 
@@ -128,16 +119,16 @@ export default function AdminCampeonatos() {
 
                   <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-700">
                     <Link
-                      to={`/admin/campeonatos/${c.id}/partidos`}
+                      to={`/admin/campeonatos/${c.id}`}
                       className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition"
                     >
-                      Gestionar partidos
+                      Gestionar
                     </Link>
                     <Link
-                      to={`/admin/campeonatos/${c.id}`}
+                      to={`/admin/campeonatos/${c.id}/ajustes`}
                       className="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-medium text-sm transition"
                     >
-                      Editar
+                      Configurar
                     </Link>
                     <Link
                       to={`/campeonatos/${c.id}`}

@@ -8,6 +8,9 @@ import Campeonatos from './pages/Campeonatos';
 import CampeonatoDetalle from './pages/CampeonatoDetalle';
 import MisInscripciones from './pages/MisInscripciones';
 import MiPerfil from './pages/MiPerfil';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminTorneoControlCenter from './pages/admin/AdminTorneoControlCenter';
+import AdminTorneoResumen from './pages/admin/AdminTorneoResumen';
 import AdminCampeonatos from './pages/admin/AdminCampeonatos';
 import AdminCampeonatoEditar from './pages/admin/AdminCampeonatoEditar';
 import AdminPartidos from './pages/admin/AdminPartidos';
@@ -90,6 +93,11 @@ export default function App() {
           </PrivateRoute>
         } />
 
+        <Route path="admin" element={
+          <PrivateRoute adminOnly>
+            <AdminDashboard />
+          </PrivateRoute>
+        } />
         <Route path="admin/campeonatos" element={
           <PrivateRoute adminOnly>
             <AdminCampeonatos />
@@ -117,24 +125,22 @@ export default function App() {
         } />
         <Route path="admin/campeonatos/:id" element={
           <PrivateRoute adminOnly>
-            <AdminCampeonatoEditar />
+            <AdminTorneoControlCenter />
           </PrivateRoute>
-        } />
-        <Route path="admin/campeonatos/:id/partidos" element={
-          <PrivateRoute adminOnly>
-            <AdminPartidos />
-          </PrivateRoute>
-        } />
-        <Route path="admin/campeonatos/:id/gestionar-partidos" element={
-          <PrivateRoute adminOnly>
-            <AdminGestionarPartidos />
-          </PrivateRoute>
-        } />
-        <Route path="admin/campeonatos/:id/horarios" element={
-          <PrivateRoute adminOnly>
-            <AdminHorarios />
-          </PrivateRoute>
-        } />
+        }>
+          <Route index element={<Navigate to="resumen" replace />} />
+          <Route path="resumen" element={<AdminTorneoResumen />} />
+          <Route path="ajustes" element={<AdminCampeonatoEditar />} />
+          <Route path="inscripciones" element={<AdminPartidos initTab="inscripciones" />} />
+          <Route path="grupos" element={<AdminPartidos initTab="grupos" />} />
+          <Route path="eliminatorias" element={<AdminPartidos initTab="eliminatorias" />} />
+          <Route path="horarios" element={<AdminHorarios />} />
+          <Route path="gestionar-partidos" element={<AdminGestionarPartidos />} />
+          {/* Redirecciones de rutas viejas */}
+          <Route path="partidos" element={<Navigate to="../inscripciones" replace />} />
+        </Route>
+        {/* Redirección de ruta vieja de edición */}
+        <Route path="admin/campeonatos/:id/editar" element={<Navigate to="../ajustes" replace />} />
       </Route>
     </Routes>
   );

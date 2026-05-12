@@ -78,12 +78,14 @@ function PartidoCard({ p }) {
       p.estado === 'FINALIZADO' ? 'border-slate-100 dark:border-slate-700 dark:bg-slate-800' : 'border-padel bg-padel/5 shadow-neon dark:bg-padel/10 dark:border-padel/60'
     }`}>
       {fecha && (
-        <p className="text-xs text-slate-400 mb-2 flex items-center gap-1">
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-2 flex items-center gap-1">
           {fecha}{p.pista ? ` · ${p.pista}` : ''}
         </p>
       )}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className={`font-medium text-sm flex-1 min-w-[120px] ${res && sL > sV ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}>
+        <span className={`font-medium text-sm flex-1 min-w-[120px] ${
+          res && sL > sV ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-200'
+        }`}>
           {parejaLabel(p.parejaLocal)}
         </span>
         {res ? (
@@ -91,7 +93,9 @@ function PartidoCard({ p }) {
         ) : (
           <span className="text-slate-300 dark:text-slate-600 text-sm shrink-0 font-light">vs</span>
         )}
-        <span className={`font-medium text-sm flex-1 min-w-[120px] text-right ${res && sV > sL ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-300'}`}>
+        <span className={`font-medium text-sm flex-1 min-w-[120px] text-right ${
+          res && sV > sL ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-slate-700 dark:text-slate-200'
+        }`}>
           {parejaLabel(p.parejaVisitante)}
         </span>
       </div>
@@ -313,15 +317,25 @@ function BracketMatchCard({ partido }) {
     const scores = partido.sets?.length > 0
       ? partido.sets.map((s) => (side === 'local' ? s.gamesLocal : s.gamesVisitante))
       : [];
-    // bg-lime-100 es seguro para html2canvas en lugar de bg-padel/15 que usa rgb(var)
     return (
       <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-lime-100 dark:bg-lime-900/30' : 'bg-white dark:bg-slate-800'}`}>
-        <span className={`text-xs inline-block overflow-hidden ${isWin ? 'text-slate-900 dark:text-slate-100 dark:text-white font-bold' : 'text-slate-500 dark:text-slate-400 font-medium'}`} style={{ width: 138, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+        <span
+          className={`text-xs inline-block overflow-hidden ${
+            isWin
+              ? 'text-slate-900 dark:text-white font-bold'
+              : 'text-slate-600 dark:text-slate-300 font-medium'
+          }`}
+          style={{ width: 138, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+        >
           {parejaLabel(pareja)}
         </span>
         <div className="flex gap-1.5 shrink-0 ml-auto">
           {scores.map((s, i) => (
-            <span key={i} className={`text-xs w-4 text-center ${isWin ? 'text-slate-900 dark:text-slate-100 dark:text-white font-black' : 'text-slate-400 dark:text-slate-500 font-semibold'}`}>{s}</span>
+            <span key={i} className={`text-xs w-4 text-center ${
+              isWin
+                ? 'text-slate-900 dark:text-white font-black'
+                : 'text-slate-400 dark:text-slate-500 font-semibold'
+            }`}>{s}</span>
           ))}
         </div>
       </div>
@@ -330,7 +344,7 @@ function BracketMatchCard({ partido }) {
   return (
     <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-padel hover:shadow-glass transition-all" style={{ width: 216 }}>
       {renderRow(partido.parejaLocal, 'local')}
-      <div className="h-px bg-slate-100 dark:bg-slate-800 dark:bg-slate-700" />
+      <div className="h-px bg-slate-100 dark:bg-slate-700" />
       {renderRow(partido.parejaVisitante, 'visitante')}
     </div>
   );
@@ -687,15 +701,16 @@ export default function CampeonatoDetalle() {
           >
             {/* Partidos / Bracket */}
             {tab === 'bracket' && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <BracketCategoria partidos={partidosFiltrados} grupos={gruposFiltrados} />
-                </div>
+              <div className="space-y-8">
+                {/* Partidos de grupos */}
+                <BracketCategoria partidos={partidosFiltrados} grupos={gruposFiltrados} />
+
+                {/* Bracket eliminatorio — full width con scroll horizontal */}
                 {partidosFiltrados.some((p) => ['TREINTAIDOSAVOS', 'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS','SEMIS','FINAL'].includes(p.fase)) && (
                   <div>
-                    <div className="flex justify-between items-center mb-3">
-                      <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Bracket eliminatorio</h3>
-                      <ExportExcelButton 
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Bracket eliminatorio</h3>
+                      <ExportExcelButton
                         fileName="Bracket_Torneo.xlsx"
                         sheetName="Eliminatorias"
                         data={partidosFiltrados
@@ -711,7 +726,8 @@ export default function CampeonatoDetalle() {
                           }))}
                       />
                     </div>
-                    <div>
+                    {/* overflow-x-auto para que no se corte en pantallas chicas */}
+                    <div className="-mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 overflow-x-auto">
                       <BracketVisual partidos={partidosFiltrados} />
                     </div>
                   </div>

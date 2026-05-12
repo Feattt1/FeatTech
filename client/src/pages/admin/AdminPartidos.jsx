@@ -636,130 +636,52 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
         }
 
         if (tabActivo === 'grupos') {
-          // ¿Todos los grupos tienen exactamente 3 parejas y no hay partidos de grupos aún?
           const todosGruposListos =
             grupos.length > 0 && grupos.every((g) => g.clasificaciones.length === 3);
           const hayPartidosGrupos = partidosGrupos.length > 0;
 
           return (
-            <>
-              <section className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Grupos</h2>
-              <div className="flex items-center gap-2">
-                {/* Botón generar automático — solo cuando no hay grupos */}
-                {grupos.length === 0 && (
-                  <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-1.5">
-                    <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Cantidad de grupos:</span>
-                    <input
-                      type="number"
-                      min={1} max={16}
-                      value={cantGrupos}
-                      onChange={(e) => setCantGrupos(parseInt(e.target.value, 10) || 1)}
-                      className="w-14 text-sm px-2 py-1 rounded border border-blue-300 dark:border-blue-700 text-center bg-white dark:bg-slate-800"
-                    />
-                    <button
-                      onClick={handleGenerarGruposAuto}
-                      disabled={generandoGrupos}
-                      className="text-sm px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-500 font-medium disabled:opacity-50 whitespace-nowrap"
-                    >
-                      {generandoGrupos ? 'Generando...' : '⚡ Generar automático'}
-                    </button>
-                  </div>
-                )}
-                <button
-                  onClick={handleCrearGrupo}
-                  className="text-sm px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600"
-                >
-                  + Nuevo grupo
-                </button>
-              </div>
-            </div>
-            {grupos.length === 0 && (
-              <p className="text-slate-500 text-sm mb-4">No hay grupos. Usá "⚡ Generar automático" o "+ Nuevo grupo" para crearlos manualmente.</p>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {grupos.map((grupo) => (
-                <div key={grupo.id} className="border border-slate-200 dark:border-slate-700 rounded-xl p-4 bg-white dark:bg-slate-800">
-                  <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
-                    <h3 className="font-semibold text-slate-800 dark:text-slate-200">{grupo.nombre}</h3>
-                    <div className="flex gap-1 flex-wrap">
-                      {grupo.clasificaciones.length === 3 && (
-                        <button
-                          onClick={() => handleRegenerarPartidosGrupo(grupo.id, grupo.nombre)}
-                          className="text-xs text-blue-600 hover:text-blue-800 px-2 py-0.5 rounded hover:bg-blue-50 border border-blue-200"
-                          title="Borra los partidos del grupo y los regenera con las parejas actuales"
-                        >
-                          Regenerar partidos
-                        </button>
-                      )}
+            <section className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Grupos</h2>
+                <div className="flex items-center gap-2 flex-wrap justify-end">
+                  {grupos.length === 0 && (
+                    <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-1.5">
+                      <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Grupos:</span>
+                      <input
+                        type="number"
+                        min={1} max={16}
+                        value={cantGrupos}
+                        onChange={(e) => setCantGrupos(parseInt(e.target.value, 10) || 1)}
+                        className="w-14 text-sm px-2 py-1 rounded border border-blue-300 dark:border-blue-700 text-center bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
+                      />
                       <button
-                        onClick={() => handleEliminarGrupo(grupo.id, grupo.nombre)}
-                        className="text-xs text-red-500 hover:text-red-700 px-2 py-0.5 rounded hover:bg-red-50"
+                        onClick={handleGenerarGruposAuto}
+                        disabled={generandoGrupos}
+                        className="text-sm px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-500 font-medium disabled:opacity-50 whitespace-nowrap"
                       >
-                        Eliminar grupo
-                      </button>
-                    </div>
-                  </div>
-
-                  {grupo.clasificaciones.length === 0 ? (
-                    <p className="text-xs text-slate-400 mb-3 italic">Sin parejas asignadas</p>
-                  ) : (
-                    <ul className="space-y-2 mb-3">
-                      {grupo.clasificaciones.map((c) => (
-                        <li key={c.parejaId} className="flex items-center justify-between text-sm">
-                          <span className="text-slate-700 dark:text-slate-300">{parejaLabel(c.pareja)}</span>
-                          <button
-                            onClick={() => handleQuitarPareja(grupo.id, c.parejaId)}
-                            className="text-red-500 hover:text-red-700 text-xs px-2 py-0.5 rounded hover:bg-red-50"
-                          >
-                            Quitar
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {disponibles.length > 0 && (
-                    <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
-                      <select
-                        value={seleccionEnGrupo[grupo.id] || ''}
-                        onChange={(e) => setSeleccionEnGrupo((prev) => ({ ...prev, [grupo.id]: e.target.value }))}
-                        className="flex-1 text-xs border border-slate-200 dark:border-slate-700 rounded px-2 py-1 bg-white dark:bg-slate-800"
-                      >
-                        <option value="">Agregar pareja...</option>
-                        {disponibles.map((i) => (
-                          <option key={i.parejaId} value={i.parejaId}>
-                            {parejaLabel(i.pareja)}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={() => handleAgregarPareja(grupo.id)}
-                        disabled={!seleccionEnGrupo[grupo.id]}
-                        className="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 disabled:opacity-40"
-                      >
-                        + Agregar
+                        {generandoGrupos ? 'Generando...' : '⚡ Auto'}
                       </button>
                     </div>
                   )}
+                  <button
+                    onClick={handleCrearGrupo}
+                    className="text-sm px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600"
+                  >
+                    + Nuevo grupo
+                  </button>
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {disponibles.length > 0 && (
-              <p className="text-xs text-slate-500 mt-3">
-                {disponibles.length} pareja{disponibles.length !== 1 ? 's' : ''} sin grupo:{' '}
-                {disponibles.map((i) => parejaLabel(i.pareja)).join(', ')}
-              </p>
-            )}
-            {disponibles.length === 0 && grupos.length > 0 && (
-                <p className="text-xs text-green-700 mt-3">Todas las parejas están asignadas a un grupo.</p>
+              {grupos.length === 0 && (
+                <p className="text-slate-500 dark:text-slate-400 text-sm mb-4">
+                  No hay grupos. Usá "⚡ Auto" para generarlos automáticamente o "+ Nuevo grupo" para crear manualmente.
+                </p>
               )}
 
-              {/* Botón para generar partidos de grupos */}
+              {/* Banner: generar partidos cuando todos tienen 3 parejas */}
               {todosGruposListos && !hayPartidosGrupos && (
-                <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center justify-between gap-4">
+                <div className="mb-5 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-green-800 dark:text-green-200">¡Todos los grupos tienen 3 parejas!</p>
                     <p className="text-xs text-green-600 dark:text-green-400">Podés generar los partidos de la fase de grupos automáticamente.</p>
@@ -773,32 +695,115 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
                   </button>
                 </div>
               )}
-              </section>
 
-              {/* Partidos de grupos */}
-              <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">Partidos de grupos</h2>
-                {partidosGrupos.length === 0 ? (
-                  <p className="text-slate-500">No hay partidos de grupos creados.</p>
-                ) : (
-                  <div className="space-y-3">
-                    {partidosGrupos.map((p) => (
-                      <PartidoRow
-                        key={p.id} p={p}
-                        onEditar={(pid) => { setPartidoEditando(pid); setSets([{ gamesLocal: '', gamesVisitante: '' }]); }}
-                        partidoEditando={partidoEditando}
-                        sets={sets} onSetsChange={setSets}
-                        onGuardar={() => handleGuardar(p.id)}
-                        onCancelar={handleCancelar}
-                        onRefresh={load}
-                        allSlots={allSlots}
-                        todosPartidos={partidos}
-                      />
-                    ))}
-                  </div>
-                )}
-              </section>
-            </>
+              {/* Grupos con partidos inline */}
+              <div className="space-y-5">
+                {grupos.map((grupo) => {
+                  const partidosDelGrupo = partidosGrupos.filter((p) => p.grupoId === grupo.id);
+                  return (
+                    <div key={grupo.id} className="border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 overflow-hidden">
+                      {/* Cabecera del grupo */}
+                      <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-slate-900/70 border-b border-slate-200 dark:border-slate-700">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-100">{grupo.nombre}</h3>
+                        <div className="flex gap-1 flex-wrap">
+                          {grupo.clasificaciones.length === 3 && (
+                            <button
+                              onClick={() => handleRegenerarPartidosGrupo(grupo.id, grupo.nombre)}
+                              className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                              title="Regenerar partidos del grupo"
+                            >
+                              Regenerar partidos
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleEliminarGrupo(grupo.id, grupo.nombre)}
+                            className="text-xs text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-200 px-2 py-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-4">
+                        {/* Parejas inscriptas en el grupo */}
+                        {grupo.clasificaciones.length === 0 ? (
+                          <p className="text-xs text-slate-400 dark:text-slate-500 italic">Sin parejas asignadas</p>
+                        ) : (
+                          <ul className="space-y-1.5">
+                            {grupo.clasificaciones.map((c) => (
+                              <li key={c.parejaId} className="flex items-center justify-between text-sm">
+                                <span className="text-slate-700 dark:text-slate-300">{parejaLabel(c.pareja)}</span>
+                                <button
+                                  onClick={() => handleQuitarPareja(grupo.id, c.parejaId)}
+                                  className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-200 text-xs px-2 py-0.5 rounded hover:bg-red-50 dark:hover:bg-red-900/30"
+                                >
+                                  Quitar
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        {/* Agregar pareja disponible */}
+                        {disponibles.length > 0 && (
+                          <div className="flex gap-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                            <select
+                              value={seleccionEnGrupo[grupo.id] || ''}
+                              onChange={(e) => setSeleccionEnGrupo((prev) => ({ ...prev, [grupo.id]: e.target.value }))}
+                              className="flex-1 text-xs border border-slate-200 dark:border-slate-600 rounded px-2 py-1.5 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                            >
+                              <option value="">Agregar pareja...</option>
+                              {disponibles.map((i) => (
+                                <option key={i.parejaId} value={i.parejaId}>{parejaLabel(i.pareja)}</option>
+                              ))}
+                            </select>
+                            <button
+                              onClick={() => handleAgregarPareja(grupo.id)}
+                              disabled={!seleccionEnGrupo[grupo.id]}
+                              className="text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 disabled:opacity-40"
+                            >
+                              + Agregar
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Partidos del grupo — inline */}
+                        {partidosDelGrupo.length > 0 && (
+                          <div className="pt-3 border-t border-slate-100 dark:border-slate-700">
+                            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">Partidos</p>
+                            <div className="space-y-2">
+                              {partidosDelGrupo.map((p) => (
+                                <PartidoRow
+                                  key={p.id} p={p}
+                                  onEditar={(pid) => { setPartidoEditando(pid); setSets([{ gamesLocal: '', gamesVisitante: '' }]); }}
+                                  partidoEditando={partidoEditando}
+                                  sets={sets} onSetsChange={setSets}
+                                  onGuardar={() => handleGuardar(p.id)}
+                                  onCancelar={handleCancelar}
+                                  onRefresh={load}
+                                  allSlots={allSlots}
+                                  todosPartidos={partidos}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {disponibles.length > 0 && (
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">
+                  {disponibles.length} pareja{disponibles.length !== 1 ? 's' : ''} sin grupo:{' '}
+                  {disponibles.map((i) => parejaLabel(i.pareja)).join(', ')}
+                </p>
+              )}
+              {disponibles.length === 0 && grupos.length > 0 && (
+                <p className="text-xs text-green-700 dark:text-green-400 mt-3">Todas las parejas están asignadas a un grupo.</p>
+              )}
+            </section>
           );
         }
 

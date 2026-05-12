@@ -112,9 +112,11 @@ export default function MiPerfil() {
     }
     setCreandoPareja(true);
     try {
+      // Tercer arg = tipoPareja, cuarto arg = nombre
       await parejasApi.create(
         formPareja.jugador1Id,
         formPareja.jugador2Id,
+        'ABIERTO',
         formPareja.nombre || undefined
       );
       setFormPareja({ jugador1Id: '', jugador2Id: '', nombre: '' });
@@ -290,18 +292,28 @@ export default function MiPerfil() {
 
       <section>
         <h2 className="text-xl font-semibold mb-4">Mis parejas</h2>
-        {parejas.length > 0 && (
-          <div className="space-y-2 mb-6">
-            {parejas.map((p) => (
-              <div key={p.id} className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                {p.nombre ? <p className="font-medium">{p.nombre}</p> : null}
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* Mostrar solo las parejas en las que participa el jugador logueado */}
+        {(() => {
+          const misParejas = jugador
+            ? parejas.filter(
+                (p) => p.jugador1Id === jugador.id || p.jugador2Id === jugador.id
+              )
+            : [];
+          return misParejas.length > 0 ? (
+            <div className="space-y-2 mb-6">
+              {misParejas.map((p) => (
+                <div key={p.id} className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  {p.nombre ? <p className="font-medium">{p.nombre}</p> : null}
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    {p.jugador1?.usuario?.nombre} / {p.jugador2?.usuario?.nombre}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            jugador && <p className="text-sm text-slate-400 mb-4">Todavía no tenés parejas registradas.</p>
+          );
+        })()}
         <form onSubmit={handleCrearPareja} className="space-y-4 max-w-md">
           <p className="text-sm text-slate-600 dark:text-slate-400">
             Para crear una pareja, selecciona dos jugadores (deben tener perfil de jugador).

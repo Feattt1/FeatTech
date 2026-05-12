@@ -155,20 +155,44 @@ router.delete('/:id', authenticate, setClubIdFromInscripcion, requireClubAdmin, 
   }
 });
 
-// Aceptar/rechazar inscripción (admin del club)
+// Aceptar/rechazar/mover inscripción (admin del club)
+// Estados válidos: PENDIENTE, ACEPTADA, RECHAZADA, LISTA_ESPERA
 router.put('/:id', authenticate, setClubIdFromInscripcion, requireClubAdmin, param('id').isUUID(), async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
-    if (!['ACEPTADA', 'RECHAZADA'].includes(estado)) {
-      return res.status(400).json({ error: 'Estado inválido' });
+    const ESTADOS_VALIDOS = ['PENDIENTE', 'ACEPTADA', 'RECHAZADA', 'LISTA_ESPERA'];
+    if (!ESTADOS_VALIDOS.includes(estado)) {
+      return res.status(400).json({ error: `Estado inválido. Valores permitidos: ${ESTADOS_VALIDOS.join(', ')}` });
+    }
+
+    let posicionLista;
+    if (estado === 'LISTA_ESPERA') {
+      // Obtener la inscripción actual para conocer campeonatoId y categoriaId
+      const actual = await prisma.inscripcion.findUnique({
+        where: { id },
+        select: { campeonatoId: true, categoriaId: true },
+      });
+      if (actual) {
+        const countEspera = await prisma.inscripcion.count({
+          where: {
+            campeonatoId: actual.campeonatoId,
+            categoriaId: actual.categoriaId ?? null,
+            estado: 'LISTA_ESPERA',
+            id: { not: id }, // no contar la propia inscripción si ya estaba en espera
+          },
+        });
+        posicionLista = countEspera + 1;
+      }
+    } else if (estado === 'ACEPTADA' || estado === 'PENDIENTE' || estado === 'RECHAZADA') {
+      posicionLista = null; // limpiar posición si sale de lista de espera
     }
 
     const inscripcion = await prisma.inscripcion.update({
       where: { id },
       data: {
         estado,
-        posicionLista: estado === 'ACEPTADA' ? null : undefined,
+        posicionLista: posicionLista !== undefined ? posicionLista : undefined,
       },
       include: {
         pareja: true,
@@ -177,6 +201,7 @@ router.put('/:id', authenticate, setClubIdFromInscripcion, requireClubAdmin, par
     });
     res.json(inscripcion);
   } catch (err) {
+    if (err.code === 'P2025') return res.status(404).json({ error: 'Inscripción no encontrada' });
     res.status(500).json({ error: err.message });
   }
 });

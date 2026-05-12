@@ -145,22 +145,40 @@ router.put('/password', authenticate, [
 });
 
 // ── Login / Registro con Google ──────────────────────────────────────────────
-router.post('/google', [
-  body('credential').notEmpty().withMessage('Token de Google requerido'),
-], async (req, res) => {
+// Acepta: { credential } (id_token del popup GSI)  o  { access_token } (del hook useGoogleLogin)
+router.post('/google', async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    const { credential, access_token } = req.body;
 
-    const { credential } = req.body;
+    if (!credential && !access_token) {
+      return res.status(400).json({ error: 'Token de Google requerido (credential o access_token)' });
+    }
 
-    // 1. Verificar el token con Google
-    const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-    const payload = ticket.getPayload();
-    const { sub: googleId, email, name, picture } = payload;
+    let googleId, email, name;
+
+    if (credential) {
+      // Flujo id_token: verificar con la librería oficial
+      const ticket = await googleClient.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+      const payload = ticket.getPayload();
+      googleId = payload.sub;
+      email = payload.email;
+      name = payload.name;
+    } else {
+      // Flujo access_token: obtener datos del usuario via Google UserInfo API
+      const resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+      if (!resp.ok) {
+        return res.status(401).json({ error: 'Token de Google inválido o expirado' });
+      }
+      const payload = await resp.json();
+      googleId = payload.sub;
+      email = payload.email;
+      name = payload.name;
+    }
 
     if (!email) return res.status(400).json({ error: 'No se pudo obtener el email de Google' });
 

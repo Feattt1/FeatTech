@@ -279,6 +279,9 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
   const [grupos, setGrupos] = useState([]);
   const [inscripciones, setInscripciones] = useState([]);
   const [seleccionEnGrupo, setSeleccionEnGrupo] = useState({});
+  const [generandoGrupos, setGenerandoGrupos] = useState(false);
+  const [cantGrupos, setCantGrupos] = useState(2);
+  const [generandoPartidosGrupos, setGenerandoPartidosGrupos] = useState(false);
   const [tabActivo, setTabActivo] = useState(initTab);
   const [actualizandoEstado, setActualizandoEstado] = useState(null);
 
@@ -385,6 +388,41 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
       showMensaje(err.message || 'Error al asignar horarios', 'error');
     } finally {
       setAsignandoHorarios(false);
+    }
+  };
+
+  const handleGenerarGruposAuto = async () => {
+    if (!categoriaActiva) {
+      showMensaje('Seleccioná una categoría primero.', 'error');
+      return;
+    }
+    if (!cantGrupos || cantGrupos < 1) {
+      showMensaje('Ingresá una cantidad de grupos válida.', 'error');
+      return;
+    }
+    setGenerandoGrupos(true);
+    try {
+      const res = await campeonatosApi.generarGrupos(id, cantGrupos, categoriaActiva);
+      await loadGrupos(categoriaActiva);
+      showMensaje(`${res.length} grupo${res.length !== 1 ? 's' : ''} generado${res.length !== 1 ? 's' : ''} correctamente.`);
+    } catch (err) {
+      showMensaje(err.message || 'Error al generar grupos', 'error');
+    } finally {
+      setGenerandoGrupos(false);
+    }
+  };
+
+  const handleGenerarPartidosGrupos = async () => {
+    setGenerandoPartidosGrupos(true);
+    try {
+      const res = await campeonatosApi.generarPartidosGrupos(id, categoriaActiva || undefined);
+      const p = await partidosApi.list({ campeonatoId: id });
+      setPartidos(p);
+      showMensaje(`${res.creados} partidos de grupos generados.`);
+    } catch (err) {
+      showMensaje(err.message || 'Error al generar partidos de grupos', 'error');
+    } finally {
+      setGenerandoPartidosGrupos(false);
     }
   };
 
@@ -598,20 +636,47 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
         }
 
         if (tabActivo === 'grupos') {
+          // ¿Todos los grupos tienen exactamente 3 parejas y no hay partidos de grupos aún?
+          const todosGruposListos =
+            grupos.length > 0 && grupos.every((g) => g.clasificaciones.length === 3);
+          const hayPartidosGrupos = partidosGrupos.length > 0;
+
           return (
             <>
               <section className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold">Grupos</h2>
-              <button
-                onClick={handleCrearGrupo}
-                className="text-sm px-3 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-500"
-              >
-                + Nuevo grupo
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Botón generar automático — solo cuando no hay grupos */}
+                {grupos.length === 0 && (
+                  <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-1.5">
+                    <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Cantidad de grupos:</span>
+                    <input
+                      type="number"
+                      min={1} max={16}
+                      value={cantGrupos}
+                      onChange={(e) => setCantGrupos(parseInt(e.target.value, 10) || 1)}
+                      className="w-14 text-sm px-2 py-1 rounded border border-blue-300 dark:border-blue-700 text-center bg-white dark:bg-slate-800"
+                    />
+                    <button
+                      onClick={handleGenerarGruposAuto}
+                      disabled={generandoGrupos}
+                      className="text-sm px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-500 font-medium disabled:opacity-50 whitespace-nowrap"
+                    >
+                      {generandoGrupos ? 'Generando...' : '⚡ Generar automático'}
+                    </button>
+                  </div>
+                )}
+                <button
+                  onClick={handleCrearGrupo}
+                  className="text-sm px-3 py-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600"
+                >
+                  + Nuevo grupo
+                </button>
+              </div>
             </div>
             {grupos.length === 0 && (
-              <p className="text-slate-500 text-sm mb-4">No hay grupos. Usá "+ Nuevo grupo" para crear uno.</p>
+              <p className="text-slate-500 text-sm mb-4">No hay grupos. Usá "⚡ Generar automático" o "+ Nuevo grupo" para crearlos manualmente.</p>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {grupos.map((grupo) => (
@@ -688,9 +753,26 @@ export default function AdminPartidos({ initTab = 'inscripciones' }) {
                 {disponibles.map((i) => parejaLabel(i.pareja)).join(', ')}
               </p>
             )}
-                {disponibles.length === 0 && (
-                  <p className="text-xs text-green-700 mt-3">Todas las parejas están asignadas a un grupo.</p>
-                )}
+            {disponibles.length === 0 && grupos.length > 0 && (
+                <p className="text-xs text-green-700 mt-3">Todas las parejas están asignadas a un grupo.</p>
+              )}
+
+              {/* Botón para generar partidos de grupos */}
+              {todosGruposListos && !hayPartidosGrupos && (
+                <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-green-800 dark:text-green-200">¡Todos los grupos tienen 3 parejas!</p>
+                    <p className="text-xs text-green-600 dark:text-green-400">Podés generar los partidos de la fase de grupos automáticamente.</p>
+                  </div>
+                  <button
+                    onClick={handleGenerarPartidosGrupos}
+                    disabled={generandoPartidosGrupos}
+                    className="shrink-0 px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-500 disabled:opacity-50"
+                  >
+                    {generandoPartidosGrupos ? 'Generando...' : '🎾 Generar partidos'}
+                  </button>
+                </div>
+              )}
               </section>
 
               {/* Partidos de grupos */}

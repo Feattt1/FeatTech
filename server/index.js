@@ -47,7 +47,7 @@ app.use(cors({
       // Ignorar error de parseo de URL
     }
     
-    callback(new Error(`Origen no permitido por CORS: ${origin}`));
+    callback(null, false);
   },
   credentials: true,
 }));

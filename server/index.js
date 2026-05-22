@@ -28,7 +28,25 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 app.use(cors({
   origin: (origin, callback) => {
     // Permitir requests sin origin (Postman, mobile apps, server-to-server)
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    if (!origin) return callback(null, true);
+    
+    // Permitir orígenes explícitamente configurados
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    
+    // Permitir dinámicamente cualquier subdominio de featwebs.com o enlaces de vercel.app (desarrollo/preview)
+    try {
+      const hostname = new URL(origin).hostname;
+      if (
+        hostname.endsWith('.featwebs.com') ||
+        hostname === 'featwebs.com' ||
+        hostname.endsWith('.vercel.app')
+      ) {
+        return callback(null, true);
+      }
+    } catch (err) {
+      // Ignorar error de parseo de URL
+    }
+    
     callback(new Error(`Origen no permitido por CORS: ${origin}`));
   },
   credentials: true,

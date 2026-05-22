@@ -318,14 +318,14 @@ function BracketMatchCard({ partido }) {
       ? partido.sets.map((s) => (side === 'local' ? s.gamesLocal : s.gamesVisitante))
       : [];
     return (
-      <div className={`flex items-center gap-2 px-3 py-2.5 transition-colors ${isWin ? 'bg-lime-100 dark:bg-lime-900/30' : 'bg-white dark:bg-slate-800'}`}>
+      <div className={`flex items-center gap-2 px-3 py-3 transition-colors ${isWin ? 'bg-lime-100 dark:bg-lime-900/30' : 'bg-white dark:bg-slate-800'}`}>
         <span
-          className={`text-xs inline-block overflow-hidden ${
+          className={`text-[11px] leading-tight inline-block overflow-hidden ${
             isWin
               ? 'text-slate-900 dark:text-white font-bold'
               : 'text-slate-600 dark:text-slate-300 font-medium'
           }`}
-          style={{ width: 138, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+          style={{ width: 196, whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
         >
           {parejaLabel(pareja)}
         </span>
@@ -342,7 +342,7 @@ function BracketMatchCard({ partido }) {
     );
   };
   return (
-    <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-padel hover:shadow-glass transition-all" style={{ width: 216 }}>
+    <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm hover:border-padel hover:shadow-glass transition-all" style={{ width: 280 }}>
       {renderRow(partido.parejaLocal, 'local')}
       <div className="h-px bg-slate-100 dark:bg-slate-700" />
       {renderRow(partido.parejaVisitante, 'visitante')}
@@ -369,7 +369,7 @@ function BracketVisual({ partidos }) {
   });
   if (!rounds.length) return null;
 
-  const CARD_W = 216, CARD_H = 65, SIB_GAP = 16, COL_GAP = 44, COL_W = CARD_W + COL_GAP, LABEL_H = 32, PAD = 24;
+  const CARD_W = 280, CARD_H = 68, SIB_GAP = 16, COL_GAP = 52, COL_W = CARD_W + COL_GAP, LABEL_H = 32, PAD = 24;
   const yPos = [];
   yPos[0] = rounds[0].matches.map((_, i) => i * (CARD_H + SIB_GAP));
   for (let r = 1; r < rounds.length; r++)

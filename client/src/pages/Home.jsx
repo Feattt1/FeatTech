@@ -53,7 +53,7 @@ export default function Home() {
       <section key={estado} className="mb-16">
         <div className="flex items-center gap-3 mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 dark:text-white">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
               {config.label}
             </h2>
             <p className="text-slate-500 text-sm mt-1">
@@ -78,7 +78,7 @@ export default function Home() {
                 <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold mb-3 ${config.tagBg}`}>
                   {config.label}
                 </span>
-                <h3 className="font-bold text-slate-900 dark:text-slate-100 dark:text-white text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
+                <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1 group-hover:text-yellow-600 transition line-clamp-2">
                   {c.nombre}
                 </h3>
                 {c.categorias?.length > 0 && (
@@ -129,6 +129,14 @@ export default function Home() {
                   className="btn-primary w-full block"
                 >
                   Explorar Torneos →
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+                <Link
+                  to="/americano"
+                  className="flex items-center justify-center gap-2 w-full px-8 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold transition-all backdrop-blur-sm"
+                >
+                  🎾 Crear Americano
                 </Link>
               </motion.div>
               <a 

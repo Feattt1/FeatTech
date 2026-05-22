@@ -20,6 +20,7 @@ import AdminJugadores from './pages/admin/AdminJugadores';
 import AdminParejas from './pages/admin/AdminParejas';
 import AdminClubs from './pages/admin/AdminClubs';
 import Ranking from './pages/Ranking';
+import Americano from './pages/Americano';
 import { useAuth } from './context/AuthContext';
 import { useClub } from './context/ClubContext';
 
@@ -48,26 +49,34 @@ export default function App() {
   const { club } = useClub();
   
   if (!club) {
+    // El Americano es accesible sin club seleccionado
     return (
-      <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white">
-        <header className="text-white shadow-md border-b border-slate-200" style={{ backgroundColor: '#000' }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
-            <h1 className="text-3xl font-bold">
-              <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
-                Championship Padel
-              </span>
-            </h1>
+      <Routes>
+        <Route path="/americano" element={<Layout />}>
+          <Route index element={<Americano />} />
+        </Route>
+        <Route path="*" element={
+          <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white">
+            <header className="text-white shadow-md border-b border-slate-200" style={{ backgroundColor: '#000' }}>
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
+                <h1 className="text-3xl font-bold">
+                  <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
+                    Championship Padel
+                  </span>
+                </h1>
+              </div>
+            </header>
+            <main className="flex-1">
+              <SelectorClub />
+            </main>
+            <footer className="bg-slate-900 text-white py-8 mt-auto border-t border-slate-800">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-400 text-sm">
+                <p>© {new Date().getFullYear()} Championship Padel</p>
+              </div>
+            </footer>
           </div>
-        </header>
-        <main className="flex-1">
-          <SelectorClub />
-        </main>
-        <footer className="bg-slate-900 text-white py-8 mt-auto border-t border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-400 text-sm">
-            <p>© {new Date().getFullYear()} Championship Padel</p>
-          </div>
-        </footer>
-      </div>
+        } />
+      </Routes>
     );
   }
 
@@ -78,6 +87,7 @@ export default function App() {
         <Route path="campeonatos" element={<Campeonatos />} />
         <Route path="campeonatos/:id" element={<CampeonatoDetalle />} />
         <Route path="ranking" element={<Ranking />} />
+        <Route path="americano" element={<Americano />} />
 
         <Route path="login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="register" element={<PublicRoute><Register /></PublicRoute>} />

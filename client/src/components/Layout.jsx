@@ -119,6 +119,9 @@ export default function Layout() {
                 Ranking
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-padel transition-all duration-300 group-hover:w-full"></span>
               </Link>
+              <Link to="/americano" className="px-3 py-1.5 rounded-lg bg-padel/20 hover:bg-padel/30 border border-padel/30 text-padel font-semibold text-sm transition-all">
+                🎾 Americano
+              </Link>
 
 
 
@@ -222,6 +225,9 @@ export default function Layout() {
             <Link to="/ranking" className="flex items-center gap-3 px-3 py-3 rounded-lg text-white hover:bg-slate-800 font-medium text-sm transition">
               <span className="w-5 text-center mr-3 font-bold opacity-50">R</span>
               Ranking
+            </Link>
+            <Link to="/americano" className="flex items-center gap-3 px-3 py-3 rounded-lg bg-padel/20 border border-padel/30 text-padel font-semibold text-sm transition">
+              🎾 Americano
             </Link>
 
             {user ? (

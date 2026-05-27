@@ -1,20 +1,22 @@
 {
-  "name": "padel-championship-manager",
+  "name": "feattech-monorepo",
   "version": "1.0.0",
-  "description": "Gestor de campeonatos de pádel para clubes",
+  "description": "FeatTech Software Studio - Monorepo de aplicaciones y sitios corporativos",
   "private": true,
   "workspaces": [
-    "client",
-    "server"
+    "apps/padel-client",
+    "apps/padel-server",
+    "apps/featwebs-landing"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
-    "dev:client": "npm run dev -w client",
-    "dev:server": "npm run dev -w server",
-    "build": "npm run build -w server && npm run build -w client",
-    "start": "npm run start -w server",
-    "db:generate": "npm run db:generate -w server",
-    "db:push": "npm run db:push -w server"
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"npm run dev:landing\"",
+    "dev:client": "npm run dev -w apps/padel-client",
+    "dev:server": "npm run dev -w apps/padel-server",
+    "dev:landing": "npm run dev -w apps/featwebs-landing",
+    "build": "npm run build -w apps/padel-server && npm run build -w apps/padel-client && npm run build -w apps/featwebs-landing",
+    "start": "npm run start -w apps/padel-server",
+    "db:generate": "npm run db:generate -w apps/padel-server",
+    "db:push": "npm run db:push -w apps/padel-server"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

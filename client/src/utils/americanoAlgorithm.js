@@ -84,7 +84,7 @@ export function calcularPosiciones(parejas, resultados) {
 
   return Object.values(stats)
     .map((s) => ({ ...s, diferencia: s.juegosF - s.juegosC }))
-    .sort((a, b) => b.juegosF - a.juegosF || b.diferencia - a.diferencia || b.ganados - a.ganados);
+    .sort((a, b) => b.diferencia - a.diferencia || b.juegosF - a.juegosF || b.ganados - a.ganados);
 }
 
 /**
@@ -265,5 +265,5 @@ export function calcularPosicionesIndividual(jugadores, resultados) {
 
   return Object.values(stats)
     .map((s) => ({ ...s, diferencia: s.juegosF - s.juegosC }))
-    .sort((a, b) => b.juegosF - a.juegosF || b.diferencia - a.diferencia || b.ganados - a.ganados);
+    .sort((a, b) => b.diferencia - a.diferencia || b.juegosF - a.juegosF || b.ganados - a.ganados);
 }

@@ -969,4 +969,69 @@ cd server && npx prisma db push
 
 ---
 
-*Documento generado el 2026-04-17.*
+## 11. Nuevas Funcionalidades del Sistema
+
+### A. Torneo en Formato Americano (`Americano.jsx`)
+El formato "Americano" es un tipo de torneo rápido e informal muy popular en el pádel. A diferencia de un campeonato tradicional por categorías, en un torneo Americano:
+* **Rotación Individual o por Parejas**: Todos juegan contra todos en partidos cortos a tiempo fijo o cantidad fija de puntos.
+* **Cálculo de Puntuación**: Los jugadores acumulan puntos individuales por cada game o punto ganado en sus partidos.
+* **Despliegue del Fixture**: El componente genera dinámicamente las rondas, pistas y asignaciones de parejas para asegurar que la rotación sea justa y equitativa.
+* **Clasificación en Tiempo Real**: Muestra una tabla clasificatoria en vivo donde los jugadores pueden ver quién va liderando el torneo por cantidad de puntos ganados.
+
+### B. Rankings de Clubes (`Ranking.jsx`)
+La aplicación incluye un sistema de clasificación anual acumulativa para los clubes deportivos.
+* **Filtrado Dinámico**: Permite visualizar la clasificación filtrando por **Año**, **Categoría (1ra a 7ma)** y **Modalidad (Masculino, Femenino, Mixto)**.
+* **Cálculo Automatizado**: Los puntos se obtienen de las posiciones finales y partidos ganados en cada campeonato oficial cerrado por el club.
+* **Exportación de Datos**: Incluye la utilidad `ExportExcelButton` para descargar la tabla de posiciones del ranking en formato Excel (.xlsx) con un solo clic.
+
+---
+
+## 12. Configuración de Despliegue Avanzado en Vercel (Monorepo)
+
+Para evitar colisiones y optimizar los builds en producción, hemos estructurado el monorepo para desplegarse como **dos proyectos independientes en Vercel** desde el mismo repositorio de GitHub:
+
+### 1. Proyecto Frontend (`client/`)
+* **Directorio Raíz en Vercel**: `client`
+* **Comando de Build**: `npm run build`
+* **Directorio de Salida**: `dist`
+* **Archivo de Configuración (`client/vercel.json`)**:
+  Contiene las reglas de reescritura para Single Page Applications (SPA). Esto asegura que si un usuario refresca la pantalla en una subruta (ej: `/campeonatos/123`), Vercel entregue el `index.html` raíz y evite los errores **404 Not Found**:
+  ```json
+  {
+    "version": 2,
+    "cleanUrls": true,
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
+      }
+    ]
+  }
+  ```
+
+### 2. Proyecto Backend (`server/`)
+* **Directorio Raíz en Vercel**: `server`
+* **Comando de Build**: `npm run build` (genera el cliente de Prisma y aplica los esquemas a la base de datos)
+* **Archivo de Configuración (`server/vercel.json`)**:
+  Redirige todas las peticiones entrantes de la API hacia la función Serverless principal alojada en `api/[...path].js`:
+  ```json
+  {
+    "version": 2,
+    "builds": [
+      {
+        "src": "api/[...path].js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/api/[...path].js"
+      }
+    ]
+  }
+  ```
+
+---
+
+*Última actualización de la documentación: Mayo de 2026.*

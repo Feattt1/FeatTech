@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useClub } from '../context/ClubContext';
 import { clubsApi } from '../services/api';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 function FormularioPrimerClub({ onCreado }) {
   const [nombre, setNombre] = useState('');
@@ -105,6 +106,21 @@ export default function SelectorClub() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Banner de Torneo Americano Rápido */}
+      <div className="mt-12 max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center shadow-xl">
+        <span className="text-3xl mb-2 block">⚡</span>
+        <h3 className="text-lg font-bold text-white mb-1">¿Buscás jugar un torneo rápido?</h3>
+        <p className="text-xs text-slate-400 mb-4 leading-relaxed">
+          Creá un Torneo Americano instantáneo (Individual o en Parejas) sin necesidad de registrarte ni pertenecer a un club.
+        </p>
+        <Link
+          to="/americano"
+          className="inline-flex px-4 py-2 rounded-xl bg-padel hover:bg-padel-light text-slate-900 font-bold text-xs transition-all shadow-neon"
+        >
+          🎾 Jugar Torneo Americano
+        </Link>
       </div>
 
       <div className="mt-16 text-center text-slate-400 text-sm">

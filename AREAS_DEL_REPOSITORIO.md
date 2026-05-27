@@ -1,434 +1,133 @@
-# 📁 Guía de Áreas del Repositorio - Padel Championship Manager
+# 📁 Guía de Áreas del Repositorio - Torneos Padel UY
 
-## Estructura Completa
+Esta guía documenta la estructura de archivos real del monorepo, detallando el propósito y el contenido de cada componente en el Frontend y el Backend.
 
-```
-padel-championship-manager/
+---
+
+## 🗺️ Estructura General del Monorepo
+
+```text
+PadelTournamentApp/
 │
-├── 📄 package.json                  # Workspace root (monorepo)
-├── 📄 README.md                     # Overview original
-├── 📄 DOCUMENTACION.md              # Este archivo (guía completa)
+├── 📄 package.json                  # Definición del Workspace raíz (Monorepo)
+├── 📄 package-lock.json             # Árbol de dependencias bloqueado
+├── 📄 README.md                     # Presentación oficial de la plataforma
+├── 📄 DOCUMENTACION.md              # Flujos lógicos, API y guía de arquitectura
+├── 📄 AREAS_DEL_REPOSITORIO.md      # Este archivo (mapeo del código)
 │
-├── 📁 client/                       # ========== FRONTEND (React + Vite) ==========
+├── 📁 client/                       # ========== FRONTEND (React + Vite + Tailwind) ==========
 │   ├── 📄 package.json              # Dependencias del cliente
-│   ├── 📄 vite.config.js            # Configuración de Vite (HMR, puerto 5173)
-│   ├── 📄 tailwind.config.js        # Configuración de Tailwind CSS
-│   ├── 📄 postcss.config.js         # Configuración de PostCSS
-│   ├── 📄 index.html                # Punto de entrada HTML
+│   ├── 📄 vite.config.js            # Configuración del bundler Vite
+│   ├── 📄 tailwind.config.js        # Estilos y tokens de diseño Tailwind
+│   ├── 📄 postcss.config.js         # Procesamiento de CSS
+│   ├── 📄 index.html                # Entrada de la Single Page Application (SPA)
+│   ├── 📄 vercel.json               # [NUEVO] Reglas de enrutamiento SPA para Vercel
 │   │
-│   ├── 📁 public/                   # Archivos estáticos
-│   │   └── (assets, favicons, etc)
+│   ├── 📁 public/                   # Activos públicos estáticos
+│   │   ├── 📄 favicon.svg           # Icono de la pestaña del navegador
+│   │   └── 📁 images/               # Imágenes estáticas
 │   │
-│   └── 📁 src/                      # Código fuente del frontend
-│       ├── 📄 main.jsx              # Entry point (ReactDOM.render)
-│       ├── 📄 App.jsx               # Componente raíz (routing)
-│       ├── 📄 index.css             # Estilos globales + Tailwind imports
+│   └── 📁 src/                      # Código fuente de React
+│       ├── 📄 main.jsx              # Punto de inicio (ReactDOM.createRoot)
+│       ├── 📄 App.jsx               # Enrutador principal (React Router DOM)
+│       ├── 📄 index.css             # Directivas Tailwind + estilos globales
 │       │
-│       ├── 📁 components/           # Componentes reutilizables
-│       │   └── 📄 Layout.jsx        # Layout principal (navbar, footer, etc)
+│       ├── 📁 components/           # Componentes UI reutilizables
+│       │   ├── 📄 Layout.jsx        # Marco visual con Navbar responsivo y Footer
+│       │   ├── 📄 ExportExcelButton.jsx # Utilidad para descargar tablas en Excel (.xlsx)
+│       │   └── 📄 GoogleLoginButton.jsx # Botón de autenticación con Google One-Tap
 │       │
-│       ├── 📁 context/              # Context API (estado global)
-│       │   ├── 📄 AuthContext.jsx   # Contexto de autenticación (login, token, usuario)
-│       │   └── 📄 ClubContext.jsx   # Contexto de cliente (club seleccionado)
+│       ├── 📁 context/              # Estados globales de React
+│       │   ├── 📄 AuthContext.jsx   # Sesión, Login, Registro, JWT y datos de Usuario
+│       │   └── 📄 ClubContext.jsx   # Almacenamiento local del Club seleccionado activo
 │       │
-│       ├── 📁 pages/                # Páginas/Vistas de la aplicación
-│       │   ├── 📄 Home.jsx          # Página principal
-│       │   ├── 📄 Login.jsx         # Página de login
-│       │   ├── 📄 Register.jsx      # Página de registro
-│       │   ├── 📄 SelectorClub.jsx  # Selector de club (si user es admin de múltiples)
-│       │   ├── 📄 MiPerfil.jsx      # Perfil del usuario
-│       │   ├── 📄 MisInscripciones.jsx # Mis inscripciones en campeonatos
-│       │   ├── 📄 Campeonatos.jsx   # Listar campeonatos disponibles
-│       │   ├── 📄 CampeonatoDetalle.jsx # Detalles de campeonato específico
-│       │   │
-│       │   └── 📁 admin/            # Vistas de administración
-│       │       ├── 📄 AdminCampeonatos.jsx   # Gestionar campeonatos
-│       │       ├── 📄 AdminCampeonatoEditar.jsx # Editar campeonato
-│       │       ├── 📄 AdminPartidos.jsx      # Gestionar partidos y resultados
-│       │       ├── 📄 AdminHorarios.jsx      # Gestionar disponibilidad
-│       │       ├── 📄 AdminJugadores.jsx     # Gestionar jugadores del club
-│       │       ├── 📄 AdminParejas.jsx       # Gestionar parejas del club
-│       │       └── 📄 AdminClubs.jsx         # Gestionar clubs (superadmin)
+│       ├── 📁 services/             # Integración con el Backend
+│       │   └── 📄 api.js            # Cliente HTTP (fetch wrapper) unificado
 │       │
-│       └── 📁 services/             # Servicios de API y utilidades
-│           └── 📄 api.js            # Cliente HTTP (Axios wrapper) para llamadas a backend
+│       └── 📁 pages/                # Vistas y Páginas de la Aplicación
+│           ├── 📄 Home.jsx          # Dashboard de bienvenida del club activo
+│           ├── 📄 Login.jsx         # Formulario de inicio de sesión
+│           ├── 📄 Register.jsx      # Registro de nuevos usuarios
+│           ├── 📄 SelectorClub.jsx  # Selector inicial para cargar los datos de un club
+│           ├── 📄 MiPerfil.jsx      # Perfil del jugador (categoría, nivel, teléfono)
+│           ├── 📄 MisInscripciones.jsx # Historial de torneos del usuario
+│           ├── 📄 Campeonatos.jsx   # Listado de torneos activos del club
+│           ├── 📄 CampeonatoDetalle.jsx # Vista integral de grupos, cruces, partidos y tablas
+│           ├── 📄 Ranking.jsx       # Clasificación anual del club por categoría
+│           ├── 📄 Americano.jsx     # Gestor de torneos en formato "todos contra todos" rápido
+│           │
+│           └── 📁 admin/            # ========== VISTAS DE ADMINISTRACIÓN DE CLUB ==========
+│               ├── 📄 AdminDashboard.jsx    # Panel general con estadísticas y accesos directos
+│               ├── 📄 AdminCampeonatos.jsx  # Crear, listar y suspender torneos del club
+│               ├── 📄 AdminCampeonatoEditar.jsx # Formulario de edición del torneo seleccionado
+│               ├── 📄 AdminTorneoControlCenter.jsx # Dashboard central de control de un torneo
+│               ├── 📄 AdminTorneoResumen.jsx # Estadísticas rápidas de un campeonato activo
+│               ├── 📄 AdminPartidos.jsx     # Gestor unificado con pestañas para:
+│               │                            # - Aceptar/Rechazar inscripciones de parejas
+│               │                            # - Definición y generación de Grupos
+│               │                            # - Generación automática de eliminatorias (Playoffs)
+│               │   ├── 📄 AdminHorarios.jsx # Definición de canchas, fechas y franjas horarias
+│               │   ├── 📄 AdminGestionarPartidos.jsx # Asignación de canchas y horas a partidos
+│               │   ├── 📄 AdminJugadores.jsx # Control y creación de jugadores asociados al club
+│               │   ├── 📄 AdminParejas.jsx   # Creación manual y control de duplas registradas
+│               │   └── 📄 AdminClubs.jsx     # Reservado para Superadministradores (crear clubes)
 │
-├── 📁 server/                       # ========== BACKEND (Node.js + Express) ==========
-│   ├── 📄 index.js                  # Servidor principal (configuración Express, rutas)
-│   ├── 📄 package.json              # Dependencias del servidor
-│   ├── 📄 nodemon.json              # Configuración de auto-reload en desarrollo
-│   │
-│   ├── 📁 config/                   # Configuración
-│   │   └── 📄 db.js                 # Inicialización de cliente Prisma
-│   │
-│   ├── 📁 middleware/               # Middlewares de Express
-│   │   └── 📄 auth.js               # Middleware de autenticación JWT
-│   │
-│   ├── 📁 routes/                   # Endpoints API (rutas)
-│   │   ├── 📄 auth.js               # POST /register, /login (autenticación)
-│   │   ├── 📄 clubs.js              # GET/POST /clubs (gestión de clubes)
-│   │   ├── 📄 campeonatos.js        # GET/POST/PUT /campeonatos (gestión de campeonatos)
-│   │   ├── 📄 jugadores.js          # GET/POST /jugadores (perfiles de jugadores)
-│   │   ├── 📄 parejas.js            # GET/POST/DELETE /parejas (gestión de parejas)
-│   │   ├── 📄 inscripciones.js      # GET/POST/PUT /inscripciones (manejo de inscripciones)
-│   │   ├── 📄 partidos.js           # GET/POST/PUT /partidos (casos/resultados)
-│   │   ├── 📄 grupos.js             # GET /grupos, generación automática (fases de grupos)
-│   │   └── 📄 notificaciones.js     # GET /notificaciones (sistema de notificaciones)
-│   │
-│   └── 📁 prisma/                   # Prisma ORM (Base de datos)
-│       ├── 📄 schema.prisma         # Esquema de datos (modelos, enums, relaciones)
-│       └── 📄 seed.js               # Script para poblar datos iniciales (3 clubs)
-│
-└── 📄 .gitignore                    # Archivos a ignorar en Git
+└── 📁 server/                       # ========== BACKEND (Node.js + Express + Prisma) ==========
+    ├── 📄 index.js                  # Inicializador del servidor Express y Middlewares
+    ├── 📄 package.json              # Dependencias y scripts de construcción
+    ├── 📄 nodemon.json              # Configuración de auto-reload de desarrollo
+    ├── 📄 vercel.json               # Configuración Serverless para Vercel Functions
+    │
+    ├── 📁 api/                      # Punto de entrada para el motor Serverless de Vercel
+    │   └── 📄 [...path].js          # Redireccionamiento universal a index.js
+    │
+    ├── 📁 config/                   # Ajustes globales
+    │   └── 📄 db.js                 # Cliente único de Prisma (Singleton para Serverless)
+    │
+    ├── 📁 middleware/               # Capas de interceptación de peticiones
+    │   └── 📄 auth.js               # Validación y decodificación de tokens JWT
+    │
+    ├── 📁 routes/                   # Controladores y enrutamiento API REST (/api)
+    │   ├── 📄 auth.js               # Rutas de login, registro, perfil y Google Auth
+    │   ├── 📄 clubs.js              # Gestión de clubes y asignación de administradores
+    │   ├── 📄 campeonatos.js        # Configuración de torneos, categorías y fixtures
+    │   ├── 📄 jugadores.js          # Control de perfiles de jugadores
+    │   ├── 📄 parejas.js            # Registro, movimiento de grupos y eliminación de parejas
+    │   ├── 📄 inscripciones.js      # Solicitudes de participación en campeonatos
+    │   ├── 📄 partidos.js           # Carga de sets, canchas y resultados de partidos
+    │   ├── 📄 grupos.js             # Generación y manipulación de fase de grupos
+    │   └── 📄 notificaciones.js     # Bandeja de entrada de avisos de sistema para usuarios
+    │
+    └── 📁 prisma/                   # ========== PERSISTENCIA (Prisma ORM & Neon) ==========
+        ├── 📄 schema.prisma         # Esquema relacional de base de datos PostgreSQL
+        ├── 📄 seed.js               # Script para poblar catálogo básico inicial
+        ├── 📄 seed-demo.js          # Datos falsos volumétricos para demostración
+        └── 📄 seed-torneos-prueba.js # Generador de un torneo simulado completo
 ```
 
 ---
 
-## 📱 Frontend (`/client`)
+## 💻 Resumen de Capas Clave
 
-### Propósito
-Aplicación React interface para gestionar campeonatos de pádel. Permite jugadores e administradores interactuar con la plataforma.
+### 1. El Cliente Frontend (`/client`)
+Es una SPA construida sobre **React 18** y empaquetada con **Vite**. 
+* **Control de Rutas (`client/src/App.jsx`)**: Divide las rutas en tres niveles:
+  * *Rutas Públicas*: `/login`, `/register`, `/americano` (formato rápido accesible sin club).
+  * *Rutas Privadas de Jugador*: `/mi-perfil`, `/mis-inscripciones` (requieren sesión activa).
+  * *Rutas de Administración (`/admin/*`)*: Solo accesibles si el usuario es `ADMIN` global o tiene su ID en la lista `clubsAdmin` del club seleccionado en `ClubContext`.
+* **API Service (`client/src/services/api.js`)**: Realiza llamadas HTTP asíncronas contra el backend usando `fetch`. Se adapta dinámicamente si hay una variable de entorno `VITE_API_URL` definida o cae de vuelta a `/api`.
 
-### Archivos Clave
+### 2. El Servidor Backend (`/server`)
+API REST robusta impulsada por **Express**.
+* **Protección CORS (`server/index.js`)**: Habilitado dinámicamente para entornos locales de desarrollo (`localhost:5173`), subdominios de `featwebs.com` y previsualizaciones de Vercel (`*.vercel.app`).
+* **Seguridad y Tasa de Límite (Rate Limiting)**: Habilita `express-rate-limit` con límites de 10 peticiones cada 15 minutos para autenticación (prevención de ataques de fuerza bruta) y 300 peticiones por minuto en la API general.
+* **Sesión Serverless**: Diseñado modularmente en la carpeta `/api` para que Vercel lo ejecute como funciones Lambdas autogestionadas con excelente rendimiento.
 
-| Archivo | Propósito |
-|---------|-----------|
-| **vite.config.js** | Configuración de Vite: puerto 5173, proxy, HMR |
-| **tailwind.config.js** | Temas de Tailwind, extensiones personalizadas |
-| **App.jsx** | Router principal, rutas privadas/públicas |
-| **main.jsx** | ReactDOM render, providers (Auth, Club) |
-
-### Carpeta `src/pages`
-Cada archivo es una página/vista completa:
-- **Home**: Dashboard con clubes, campeonatos
-- **Login/Register**: Autenticación
-- **Campeonatos**: Lista de torneos disponibles
-- **CampeonatoDetalle**: Detalle de un campeonato específico (grupos, partidos, resultados)
-- **MisInscripciones**: Lista de inscripciones del jugador
-- **MiPerfil**: Perfil de usuario, datos personales
-- **SelectorClub**: Cambiar entre múltiples clubes (si es admin)
-
-### Carpeta `src/admin`
-Vistas administrativas (requieren rol ADMIN de club):
-- **AdminCampeonatos**: Crear, editar, listar campeonatos del club
-- **AdminCampeonatoEditar**: Editar un campeonato (nombre, fechas, etc)
-- **AdminPartidos**: Registrar resultados de partidos
-- **AdminHorarios**: Gestionar disponibilidad de canchas
-- **AdminJugadores**: Crear/editar perfiles de jugadores del club
-- **AdminParejas**: Crear/editar parejas del club
-- **AdminClubs**: Solo para superadmin (crear clubes)
-
-### Contextos (`src/context`)
-
-#### AuthContext
-```javascript
-// Maneja autenticación global
-const { user, login, logout, loading, token } = useAuth();
-```
-- `user`: Objeto usuario (id, email, rol, clubsAdmin)
-- `token`: JWT guardado en localStorage
-- `login(email, password)`: Autentica y guarda token
-- `logout()`: Limpia token y usuario
-
-#### ClubContext
-```javascript
-// Maneja el club seleccionado
-const { club, setClub } = useClub();
-```
-- `club`: Club actualmente seleccionado
-- `setClub(clubId)`: Cambia club activo
-
-### Servicios (`src/services`)
-
-#### api.js
-Cliente HTTP centralizado para todas las llamadas a backend:
-```javascript
-import api from './services/api.js';
-
-// GET
-const campeonatos = await api.get('/api/campeonatos');
-
-// POST
-await api.post('/api/inscripciones', { parejaId, campeonatoId });
-
-// PUT
-await api.put(`/api/partidos/${id}`, { setsLocal: 2, setsVisitante: 1 });
-```
+### 3. Persistencia de Datos (`/server/prisma`)
+* **Proveedor**: PostgreSQL (Neon Serverless).
+* **Esquema (`schema.prisma`)**: Define enums para roles de usuario (`ADMIN`, `JUGADOR`, `PUBLICO`), estados de campeonatos y partidos, modelos relacionales complejos con borrado en cascada configurado para evitar registros huérfanos.
+* **Singleton de Base de Datos (`server/config/db.js`)**: Habilita un patrón de instancia global para evitar saturar la cuota de conexiones simultáneas del pool de Neon durante múltiples arranques en frío de Vercel.
 
 ---
 
-## 🖥️ Backend (`/server`)
-
-### Propósito
-API REST que gestiona toda la lógica de negocio, base de datos y validaciones. Comunica con frontend y base de datos MySQL.
-
-### Archivo Principal: `index.js`
-
-```javascript
-// 1. Configuración de CORS - permite origen del frontend
-// 2. Rate limiting - protege contra brute force
-// 3. Parseo de JSON
-// 4. Montaje de rutas (/api/auth, /api/clubs, etc)
-// 5. Error handler global
-// 6. Escucha en puerto 3001
-```
-
-### Carpeta `routes`
-Cada archivo es un conjunto de endpoints relacionados:
-
-#### auth.js
-```
-POST /api/auth/register      - Crear usuario
-POST /api/auth/login         - Autenticar y obtener JWT
-```
-
-#### clubs.js
-```
-GET  /api/clubs              - Listar todos los clubs
-GET  /api/clubs/:id          - Obtener un club
-POST /api/clubs              - Crear nuevo club (ADMIN)
-GET  /api/clubs/:id/campeonatos - Campeonatos del club
-```
-
-#### campeonatos.js
-```
-GET    /api/campeonatos                - Listar campeonatos
-POST   /api/campeonatos                - Crear campeonato
-GET    /api/campeonatos/:id            - Obtener detalle
-PUT    /api/campeonatos/:id            - Actualizar campeonato
-POST   /api/campeonatos/:id/generar-grupos   - Generar grupos automáticamente
-GET    /api/campeonatos/:id/grupos     - Listar grupos
-GET    /api/campeonatos/:id/clasificación - Tabla de posiciones
-```
-
-#### jugadores.js
-```
-GET  /api/jugadores          - Listar jugadores
-POST /api/jugadores          - Crear perfil de jugador
-GET  /api/jugadores/:id      - Obtener perfil
-```
-
-#### parejas.js
-```
-GET    /api/parejas          - Listar parejas
-POST   /api/parejas          - Crear pareja
-DELETE /api/parejas/:id      - Eliminar pareja
-```
-
-#### inscripciones.js
-```
-GET  /api/inscripciones/campeonato/:id  - Listar inscripciones
-POST /api/inscripciones                 - Inscribir pareja
-PUT  /api/inscripciones/:id             - Aceptar/rechazar/eliminar
-```
-
-#### partidos.js
-```
-GET  /api/partidos/campeonato/:id  - Listar partidos
-GET  /api/partidos/:id             - Obtener detalle
-POST /api/partidos                 - Crear partido
-PUT  /api/partidos/:id             - Registrar resultado
-POST /api/partidos/:id/sets        - Registrar sets individuales
-```
-
-#### grupos.js & notificaciones.js
-```
-Gestión de grupos y notificaciones
-```
-
-### Middleware (`/middleware`)
-
-#### auth.js
-Middleware para proteger rutas:
-```javascript
-// Verifica JWT en headers
-// req.user contiene datos del usuario autenticado
-import { autenticar } from '../middleware/auth.js';
-
-router.get('/datos-protegidos', autenticar, (req, res) => {
-  // Solo accesible con JWT válido
-});
-```
-
-### Configuración (`/config`)
-
-#### db.js
-Inicializa cliente Prisma:
-```javascript
-import { PrismaClient } from '@prisma/client';
-export const db = new PrismaClient();
-```
-
----
-
-## 🗄️ Base de Datos (`/server/prisma`)
-
-### schema.prisma
-Definición del modelo de datos:
-
-#### Enums
-```prisma
-enum Role { ADMIN, JUGADOR, PUBLICO }
-enum EstadoCampeonato { BORRADOR, INSCRIPCIONES, EN_CURSO, FINALIZADO }
-enum Modalidad { MASCULINO, FEMENINO, MIXTO }
-enum EstadoPartido { PENDIENTE, EN_JUEGO, FINALIZADO }
-enum FasePartido { GRUPOS, CUARTOS, SEMIS, FINAL }
-enum EstadoInscripcion { PENDIENTE, ACEPTADA, RECHAZADA, LISTA_ESPERA }
-```
-
-#### Modelos Principales
-```prisma
-model Club { ... }                    # Club de pádel
-model Usuario { ... }                # Usuario del sistema
-model Jugador { ... }                # Perfil de jugador
-model Pareja { ... }                 # Dupla de jugadores
-model Campeonato { ... }             # Torneo
-model CategoriaTorneo { ... }        # Categoría dentro de torneo
-model Inscripcion { ... }            # Inscripción de pareja
-model Grupo { ... }                  # Grupo en fase de grupos
-model Partido { ... }                # Partido entre parejas
-model SetResultado { ... }           # Resultado de cada set
-model ClasificacionGrupo { ... }     # Tabla de posiciones
-model DisponibilidadHoraria { ... }  # Disponibilidad de canchas
-```
-
-### seed.js
-Script para poblar datos iniciales:
-```bash
-# Crea 3 clubes de ejemplo
-npm run db:seed
-```
-
----
-
-## 🔄 Flujos de Datos Principales
-
-### 1. Registro de Usuario
-```
-Frontend (Register.jsx)
-    ↓ POST /api/auth/register
-Backend (auth.js)
-    ↓ Validar email
-    ↓ Hash contraseña con bcrypt
-    ↓ Guardar en BD
-    ↓ Retornar JWT
-Frontend (AuthContext)
-    ↓ Guardar token en localStorage
-    ↓ Redirigir a home
-```
-
-### 2. Inscribir Pareja en Campeonato
-```
-Frontend (CampeonatoDetalle.jsx)
-    ↓ Selecciona pareja y campeonato
-    ↓ POST /api/inscripciones
-Backend (inscripciones.js)
-    ↓ Validar pareja existe
-    ↓ Validar campeonato existe
-    ↓ Crear Inscripcion (estado: PENDIENTE)
-    ↓ Enviar notificación a admin del club
-Frontend
-    ↓ Mostrar "Inscripción pendiente de aprobación"
-```
-
-### 3. Generar Grupos y Crear Partidos
-```
-Frontend (AdminCampeonatoEditar.jsx)
-    ↓ Click en "Generar Grupos"
-    ↓ POST /api/campeonatos/:id/generar-grupos
-Backend (campeonatos.js)
-    ↓ Obtener todas las inscripciones ACEPTADAS
-    ↓ Dividir en grupos equitativos
-    ↓ Para cada grupo, crear Partidos
-    ↓ Asignar pares automáticamente
-    ↓ Guardar en BD
-Frontend
-    ↓ Mostrar grupos generados
-    ↓ Mostrar cronograma de partidos
-```
-
-### 4. Registrar Resultado de Partido
-```
-Frontend (AdminPartidos.jsx)
-    ↓ Selecciona partido pendiente
-    ↓ Ingresa sets (ej: 6-3, 4-6, 7-5)
-    ↓ PUT /api/partidos/:id
-Backend (partidos.js)
-    ↓ Validar sets válidos
-    ↓ Calcular ganador (mejor de 3 sets)
-    ↓ Crear SetResultado para cada set
-    ↓ Actualizar Partido (estado: FINALIZADO)
-    ↓ Actualizar ClasificacionGrupo
-Frontend
-    ↓ Actualizar tabla de posiciones
-    ↓ Mostrar tabla actualizada
-```
-
----
-
-## 🔐 Roles y Permisos
-
-| Rol | Permisos |
-|-----|----------|
-| **ADMIN** | Crear clubes, asignar admins de club, ver todo |
-| **ADMIN de Club** | Crear campeonatos, gestionar inscrip­ciones, registrar resultados, gestionar usuarios del club |
-| **JUGADOR** | Crear perfil, crear parejas, inscribirse en campeonatos |
-| **PUBLICO** | Ver campeonatos público (sin acciones) |
-
----
-
-## 🚀 Scripts Importantes
-
-```bash
-# Desarrollo
-npm run dev                    # Inicia cliente + servidor
-
-# Base de datos
-npm run db:generate           # Genera cliente Prisma
-npm run db:push               # Aplica cambios a BD
-npm run db:seed               # Crea datos iniciales
-
-# Production
-npm run build                 # Build cliente + servidor
-npm run start                 # Inicia servidor produción
-```
-
----
-
-## 📊 Estado del Proyecto
-
-| Área | Estado |
-|------|--------|
-| Core Features | ✅ Completo |
-| UI/UX Frontend | ✅ Funcional |
-| API Backend | ✅ Implementado |
-| Base de Datos | ✅ Schema definido |
-| Autenticación | ✅ JWT implementado |
-| Tests | ⏳ Pendiente |
-| Documentación | ✅ Completa |
-
----
-
-## 🛠️ Tech Stack Resumido
-
-| Capa | Tecnología |
-|------|-----------|
-| **Frontend** | React 18 + Vite + Tailwind CSS |
-| **Backend** | Node.js + Express |
-| **ORM** | Prisma |
-| **Auth** | JWT + bcrypt |
-| **DB** | MySQL |
-
----
-
-## 📞 Navegación Rápida
-
-- **Documentación Completa**: [DOCUMENTACION.md](DOCUMENTACION.md)
-- **README Original**: [README.md](README.md)
-- **Schema BD**: [server/prisma/schema.prisma](server/prisma/schema.prisma)
-- **Rutas API**: [server/routes/](server/routes/)
-- **Componentes**: [client/src/components/](client/src/components/)
-
----
-
-**Última actualización**: Abril 2026
+**Última actualización de la estructura**: Mayo 2026

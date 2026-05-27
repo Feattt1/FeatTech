@@ -55,20 +55,27 @@ export default function App() {
         <Route path="/americano" element={<Layout />}>
           <Route index element={<Americano />} />
         </Route>
-        <Route path="*" element={
-          <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-white">
-            <header className="text-white shadow-md border-b border-slate-200" style={{ backgroundColor: '#000' }}>
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
-                <h1 className="text-3xl font-bold">
-                  <span className="bg-gradient-to-r from-yellow-400 to-yellow-500 bg-clip-text text-transparent">
-                    Championship Padel
-                  </span>
-                </h1>
-              </div>
-            </header>
-            <main className="flex-1">
-              <SelectorClub />
-            </main>
+          <Route path="*" element={
+            <div className="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950">
+              <header className="text-white shadow-lg border-b border-slate-800 bg-slate-900 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex justify-between items-center">
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-wider">
+                    <span className="bg-gradient-to-r from-padel to-padel-dark bg-clip-text text-transparent">
+                      Torneos Padel
+                    </span>
+                    <span className="text-white"> UY</span>
+                  </h1>
+                  <Link
+                    to="/americano"
+                    className="px-4 py-2 rounded-xl bg-padel hover:bg-padel-light text-slate-900 font-bold text-sm transition-all shadow-[0_0_15px_rgba(204,255,0,0.2)] hover:shadow-neon"
+                  >
+                    🎾 Torneo Americano
+                  </Link>
+                </div>
+              </header>
+              <main className="flex-1 flex items-center justify-center">
+                <SelectorClub />
+              </main>
             <footer className="bg-slate-900 text-white py-8 mt-auto border-t border-slate-800">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-400 text-sm">
                 <p>© {new Date().getFullYear()} Championship Padel</p>

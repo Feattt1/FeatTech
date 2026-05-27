@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import Layout from './components/Layout';
 import SelectorClub from './pages/SelectorClub';
 import Home from './pages/Home';
